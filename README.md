@@ -82,7 +82,7 @@ Skema database dirancang menggunakan SQLite dan digambarkan dengan **PlantUML**.
 
 ## ✍️ Kontributor
 
-Disusun dan dikembangkan oleh Tim Mahasiswa RPL 2025  
+Disusun dan dikembangkan oleh Tim Mahasiswa RPL 2023
 Universitas Telkom | Fakultas Informatika 
 
 ---
