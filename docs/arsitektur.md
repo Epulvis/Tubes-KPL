@@ -1,77 +1,69 @@
-# Arsitektur Aplikasi Manajemen Tugas Mahasiswa
+﻿# Arsitektur Aplikasi Manajemen Tugas Mahasiswa
 
 ## 1. Tujuan Desain
 Merancang arsitektur modular dan skalabel untuk aplikasi manajemen tugas mahasiswa berbasis C#, yang memungkinkan pengelolaan tugas akademik dan non-akademik secara efisien oleh pengguna. Aplikasi ini dibangun dengan memperhatikan alur kerja tim sebanyak 5 orang, serta mendukung ekspansi dan pemeliharaan jangka panjang.
 
+---
+
 ## 2. Komponen Utama
 
-### 2.1. Antarmuka Pengguna (UI)
-- **Framework**: Windows Forms / WPF
-- **Fungsi**:
-  - Input & update data tugas (judul, deadline, status, kategori)
-  - Tampilan daftar tugas (dengan filter & pencarian)
-  - Tombol ekspor laporan
-  - Reminder visual deadline
+### 2.1. Frontend
+- **View**:
+  - Menyediakan tampilan input/output melalui terminal (CLI)
+  - Menangani antarmuka pengguna: input tugas, filter, update status, ekspor data
+  - Tidak memiliki logika bisnis langsung, hanya sebagai perantara pengguna dan presenter
 
-### 2.2. Logika Bisnis (Business Logic Layer / BLL)
-- **Fungsi**:
-  - Validasi input (defensive programming)
-  - Filter, sort, dan hitung statistik tugas
-  - Mapping status ke prioritas & warna (table-driven logic)
-  - Reminder & konfigurasi runtime
-  - Unit test untuk setiap fungsi kritikal
+- **Presenter**:
+  - Menangani alur presentasi data (status validasi, hasil filter, reminder)
+  - Menghubungkan View dan Model tanpa ketergantungan langsung
+  - Memanggil layanan di backend dan memformat hasil ke bentuk yang bisa ditampilkan
 
-### 2.3. Lapis Data (Data Access Layer / DAL)
-- **Fungsi**:
-  - CRUD data tugas (judul, deadline, status, kategori)
-  - Simpan konfigurasi ke file lokal (JSON/XML)
-  - Ekspor data ke CSV atau PDF
-  - Generalisasi akses data (misal: List<T>)
+### 2.2. Backend (Model dan Controller)
 
-### 2.4. Basis Data
-- **Struktur Data**: SQLite (embedded, ringan untuk aplikasi desktop)
-- **Tabel**:
-  - `Tugas`: id, judul, deadline, status, kategori
-  - `Konfigurasi`: key, value
+- **Model**:
+  - Representasi data seperti `Tugas`, `Konfigurasi`, dan `Statistik`
+  - Termasuk automata validasi status (To Do → Doing → Done)
+  - Mendukung parameterisasi (List<T>) dan table-driven logic
 
-### 2.5. API Internal
-- **Fungsi**:
-  - Memisahkan komunikasi antara UI, BLL, dan DAL
-  - Menyediakan interface terstruktur untuk interaksi antar modul
-  - Pola: Dependency Injection
+- **Controller / Service Layer**:
+  - Berfungsi sebagai "business service" dalam MVP
+  - Menyediakan layanan seperti: `TaskService`, `ConfigService`, dan `StatistikService`
+  - Bertanggung jawab atas: CRUD data, validasi input (design by contract), filter tugas, logging error
 
-## 3. Alur Data dan Komunikasi
+- **Repository**:
+  - `ITugasRepository` dan `TugasRepository` sebagai interface dan implementasi manipulasi data
+  - Simulasi database dengan `List<T>` atau implementasi nyata dengan SQLite
 
-1. **Pengguna** menginput tugas melalui UI
-2. UI mengirim data ke BLL untuk validasi dan logika
-3. BLL memanggil DAL untuk menyimpan ke basis data
-4. Untuk menampilkan tugas:
-   - UI memanggil BLL untuk mengambil dan menyaring data
-   - BLL meminta data dari DAL, lalu memprosesnya (filter, statistik)
-5. Ekspor data:
-   - UI meminta BLL menyiapkan data
-   - BLL mengambil data dari DAL dan membentuk format ekspor
-6. Reminder diatur di BLL berdasarkan runtime config dan dikirimkan ke UI
-
-## 4. Tanggung Jawab Tim
-
-- **Anggota 1**: Implementasi dan unit test CRUD di DAL
-- **Anggota 2**: Statistik dan filter di BLL, performance test
-- **Anggota 3**: Runtime config, defensive programming
-- **Anggota 4**: Mapping logika prioritas dari tabel, table-driven logic, unit test logika
-- **Anggota 5**: Generalisasi fungsi, dokumentasi, integrasi CLI
-
-## 5. Skalabilitas
-- Modularisasi memungkinkan penambahan fitur (notifikasi email, kolaborasi multi-user)
-- API internal memudahkan porting ke versi web/mobile
-- Logging & monitoring dapat ditambahkan di lapisan BLL
-
-## 6. Dokumentasi
-- Semua modul harus diberi komentar XML (C#)
-- Penamaan dan struktur mengikuti standar .NET coding guideline
-- Dokumen teknis tambahan dapat ditulis dalam folder `/docs`
+### 2.3. API Internal (untuk komunikasi Presenter ↔ Controller)
+- Digunakan untuk memisahkan logika presentasi dari logika bisnis
+- Mendukung parameterisasi, dependensi injeksi, dan modularitas
 
 ---
 
-Disusun oleh: Arsitek Perangkat Lunak (2025)
+## 3. Alur Data dan Komunikasi
+
+1. **User** menginput data ke View
+2. View meneruskan input ke Presenter
+3. Presenter memanggil `TaskService` atau `ConfigService` di Backend
+4. Service melakukan validasi, transformasi, dan menyimpan/mengambil data via Repository
+5. Hasil akhir diformat oleh Presenter dan dikirim kembali ke View untuk ditampilkan
+
+---
+
+## 4. Skalabilitas
+- Modularisasi memudahkan ekspansi ke versi GUI/Web
+- MVP memisahkan logika bisnis dari antarmuka pengguna (CLI)
+- Reusability tinggi lewat service dan helper reusable
+- Logging dan Defensive Programming membantu debugging dan reliability
+
+---
+
+## 5. Dokumentasi
+- Semua komponen menggunakan XML documentation comments
+- Penamaan dan struktur mengikuti standar .NET
+- Diagram arsitektur, skema database, dan manual CLI berada di direktori `/docs`
+
+---
+
+Disusun oleh: Tim kelompok 5 (Zuhri, Aryo, Zhafran, Bintang, Rifki)
 

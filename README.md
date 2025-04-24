@@ -22,13 +22,21 @@ Aplikasi dibangun menggunakan **C# dengan Visual Studio**, memanfaatkan pendekat
 
 ## 🧩 Arsitektur Komponen
 
-Struktur komponen berdasarkan tiga lapisan utama:
+Aplikasi menggunakan pendekatan arsitektur **Model-View-Presenter (MVP)** dengan pemisahan tanggung jawab sebagai berikut:
 
-- **UI Layer**: Windows Forms/WPF untuk antarmuka pengguna
-- **BLL (Business Logic Layer)**: Proses logika aplikasi, statistik, validasi, dan filter
-- **DAL (Data Access Layer)**: Interaksi dengan database SQLite dan ekspor file
+### 🔹 Frontend
+- **View**: Menyediakan antarmuka berbasis terminal, menangani input pengguna dan output hasil. Tidak menyimpan logika aplikasi.
+- **Presenter**: Mengatur komunikasi antara View dan Backend, memproses hasil, dan memformat data agar siap ditampilkan.
 
-Diagram dan deskripsi lengkap tersedia di [`/docs/arsitektur.md`](./docs/arsitektur.md)&#8203;:contentReference[oaicite:0]{index=0}.
+### 🔹 Backend
+- **Model**: Representasi data seperti `Tugas`, `Konfigurasi`, dan `Statistik`. Mendukung validasi status, parameterisasi, dan table-driven logic.
+- **Service Layer**: Menyediakan layanan seperti `TaskService`, `ConfigService`, dan `StatistikService` untuk memproses logika aplikasi secara terpisah dari tampilan.
+- **Repository**: Interface dan implementasi untuk manipulasi data tugas menggunakan pendekatan `List<T>` atau SQLite.
+
+### 🔹 API Internal
+- Bertindak sebagai jembatan antara Presenter dan Service, memungkinkan fleksibilitas, injeksi dependensi, dan modularitas.
+
+📄 Diagram dan deskripsi lengkap tersedia di [`/docs/arsitektur.md`](./docs/arsitektur.md)
 
 ---
 
@@ -37,21 +45,19 @@ Diagram dan deskripsi lengkap tersedia di [`/docs/arsitektur.md`](./docs/arsitek
 Struktur folder mengacu pada praktik terbaik dalam pengembangan perangkat lunak berbasis C#:
 
 
-📁 Referensi: [`/docs/Sturuktur_Folder.md`](./docs/Sturuktur_Folder.md)&#8203;:contentReference[oaicite:1]{index=1}
+📁 Referensi: [`/docs/Sturuktur_Folder.md`](./docs/Sturuktur_Folder.md)&#8203;
 
 ---
 
 ## 🧠 Pembagian Tugas Anggota
 
-| Anggota     | Tugas Utama                  | Sub-tugas                                                                 |
-|-------------|------------------------------|--------------------------------------------------------------------------|
-| **Anggota 1** | CRUD                        | Kelola data tugas, tulis unit test CRUD                                 |
-| **Anggota 2** | Filter & Statistik          | Filter by deadline/status, hitung tugas, performa filter                 |
-| **Anggota 3** | Runtime Configuration       | Konfigurasi default, baca/simpan file, defensive programming             |
-| **Anggota 4** | Table-driven Construction   | Mapping status → prioritas/warna, fungsi lookup, unit test logika        |
-| **Anggota 5** | Parameterisasi & Dokumentasi| Refactor fungsi ke generic, dokumentasi XML, integrasi fitur ke CLI      |
-
-🖼️ Lihat gambar pembagian lengkap di dokumentasi referensi visual.
+| Anggota | Tugas Utama                        | Teknik Konstruksi                      | Keterangan                                                                 |
+|---------|------------------------------------|----------------------------------------|----------------------------------------------------------------------------|
+| **Zuhri**       | Modul CRUD Tugas                   | Automata, Code Reuse/Library           | Validasi status, helper reusable (InputValidator, DateHelper)             |
+| **Aryo**      | Filtering dan Statistik            | Table-driven, Parameterization         | Tabel mapping + filter generik List<T>                                    |
+| **Zhafran**       | Modul Konfigurasi Aplikasi         | Runtime Configuration, Code Reuse      | Baca config.json (default notifikasi, format tanggal), reusable config    |
+| **Bintang**      | Defensive Programming + Logging    | Design by Contract (DbC), Automata     | Validasi input (pre/postcondition), pengecekan state, logging handler     |
+| **Rifki**    | Unit & Performance Testing         | Parameterization, API                  | Unit test TaskService + performa filter + interface API internal TaskService |
 
 ---
 
@@ -86,4 +92,3 @@ Disusun dan dikembangkan oleh Tim Mahasiswa RPL 2023
 Universitas Telkom | Fakultas Informatika 
 
 ---
-

@@ -1,4 +1,6 @@
-﻿namespace Tubes_KPL.src.BLL
+﻿using Tubes_KPL.src.Domain.Models;
+
+namespace Tubes_KPL.src.Domain.Interfaces
 {
     interface ITugasRepository
     {

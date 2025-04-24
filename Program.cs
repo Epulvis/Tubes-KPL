@@ -1,5 +1,5 @@
-﻿using Tubes_KPL.src.BLL;
-using Tubes_KPL.src.DAL;
+﻿using Tubes_KPL.src.Domain.Models;
+using Tubes_KPL.src.Infrastructure.Repositories;
 
 internal class Program
 {

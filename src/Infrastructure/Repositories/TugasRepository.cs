@@ -1,6 +1,7 @@
-﻿using Tubes_KPL.src.BLL;
+﻿using Tubes_KPL.src.Domain.Interfaces;
+using Tubes_KPL.src.Domain.Models;
 
-namespace Tubes_KPL.src.DAL
+namespace Tubes_KPL.src.Infrastructure.Repositories
 {
     public class TugasRepository : ITugasRepository
     {
