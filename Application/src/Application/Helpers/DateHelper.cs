@@ -1,4 +1,5 @@
 using System;
+using System.Globalization;
 
 namespace Tubes_KPL.src.Application.Helpers
 {
@@ -28,7 +29,7 @@ namespace Tubes_KPL.src.Application.Helpers
         }
         public static bool TryParseDate(string input, out DateTime result)
         {
-            return DateTime.TryParse(input, out result);
+            return DateTime.TryParseExact(input, "d/M/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out result);
         }
     }
 } 

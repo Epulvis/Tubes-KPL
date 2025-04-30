@@ -50,8 +50,15 @@
   },
   {
     "Id": 8,
-    "Judul": "Tugas Ai",
-    "Deadline": "2025-05-04T00:00:00",
+    "Judul": "tugas baru 2",
+    "Deadline": "2025-05-20T00:00:00",
+    "Status": 0,
+    "Kategori": 0
+  },
+  {
+    "Id": 9,
+    "Judul": "Test baru 12",
+    "Deadline": "2021-06-20T00:00:00",
     "Status": 0,
     "Kategori": 0
   }
