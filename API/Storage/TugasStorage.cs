@@ -26,9 +26,9 @@ public class TugasStorage<T>
         return JsonSerializer.Deserialize<List<Tugas>>(json, options) ?? new List<Tugas>();
     }
 
-    public static void SaveTugas(T users)
+    public static void SaveTugas(T tasks)
     {
-        var json = JsonSerializer.Serialize(users, new JsonSerializerOptions { WriteIndented = true });
+        var json = JsonSerializer.Serialize(tasks, new JsonSerializerOptions { WriteIndented = true });
         File.WriteAllText(FilePath, json);
     }
 }

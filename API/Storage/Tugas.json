@@ -26,5 +26,12 @@
     "Deadline": "2025-04-30T01:25:19.327Z",
     "Status": 1,
     "Kategori": 0
+  },
+  {
+    "Id": 5,
+    "Judul": "Tugas 10",
+    "Deadline": "2025-04-30T01:29:56.297Z",
+    "Status": 0,
+    "Kategori": 0
   }
 ]
