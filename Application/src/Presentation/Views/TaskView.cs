@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using Tubes_KPL.src.Domain.Models;
 using Tubes_KPL.src.Presentation.Presenters;
 
@@ -13,7 +14,7 @@ namespace Tubes_KPL.src.Presentation.Views
             _presenter = presenter ?? throw new ArgumentNullException(nameof(presenter));
         }
 
-        public void ShowMainMenu()
+        public async Task ShowMainMenu()
         {
             bool isRunning = true;
 
@@ -40,22 +41,22 @@ namespace Tubes_KPL.src.Presentation.Views
                 switch (choice)
                 {
                     case 1:
-                        ShowAllTasks();
+                        await ShowAllTasks();
                         break;
                     case 2:
-                        ShowTaskDetails();
+                        await ShowTaskDetails();
                         break;
                     case 3:
-                        AddNewTask();
+                        await AddNewTask();
                         break;
                     case 4:
-                        UpdateTask();
+                        await UpdateTask();
                         break;
                     case 5:
-                        UpdateTaskStatus();
+                        await UpdateTaskStatus();
                         break;
                     case 6:
-                        DeleteTask();
+                        await DeleteTask();
                         break;
                     case 0:
                         isRunning = false;
@@ -68,19 +69,19 @@ namespace Tubes_KPL.src.Presentation.Views
             }
         }
 
-        private void ShowAllTasks()
+        private async Task ShowAllTasks()
         {
             Console.Clear();
             Console.WriteLine("=== DAFTAR TUGAS ===\n");
             
-            string result = _presenter.GetAllTasks();
+            string result = await _presenter.GetAllTasks();
             Console.WriteLine(result);
             
             Console.WriteLine("\nTekan Enter untuk kembali ke menu utama...");
             Console.ReadLine();
         }
 
-        private void ShowTaskDetails()
+        private async Task ShowTaskDetails()
         {
             Console.Clear();
             Console.WriteLine("=== DETAIL TUGAS ===\n");
@@ -88,14 +89,14 @@ namespace Tubes_KPL.src.Presentation.Views
             Console.Write("Masukkan ID Tugas: ");
             string idStr = Console.ReadLine();
             
-            string result = _presenter.GetTaskDetails(idStr);
+            string result = await _presenter.GetTaskDetails(idStr);
             Console.WriteLine("\n" + result);
             
             Console.WriteLine("\nTekan Enter untuk kembali ke menu utama...");
             Console.ReadLine();
         }
 
-        private void AddNewTask()
+        private async Task AddNewTask()
         {
             Console.Clear();
             Console.WriteLine("=== TAMBAH TUGAS BARU ===\n");
@@ -117,14 +118,14 @@ namespace Tubes_KPL.src.Presentation.Views
                 kategoriIndex = 0;
             }
             
-            string result = _presenter.CreateTask(judul, deadlineStr, kategoriIndex);
+            string result = await _presenter.CreateTask(judul, deadlineStr, kategoriIndex);
             Console.WriteLine("\n" + result);
             
             Console.WriteLine("\nTekan Enter untuk kembali ke menu utama...");
             Console.ReadLine();
         }
 
-        private void UpdateTask()
+        private async Task UpdateTask()
         {
             Console.Clear();
             Console.WriteLine("=== PERBARUI TUGAS ===\n");
@@ -149,14 +150,14 @@ namespace Tubes_KPL.src.Presentation.Views
                 kategoriIndex = 0;
             }
             
-            string result = _presenter.UpdateTask(idStr, judul, deadlineStr, kategoriIndex);
+            string result = await _presenter.UpdateTask(idStr, judul, deadlineStr, kategoriIndex);
             Console.WriteLine("\n" + result);
             
             Console.WriteLine("\nTekan Enter untuk kembali ke menu utama...");
             Console.ReadLine();
         }
 
-        private void UpdateTaskStatus()
+        private async Task UpdateTaskStatus()
         {
             Console.Clear();
             Console.WriteLine("=== UBAH STATUS TUGAS ===\n");
@@ -179,14 +180,14 @@ namespace Tubes_KPL.src.Presentation.Views
                 return;
             }
             
-            string result = _presenter.UpdateTaskStatus(idStr, statusIndex);
+            string result = await _presenter.UpdateTaskStatus(idStr, statusIndex);
             Console.WriteLine("\n" + result);
             
             Console.WriteLine("\nTekan Enter untuk kembali ke menu utama...");
             Console.ReadLine();
         }
 
-        private void DeleteTask()
+        private async Task DeleteTask()
         {
             Console.Clear();
             Console.WriteLine("=== HAPUS TUGAS ===\n");
@@ -205,7 +206,7 @@ namespace Tubes_KPL.src.Presentation.Views
                 return;
             }
             
-            string result = _presenter.DeleteTask(idStr);
+            string result = await _presenter.DeleteTask(idStr);
             Console.WriteLine("\n" + result);
             
             Console.WriteLine("\nTekan Enter untuk kembali ke menu utama...");

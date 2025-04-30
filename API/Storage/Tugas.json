@@ -33,5 +33,26 @@
     "Deadline": "2025-04-30T01:29:56.297Z",
     "Status": 0,
     "Kategori": 0
+  },
+  {
+    "Id": 6,
+    "Judul": "tugas 1",
+    "Deadline": "2025-04-30T05:43:23.317Z",
+    "Status": 0,
+    "Kategori": 0
+  },
+  {
+    "Id": 7,
+    "Judul": "Tugas Kelompok",
+    "Deadline": "2025-05-04T00:00:00",
+    "Status": 0,
+    "Kategori": 0
+  },
+  {
+    "Id": 8,
+    "Judul": "Tugas Ai",
+    "Deadline": "2025-05-04T00:00:00",
+    "Status": 0,
+    "Kategori": 0
   }
 ]
