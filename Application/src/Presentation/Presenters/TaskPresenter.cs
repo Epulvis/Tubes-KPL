@@ -86,6 +86,8 @@ namespace Tubes_KPL.src.Presentation.Presenters
                 if (!InputValidator.TryParseId(idStr, out int id))
                     return "ID tugas tidak valid! Pastikan berupa angka positif.";
 
+
+
                 // Convert status index to enum
                 if (statusIndex < 0 || statusIndex > 3)
                     return "Indeks status tidak valid! Gunakan 0-3.";
@@ -120,14 +122,20 @@ namespace Tubes_KPL.src.Presentation.Presenters
             try
             {
                 // Validate input
-                if (!InputValidator.TryParseId(idStr, out int id))
-                    return "ID tugas tidak valid! Pastikan berupa angka positif.";
-
                 if (!InputValidator.IsValidJudul(judul))
                     return "Judul tugas tidak valid! Pastikan tidak kosong dan maksimal 100 karakter.";
 
+                if (!InputValidator.TryParseId(idStr, out int id))
+                    return "ID tugas tidak valid! Pastikan berupa angka positif.";
+
                 if (!DateHelper.TryParseDate(deadlineStr, out DateTime deadline))
                     return "Format tanggal tidak valid! Gunakan format DD/MM/YYYY.";
+
+                if (!InputValidator.IsValidDeadline(deadline))
+                    return "Deadline tidak dapat diatur di masa lalu.";
+
+
+
 
                 // Convert kategori index to enum
                 KategoriTugas kategori = kategoriIndex == 0 ? KategoriTugas.Akademik : KategoriTugas.NonAkademik;

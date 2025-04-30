@@ -2,6 +2,7 @@
 using API.Storage;
 using System.Text.Json.Serialization;
 using Tubes_KPL.src.Domain.Models;
+using Tubes_KPL.src.Application.Helpers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -58,9 +59,15 @@ app.MapGet("/api/tugas/{id:int}", (int id) =>
 app.MapPost("/api/tugas", (Tugas newTugas) =>
 {
         var tasks = TugasStorage<List<Tugas>>.GetTugas();
+
+        if (!InputValidator.IsValidDeadline(newTugas.Deadline))
+            return Results.BadRequest("Input not valid");
+
+
         newTugas.Id = tasks.Count == 0 ? 1 : tasks.Max(u => u.Id) + 1;
         tasks.Add(newTugas);
 
+        
         TugasStorage<List<Tugas>>.SaveTugas(tasks);
         return Results.Created($"/users/{newTugas.Id}", newTugas);
     
@@ -69,8 +76,15 @@ app.MapPost("/api/tugas", (Tugas newTugas) =>
 app.MapPut("/api/tugas/{id:int}", (int id, Tugas updatedTugas) =>
 {
         var tasks = TugasStorage<List<Tugas>>.GetTugas();
+
+        if (!InputValidator.IsValidDeadline(updatedTugas.Deadline))
+            return Results.BadRequest("Input not valid");
+
+
         var task = tasks.FirstOrDefault(u => u.Id == id);
         if (task is null) return Results.NotFound();
+
+        if (!InputValidator.IsValidDeadline(updatedTugas.Deadline)) return Results.BadRequest("Input not valid");
 
         task.Judul = updatedTugas.Judul;
         task.Status = updatedTugas.Status;
@@ -94,7 +108,6 @@ app.MapDelete("/api/tugas/{id:int}", (int id) =>
 // filter untuk by params (deadline, status, kategori)
 app.MapGet("/api/tugas/filter", (string? status, string? kategori, DateTime? deadline) =>
 {
-
         var tasks = TugasStorage<List<Tugas>>.GetTugas();
         if (status != null)
         {

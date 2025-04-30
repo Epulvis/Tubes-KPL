@@ -50,23 +50,23 @@
   },
   {
     "Id": 8,
-    "Judul": "Tugas Ai",
-    "Deadline": "2025-05-04T00:00:00",
+    "Judul": "tugas baru 2",
+    "Deadline": "2025-05-20T00:00:00",
     "Status": 0,
     "Kategori": 0
   },
   {
     "Id": 9,
-    "Judul": "Baruuuu bangeeeet",
-    "Deadline": "2025-05-05T00:00:00",
-    "Status": 0,
+    "Judul": "tugas baru 12",
+    "Deadline": "2025-05-30T16:03:42.962Z",
+    "Status": 1,
     "Kategori": 1
   },
   {
     "Id": 10,
-    "Judul": "uhuyyyyy",
-    "Deadline": "2028-08-08T00:00:00",
-    "Status": 2,
-    "Kategori": 0
+    "Judul": "tugas baru 13",
+    "Deadline": "2025-06-25T16:03:42.962Z",
+    "Status": 1,
+    "Kategori": 1
   }
 ]
