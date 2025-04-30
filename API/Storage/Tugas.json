@@ -1,8 +1,8 @@
 [
   {
     "Id": 1,
-    "Judul": "Tugas AI",
-    "Deadline": "2025-04-30T00:56:51.133Z",
+    "Judul": "Judul baru nich",
+    "Deadline": "2026-08-09T00:00:00",
     "Status": 1,
     "Kategori": 0
   },
@@ -57,9 +57,16 @@
   },
   {
     "Id": 9,
-    "Judul": "Test baru 12",
-    "Deadline": "2021-06-20T00:00:00",
-    "Status": 0,
-    "Kategori": 0
+    "Judul": "tugas baru 12",
+    "Deadline": "2025-05-30T16:03:42.962Z",
+    "Status": 1,
+    "Kategori": 1
+  },
+  {
+    "Id": 10,
+    "Judul": "tugas baru 13",
+    "Deadline": "2025-06-25T16:03:42.962Z",
+    "Status": 1,
+    "Kategori": 1
   }
 ]

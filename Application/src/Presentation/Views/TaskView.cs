@@ -1,6 +1,9 @@
 using System;
+using System.Text.Json;
 using System.Threading.Tasks;
+using Tubes_KPL.src.Application.Helpers;
 using Tubes_KPL.src.Domain.Models;
+using Tubes_KPL.src.Infrastructure.Configuration;
 using Tubes_KPL.src.Presentation.Presenters;
 
 namespace Tubes_KPL.src.Presentation.Views
@@ -8,10 +11,12 @@ namespace Tubes_KPL.src.Presentation.Views
     public class TaskView
     {
         private readonly TaskPresenter _presenter;
+        private readonly IConfigProvider _configProvider;
 
-        public TaskView(TaskPresenter presenter)
+        public TaskView(TaskPresenter presenter, IConfigProvider configProvider)
         {
             _presenter = presenter ?? throw new ArgumentNullException(nameof(presenter));
+            _configProvider = configProvider ?? throw new ArgumentNullException(nameof(configProvider));
         }
 
         public async Task ShowMainMenu()
@@ -85,13 +90,21 @@ namespace Tubes_KPL.src.Presentation.Views
         {
             Console.Clear();
             Console.WriteLine("=== DETAIL TUGAS ===\n");
-            
+
             Console.Write("Masukkan ID Tugas: ");
             string idStr = Console.ReadLine();
-            
+
             string result = await _presenter.GetTaskDetails(idStr);
+
+            // Add reminder logic
+            //var reminderSettings = _configProvider.GetConfig<Dictionary<string, object>>("ReminderSettings");
+            //if (reminderSettings != null && ((JsonElement)reminderSettings["EnableReminders"]).GetBoolean())
+            //{
+            //    Console.WriteLine("[Pengingat Aktif]");
+            //}
+
             Console.WriteLine("\n" + result);
-            
+
             Console.WriteLine("\nTekan Enter untuk kembali ke menu utama...");
             Console.ReadLine();
         }
@@ -100,27 +113,38 @@ namespace Tubes_KPL.src.Presentation.Views
         {
             Console.Clear();
             Console.WriteLine("=== TAMBAH TUGAS BARU ===\n");
-            
+
             Console.Write("Judul Tugas: ");
             string judul = Console.ReadLine();
-            
+            if (string.IsNullOrWhiteSpace(judul))
+            {
+                var defaultTaskConfig = _configProvider.GetConfig<Dictionary<string, object>>("DefaultTask");
+                judul = defaultTaskConfig["Judul"].ToString();
+                Console.WriteLine($"Judul default digunakan: {judul}");
+            }
+
             Console.Write("Deadline (DD/MM/YYYY): ");
             string deadlineStr = Console.ReadLine();
-            
+            if (string.IsNullOrWhiteSpace(deadlineStr) || !DateHelper.TryParseDate(deadlineStr, out DateTime deadline))
+            {
+                Console.WriteLine("Deadline tidak dimasukkan atau format tidak valid. Menggunakan tanggal hari ini sebagai default.");
+                deadline = DateTime.Now;
+            }
+
             Console.WriteLine("Kategori Tugas:");
             Console.WriteLine("0. Akademik");
             Console.WriteLine("1. Non-Akademik");
             Console.Write("Pilih Kategori (0/1): ");
-            
+
             if (!int.TryParse(Console.ReadLine(), out int kategoriIndex) || kategoriIndex < 0 || kategoriIndex > 1)
             {
                 Console.WriteLine("Kategori tidak valid! Menggunakan default: Akademik");
                 kategoriIndex = 0;
             }
-            
-            string result = await _presenter.CreateTask(judul, deadlineStr, kategoriIndex);
+
+            string result = await _presenter.CreateTask(judul, deadline.ToString("dd/MM/yyyy"), kategoriIndex);
             Console.WriteLine("\n" + result);
-            
+
             Console.WriteLine("\nTekan Enter untuk kembali ke menu utama...");
             Console.ReadLine();
         }

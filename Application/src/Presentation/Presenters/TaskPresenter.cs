@@ -8,6 +8,7 @@ using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using Tubes_KPL.src.Application.Helpers;
 using Tubes_KPL.src.Domain.Models;
+using Tubes_KPL.src.Infrastructure.Configuration;
 
 namespace Tubes_KPL.src.Presentation.Presenters
 {
@@ -16,10 +17,12 @@ namespace Tubes_KPL.src.Presentation.Presenters
         private readonly HttpClient _httpClient;
         private const string BaseUrl = "http://localhost:4000/api/tugas";
         private readonly JsonSerializerOptions _jsonOptions;
+        private readonly IConfigProvider _configProvider;
 
-        public TaskPresenter()
+        public TaskPresenter(IConfigProvider configProvider)
         {
             _httpClient = new HttpClient();
+            _configProvider = configProvider ?? throw new ArgumentNullException(nameof(configProvider));
             _jsonOptions = new JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true,
@@ -32,14 +35,21 @@ namespace Tubes_KPL.src.Presentation.Presenters
             try
             {
                 // Validate input
-                if (!InputValidator.IsValidJudul(judul))
-                    return "Judul tugas tidak valid! Pastikan tidak kosong dan maksimal 100 karakter.";
+                if (string.IsNullOrWhiteSpace(judul))
+                {
+                    var defaultTaskConfig = _configProvider.GetConfig<Dictionary<string, string>>("DefaultTask");
+                    judul = defaultTaskConfig.ContainsKey("Judul") && !string.IsNullOrWhiteSpace(defaultTaskConfig["Judul"])
+                        ? defaultTaskConfig["Judul"]
+                        : "Tugas Default";
+                }
 
                 if (!DateHelper.TryParseDate(deadlineStr, out DateTime deadline))
-                    return "Format tanggal tidak valid! Gunakan format DD/MM/YYYY.";
-
-                if (!InputValidator.IsValidDeadline(deadline))
-                    return "Deadline tidak dapat diatur di masa lalu.";
+                {
+                    // Use default deadline from configuration
+                    var defaultTaskConfig = _configProvider.GetConfig<Dictionary<string, string>>("DefaultTask");
+                    int defaultDays = int.Parse(defaultTaskConfig["DeadlineDaysFromNow"]);
+                    deadline = DateTime.Now.AddDays(defaultDays);
+                }
 
                 // Convert kategori index to enum
                 KategoriTugas kategori = kategoriIndex == 0 ? KategoriTugas.Akademik : KategoriTugas.NonAkademik;
@@ -189,34 +199,33 @@ namespace Tubes_KPL.src.Presentation.Presenters
         {
             try
             {
-                // Validate ID
                 if (!InputValidator.TryParseId(idStr, out int id))
                     return "ID tugas tidak valid! Pastikan berupa angka positif.";
 
-                // Get task
                 var response = await _httpClient.GetAsync($"{BaseUrl}/{id}");
                 if (!response.IsSuccessStatusCode)
                     return "Tugas tidak ditemukan!";
 
                 var tugas = await response.Content.ReadFromJsonAsync<Tugas>(_jsonOptions);
-                
-                // Format task details
+
+                var reminderSettings = _configProvider.GetConfig<Dictionary<string, object>>("ReminderSettings");
+                if (reminderSettings == null)
+                    return "Pengaturan pengingat tidak ditemukan!";
+
+                int daysBeforeDeadline = ((JsonElement)reminderSettings["DaysBeforeDeadline"]).GetInt32();
+
+
                 string statusWarning = "";
-                if (DateHelper.IsDeadlineApproaching(tugas.Deadline) && tugas.Status != StatusTugas.Selesai)
+                if (DateHelper.DaysUntilDeadline(tugas.Deadline) <= daysBeforeDeadline && tugas.Status != StatusTugas.Selesai)
                 {
-                    int days = DateHelper.DaysUntilDeadline(tugas.Deadline);
-                    statusWarning = $"\nPeringatan: Deadline {days} hari lagi!";
-                }
-                else if (DateHelper.IsDeadlinePassed(tugas.Deadline) && tugas.Status != StatusTugas.Terlewat && tugas.Status != StatusTugas.Selesai)
-                {
-                    statusWarning = "\nPeringatan: Deadline sudah terlewat!";
+                    statusWarning = $"\nPeringatan: Deadline {DateHelper.DaysUntilDeadline(tugas.Deadline)} hari lagi!";
                 }
 
                 return $"Detail Tugas #{tugas.Id}:\n" +
                        $"Judul: {tugas.Judul}\n" +
                        $"Kategori: {tugas.Kategori}\n" +
                        $"Status: {tugas.Status}\n" +
-                       $"Deadline: {DateHelper.FormatDate(tugas.Deadline)}" + 
+                       $"Deadline: {DateHelper.FormatDate(tugas.Deadline)}" +
                        statusWarning;
             }
             catch (Exception ex)
@@ -224,6 +233,7 @@ namespace Tubes_KPL.src.Presentation.Presenters
                 return $"Error: {ex.Message}";
             }
         }
+
 
         public async Task<string> GetAllTasks()
         {
