@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Text.Json;
 using System.Threading.Tasks;
+using Tubes_KPL.src.Infrastructure.Configuration;
 using Tubes_KPL.src.Presentation.Presenters;
 using Tubes_KPL.src.Presentation.Views;
 
@@ -11,19 +13,22 @@ namespace Tubes_KPL
         {
             try
             {
-                // Initialize presenter (no longer needs TaskService since it uses HTTP client)
-                var taskPresenter = new TaskPresenter();
-                
+                // Initialize configuration provider
+                var configProvider = new JsonConfigProvider($"../../../src/Infrastructure/Configuration/config.json");
+
+                // Initialize presenter with configuration provider
+                var taskPresenter = new TaskPresenter(configProvider);
+
                 // Initialize view with presenter dependency
-                var taskView = new TaskView(taskPresenter);
-                
+                var taskView = new TaskView(taskPresenter, configProvider);
+
                 // Start the application
                 Console.WriteLine("Memulai aplikasi Manajemen Tugas Mahasiswa...");
                 Console.WriteLine("Menghubungkan ke API...");
-                
+
                 // Show main menu
                 await taskView.ShowMainMenu();
-                
+
                 Console.WriteLine("Aplikasi telah ditutup. Terima kasih!");
             }
             catch (Exception ex)
