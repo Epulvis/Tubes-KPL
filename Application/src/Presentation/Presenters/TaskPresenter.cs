@@ -1,21 +1,33 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
+using System.Net.Http.Json;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using System.Threading.Tasks;
 using Tubes_KPL.src.Application.Helpers;
-using Tubes_KPL.src.Application.Services;
 using Tubes_KPL.src.Domain.Models;
 
 namespace Tubes_KPL.src.Presentation.Presenters
 {
     public class TaskPresenter
     {
-        private readonly TaskService _taskService;
-        public TaskPresenter(TaskService taskService)
+        private readonly HttpClient _httpClient;
+        private const string BaseUrl = "http://localhost:4000/api/tugas";
+        private readonly JsonSerializerOptions _jsonOptions;
+
+        public TaskPresenter()
         {
-            _taskService = taskService ?? throw new ArgumentNullException(nameof(taskService));
+            _httpClient = new HttpClient();
+            _jsonOptions = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true,
+                Converters = { new JsonStringEnumConverter() }
+            };
         }
 
-        public string CreateTask(string judul, string deadlineStr, int kategoriIndex)
+        public async Task<string> CreateTask(string judul, string deadlineStr, int kategoriIndex)
         {
             try
             {
@@ -32,9 +44,23 @@ namespace Tubes_KPL.src.Presentation.Presenters
                 // Convert kategori index to enum
                 KategoriTugas kategori = kategoriIndex == 0 ? KategoriTugas.Akademik : KategoriTugas.NonAkademik;
 
-                // Create task
-                var tugas = _taskService.BuatTugas(judul, deadline, kategori);
-                return $"Tugas berhasil dibuat dengan ID: {tugas.Id}";
+                // Create task object
+                var newTugas = new Tugas
+                {
+                    Judul = judul,
+                    Deadline = deadline,
+                    Kategori = kategori,
+                    Status = StatusTugas.BelumMulai
+                };
+
+                // Send POST request to API
+                var response = await _httpClient.PostAsJsonAsync(BaseUrl, newTugas, _jsonOptions);
+                if (response.IsSuccessStatusCode)
+                {
+                    var createdTask = await response.Content.ReadFromJsonAsync<Tugas>(_jsonOptions);
+                    return $"Tugas berhasil dibuat dengan ID: {createdTask.Id}";
+                }
+                return $"Error: {response.StatusCode}";
             }
             catch (Exception ex)
             {
@@ -42,7 +68,7 @@ namespace Tubes_KPL.src.Presentation.Presenters
             }
         }
 
-        public string UpdateTaskStatus(string idStr, int statusIndex)
+        public async Task<string> UpdateTaskStatus(string idStr, int statusIndex)
         {
             try
             {
@@ -55,18 +81,23 @@ namespace Tubes_KPL.src.Presentation.Presenters
                     return "Indeks status tidak valid! Gunakan 0-3.";
 
                 StatusTugas newStatus = (StatusTugas)statusIndex;
-                
-                // Update status with automata validation
-                var tugas = _taskService.UbahStatusTugas(id, newStatus);
-                return $"Status tugas '{tugas.Judul}' berhasil diubah menjadi {tugas.Status}";
-            }
-            catch (KeyNotFoundException)
-            {
-                return "Tugas tidak ditemukan!";
-            }
-            catch (InvalidOperationException ex)
-            {
-                return $"Error: {ex.Message}";
+
+                // Get current task
+                var getResponse = await _httpClient.GetAsync($"{BaseUrl}/{id}");
+                if (!getResponse.IsSuccessStatusCode)
+                    return "Tugas tidak ditemukan!";
+
+                var task = await getResponse.Content.ReadFromJsonAsync<Tugas>(_jsonOptions);
+                task.Status = newStatus;
+
+                // Update task
+                var updateResponse = await _httpClient.PutAsJsonAsync($"{BaseUrl}/{id}", task, _jsonOptions);
+                if (updateResponse.IsSuccessStatusCode)
+                {
+                    var updatedTask = await updateResponse.Content.ReadFromJsonAsync<Tugas>(_jsonOptions);
+                    return $"Status tugas '{updatedTask.Judul}' berhasil diubah menjadi {updatedTask.Status}";
+                }
+                return $"Error: {updateResponse.StatusCode}";
             }
             catch (Exception ex)
             {
@@ -74,7 +105,7 @@ namespace Tubes_KPL.src.Presentation.Presenters
             }
         }
 
-        public string UpdateTask(string idStr, string judul, string deadlineStr, int kategoriIndex)
+        public async Task<string> UpdateTask(string idStr, string judul, string deadlineStr, int kategoriIndex)
         {
             try
             {
@@ -91,13 +122,24 @@ namespace Tubes_KPL.src.Presentation.Presenters
                 // Convert kategori index to enum
                 KategoriTugas kategori = kategoriIndex == 0 ? KategoriTugas.Akademik : KategoriTugas.NonAkademik;
 
+                // Get current task
+                var getResponse = await _httpClient.GetAsync($"{BaseUrl}/{id}");
+                if (!getResponse.IsSuccessStatusCode)
+                    return "Tugas tidak ditemukan!";
+
+                var task = await getResponse.Content.ReadFromJsonAsync<Tugas>(_jsonOptions);
+                task.Judul = judul;
+                task.Deadline = deadline;
+                task.Kategori = kategori;
+
                 // Update task
-                var tugas = _taskService.PerbaruiTugas(id, judul, deadline, kategori);
-                return $"Tugas '{tugas.Judul}' berhasil diperbarui";
-            }
-            catch (KeyNotFoundException)
-            {
-                return "Tugas tidak ditemukan!";
+                var updateResponse = await _httpClient.PutAsJsonAsync($"{BaseUrl}/{id}", task, _jsonOptions);
+                if (updateResponse.IsSuccessStatusCode)
+                {
+                    var updatedTask = await updateResponse.Content.ReadFromJsonAsync<Tugas>(_jsonOptions);
+                    return $"Tugas '{updatedTask.Judul}' berhasil diperbarui";
+                }
+                return $"Error: {updateResponse.StatusCode}";
             }
             catch (Exception ex)
             {
@@ -105,7 +147,7 @@ namespace Tubes_KPL.src.Presentation.Presenters
             }
         }
 
-        public string DeleteTask(string idStr)
+        public async Task<string> DeleteTask(string idStr)
         {
             try
             {
@@ -113,17 +155,21 @@ namespace Tubes_KPL.src.Presentation.Presenters
                 if (!InputValidator.TryParseId(idStr, out int id))
                     return "ID tugas tidak valid! Pastikan berupa angka positif.";
 
-                // Get task before deletion to show its title in confirmation
-                var tugas = _taskService.AmbilTugasById(id);
-                string judulTugas = tugas.Judul;
+                // Get task before deletion
+                var getResponse = await _httpClient.GetAsync($"{BaseUrl}/{id}");
+                if (!getResponse.IsSuccessStatusCode)
+                    return "Tugas tidak ditemukan!";
+
+                var task = await getResponse.Content.ReadFromJsonAsync<Tugas>(_jsonOptions);
+                string judulTugas = task.Judul;
 
                 // Delete task
-                _taskService.HapusTugas(id);
-                return $"Tugas '{judulTugas}' berhasil dihapus";
-            }
-            catch (KeyNotFoundException)
-            {
-                return "Tugas tidak ditemukan!";
+                var deleteResponse = await _httpClient.DeleteAsync($"{BaseUrl}/{id}");
+                if (deleteResponse.IsSuccessStatusCode)
+                {
+                    return $"Tugas '{judulTugas}' berhasil dihapus";
+                }
+                return $"Error: {deleteResponse.StatusCode}";
             }
             catch (Exception ex)
             {
@@ -131,7 +177,7 @@ namespace Tubes_KPL.src.Presentation.Presenters
             }
         }
 
-        public string GetTaskDetails(string idStr)
+        public async Task<string> GetTaskDetails(string idStr)
         {
             try
             {
@@ -140,7 +186,11 @@ namespace Tubes_KPL.src.Presentation.Presenters
                     return "ID tugas tidak valid! Pastikan berupa angka positif.";
 
                 // Get task
-                var tugas = _taskService.AmbilTugasById(id);
+                var response = await _httpClient.GetAsync($"{BaseUrl}/{id}");
+                if (!response.IsSuccessStatusCode)
+                    return "Tugas tidak ditemukan!";
+
+                var tugas = await response.Content.ReadFromJsonAsync<Tugas>(_jsonOptions);
                 
                 // Format task details
                 string statusWarning = "";
@@ -161,21 +211,21 @@ namespace Tubes_KPL.src.Presentation.Presenters
                        $"Deadline: {DateHelper.FormatDate(tugas.Deadline)}" + 
                        statusWarning;
             }
-            catch (KeyNotFoundException)
-            {
-                return "Tugas tidak ditemukan!";
-            }
             catch (Exception ex)
             {
                 return $"Error: {ex.Message}";
             }
         }
 
-        public string GetAllTasks()
+        public async Task<string> GetAllTasks()
         {
             try
             {
-                var tasks = _taskService.AmbilSemuaTugas();
+                var response = await _httpClient.GetAsync(BaseUrl);
+                if (!response.IsSuccessStatusCode)
+                    return $"Error: {response.StatusCode}";
+
+                var tasks = await response.Content.ReadFromJsonAsync<List<Tugas>>(_jsonOptions);
                 
                 // Check if there are no tasks
                 if (!tasks.Any())
@@ -202,10 +252,6 @@ namespace Tubes_KPL.src.Presentation.Presenters
                 }
                 
                 result += "=================================================================================================\n";
-                
-                // Update any tasks that should be marked as Terlewat
-                _taskService.PerbaruiStatusTerlewat();
-                
                 return result;
             }
             catch (Exception ex)
