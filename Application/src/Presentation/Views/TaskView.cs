@@ -1,4 +1,5 @@
 using System;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Tubes_KPL.src.Application.Helpers;
 using Tubes_KPL.src.Domain.Models;
@@ -96,11 +97,11 @@ namespace Tubes_KPL.src.Presentation.Views
             string result = await _presenter.GetTaskDetails(idStr);
 
             // Add reminder logic
-            var reminderSettings = _configProvider.GetConfig<Dictionary<string, object>>("ReminderSettings");
-            if (Convert.ToBoolean(reminderSettings["EnableReminders"]))
-            {
-                Console.WriteLine("\n[Pengingat Aktif]");
-            }
+            //var reminderSettings = _configProvider.GetConfig<Dictionary<string, object>>("ReminderSettings");
+            //if (reminderSettings != null && ((JsonElement)reminderSettings["EnableReminders"]).GetBoolean())
+            //{
+            //    Console.WriteLine("[Pengingat Aktif]");
+            //}
 
             Console.WriteLine("\n" + result);
 
@@ -117,19 +118,17 @@ namespace Tubes_KPL.src.Presentation.Views
             string judul = Console.ReadLine();
             if (string.IsNullOrWhiteSpace(judul))
             {
-                var defaultTaskConfig = _configProvider.GetConfig<Dictionary<string, string>>("DefaultTask");
-                judul = defaultTaskConfig["Judul"];
+                var defaultTaskConfig = _configProvider.GetConfig<Dictionary<string, object>>("DefaultTask");
+                judul = defaultTaskConfig["Judul"].ToString();
                 Console.WriteLine($"Judul default digunakan: {judul}");
             }
 
             Console.Write("Deadline (DD/MM/YYYY): ");
             string deadlineStr = Console.ReadLine();
-            if (!DateHelper.TryParseDate(deadlineStr, out DateTime deadline))
+            if (string.IsNullOrWhiteSpace(deadlineStr) || !DateHelper.TryParseDate(deadlineStr, out DateTime deadline))
             {
-                var defaultTaskConfig = _configProvider.GetConfig<Dictionary<string, string>>("DefaultTask");
-                int defaultDays = int.Parse(defaultTaskConfig["DeadlineDaysFromNow"]);
-                deadline = DateTime.Now.AddDays(defaultDays);
-                Console.WriteLine($"Deadline default digunakan: {DateHelper.FormatDate(deadline)}");
+                Console.WriteLine("Deadline tidak dimasukkan atau format tidak valid. Menggunakan tanggal hari ini sebagai default.");
+                deadline = DateTime.Now;
             }
 
             Console.WriteLine("Kategori Tugas:");

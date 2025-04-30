@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Tubes_KPL.src.Infrastructure.Configuration;
 using Tubes_KPL.src.Presentation.Presenters;
@@ -13,7 +14,7 @@ namespace Tubes_KPL
             try
             {
                 // Initialize configuration provider
-                var configProvider = new JsonConfigProvider("src/Infrastructure/Configuration/config.json");
+                var configProvider = new JsonConfigProvider($"../../../src/Infrastructure/Configuration/config.json");
 
                 // Initialize presenter with configuration provider
                 var taskPresenter = new TaskPresenter(configProvider);

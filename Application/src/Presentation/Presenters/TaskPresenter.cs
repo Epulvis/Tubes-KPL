@@ -201,9 +201,11 @@ namespace Tubes_KPL.src.Presentation.Presenters
                 var tugas = await response.Content.ReadFromJsonAsync<Tugas>(_jsonOptions);
 
                 var reminderSettings = _configProvider.GetConfig<Dictionary<string, object>>("ReminderSettings");
-                int daysBeforeDeadline = reminderSettings.ContainsKey("DaysBeforeDeadline") && int.TryParse(reminderSettings["DaysBeforeDeadline"].ToString(), out int days)
-                    ? days
-                    : 3; // Default value
+                if (reminderSettings == null)
+                    return "Pengaturan pengingat tidak ditemukan!";
+
+                int daysBeforeDeadline = ((JsonElement)reminderSettings["DaysBeforeDeadline"]).GetInt32();
+
 
                 string statusWarning = "";
                 if (DateHelper.DaysUntilDeadline(tugas.Deadline) <= daysBeforeDeadline && tugas.Status != StatusTugas.Selesai)
@@ -223,6 +225,7 @@ namespace Tubes_KPL.src.Presentation.Presenters
                 return $"Error: {ex.Message}";
             }
         }
+
 
         public async Task<string> GetAllTasks()
         {
