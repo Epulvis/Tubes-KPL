@@ -1,0 +1,30 @@
+[
+  {
+    "Id": 1,
+    "Judul": "Tugas AI",
+    "Deadline": "2025-04-30T00:56:51.133Z",
+    "Status": 1,
+    "Kategori": 0
+  },
+  {
+    "Id": 2,
+    "Judul": "Judul Test 4",
+    "Deadline": "2025-04-30T00:41:32.901Z",
+    "Status": 0,
+    "Kategori": 1
+  },
+  {
+    "Id": 3,
+    "Judul": "Judul Test 5",
+    "Deadline": "2025-04-30T00:41:32.901Z",
+    "Status": 0,
+    "Kategori": 1
+  },
+  {
+    "Id": 4,
+    "Judul": "Tugas KPL",
+    "Deadline": "2025-04-30T01:25:19.327Z",
+    "Status": 1,
+    "Kategori": 0
+  }
+]
