@@ -32,6 +32,7 @@ namespace Tubes_KPL
                 Console.WriteLine("Aplikasi mengalami masalah. Silakan coba lagi nanti.");
                 Console.WriteLine("Tekan Enter untuk keluar...");
                 Console.ReadLine();
+
             }
         }
     }
