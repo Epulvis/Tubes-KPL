@@ -7,6 +7,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using Tubes_KPL.src.Application.Helpers;
+using Tubes_KPL.src.Application.Services;
 using Tubes_KPL.src.Domain.Models;
 using Tubes_KPL.src.Infrastructure.Configuration;
 
@@ -16,19 +17,23 @@ namespace Tubes_KPL.src.Presentation.Presenters
     {
         private readonly HttpClient _httpClient;
         private const string BaseUrl = "http://localhost:4000/api/tugas";
+        
         private readonly JsonSerializerOptions _jsonOptions;
         private readonly IConfigProvider _configProvider;
+        private readonly TaskService _taskService; // tambahkan ini
 
-        public TaskPresenter(IConfigProvider configProvider)
+        public TaskPresenter(IConfigProvider configProvider, TaskService taskService)
         {
             _httpClient = new HttpClient();
             _configProvider = configProvider ?? throw new ArgumentNullException(nameof(configProvider));
+            _taskService = taskService ?? throw new ArgumentNullException(nameof(taskService)); // tambahkan ini
             _jsonOptions = new JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true,
                 Converters = { new JsonStringEnumConverter() }
             };
         }
+
 
         public async Task<string> CreateTask(string judul, string deadlineStr, int kategoriIndex)
         {
@@ -277,5 +282,82 @@ namespace Tubes_KPL.src.Presentation.Presenters
                 return $"Error: {ex.Message}";
             }
         }
+        
+        public async Task<string> PrintTasksToFiles(string jsonFilePath, string textFilePath)
+        {
+            try
+            {
+                // Karena method ini tidak async, kamu bisa panggil langsung
+                _taskService.CetakDaftarTugas(jsonFilePath, textFilePath);
+                return $"[INFO] Daftar tugas berhasil dicetak ke file JSON: {jsonFilePath} dan file TXT: {textFilePath}.";
+            }
+            catch (Exception ex)
+            {
+                return $"[ERROR] Gagal mencetak daftar tugas: {ex.Message}";
+            }
+        }
+        
+        public async Task<string> PrintTasksToFilesFromApi(string jsonFilePath, string textFilePath)
+        {
+            try
+            {
+                Console.WriteLine($"[DEBUG] Mengakses API di: {BaseUrl}");
+
+                // Ambil data dari API
+                var response = await _httpClient.GetAsync(BaseUrl);
+                Console.WriteLine(response);
+                if (!response.IsSuccessStatusCode)
+                    return $"[ERROR] Gagal mengambil data dari API. Status code: {response.StatusCode}";
+
+                var tasks = await response.Content.ReadFromJsonAsync<List<Tugas>>(_jsonOptions);
+                Console.WriteLine(tasks);
+                if (tasks == null || !tasks.Any())
+                    return "[INFO] Tidak ada tugas yang tersedia untuk dicetak.";
+
+                // Simpan data ke file JSON
+                var jsonContent = JsonSerializer.Serialize(tasks, new JsonSerializerOptions { WriteIndented = true });
+                File.WriteAllText(jsonFilePath, jsonContent);
+                Console.WriteLine(jsonContent);
+
+
+                // Konversi data ke format teks dan simpan ke file TXT
+                var textContent = ConvertTasksToText(tasks);
+                File.WriteAllText(textFilePath, textContent);
+                Console.WriteLine(textContent);
+
+
+                return $"[INFO] Daftar tugas berhasil dicetak ke file JSON: {jsonFilePath} dan file TXT: {textFilePath}.";
+            }
+            catch (Exception ex)
+            {
+                return $"[ERROR] Gagal mencetak daftar tugas: {ex.Message}";
+            }
+        }
+
+        private string ConvertTasksToText(List<Tugas> tasks)
+        {
+            var textContent = "Daftar Tugas:\n";
+            textContent += "=================================================================================================\n";
+            textContent += "| ID |            Judul            |   Kategori   |      Status      |       Deadline        |\n";
+            textContent += "=================================================================================================\n";
+
+            foreach (var t in tasks)
+            {
+                string deadline = DateHelper.FormatDate(t.Deadline);
+                string status = t.Status.ToString();
+
+                // Add warning symbol for approaching deadlines
+                if (DateHelper.IsDeadlineApproaching(t.Deadline) && t.Status != StatusTugas.Selesai && t.Status != StatusTugas.Terlewat)
+                {
+                    deadline += " ⚠️";
+                }
+
+                textContent += $"| {t.Id,-3}| {t.Judul,-28} | {t.Kategori,-12} | {status,-16} | {deadline,-21} |\n";
+            }
+
+            textContent += "=================================================================================================\n";
+            return textContent;
+        }
     }
 } 
+

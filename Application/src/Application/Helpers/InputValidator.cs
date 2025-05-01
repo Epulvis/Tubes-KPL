@@ -10,10 +10,17 @@ namespace Tubes_KPL.src.Application.Helpers
             return !string.IsNullOrWhiteSpace(judul) && judul.Length <= 100;
         }
 
+        // bintang : poin 4 Validasi Input (Pre/Postcondition) 
         public static bool IsValidDeadline(DateTime deadline)
         {
-            // Deadline should not be in the past
-            return deadline >= DateTime.Now;
+            // Precondition: Deadline harus valid
+            if (deadline < DateTime.Now)
+            {
+                Console.WriteLine($"[ERROR] Deadline tidak valid. Input: {deadline}");
+                return false;
+            }
+
+            return true;
         }
         public static bool IsValidStatusTransition(StatusTugas currentStatus, StatusTugas newStatus)
         {

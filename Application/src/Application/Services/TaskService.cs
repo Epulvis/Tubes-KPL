@@ -3,6 +3,8 @@ using Tubes_KPL.src.Domain.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
+using Tubes_KPL.src.Application.Libraries;
 
 namespace Tubes_KPL.src.Application.Services
 {
@@ -13,16 +15,26 @@ namespace Tubes_KPL.src.Application.Services
         {
             _repository = repository ?? throw new ArgumentNullException(nameof(repository));
         }
+        //Bintang : poin 1 Defensive Programming + Logging
         public Tugas BuatTugas(string judul, DateTime deadline, KategoriTugas kategori)
         {
-            // Validate input
+            // Precondition: Validasi input
             if (string.IsNullOrWhiteSpace(judul))
+            {
+                Console.WriteLine($"[ERROR] Judul tugas tidak boleh kosong. Input: {judul}");
                 throw new ArgumentException("Judul tugas tidak boleh kosong", nameof(judul));
+            }
 
             if (deadline < DateTime.Now)
+            {
+                Console.WriteLine($"[ERROR] Deadline tidak boleh di masa lalu. Input: {deadline}");
                 throw new ArgumentException("Deadline tidak boleh di masa lalu", nameof(deadline));
+            }
 
-            // Create task with default state "BelumMulai"
+            // Logging: Informasi tugas yang dibuat
+            Console.WriteLine($"[INFO] Membuat tugas baru dengan judul '{judul}' dan deadline '{deadline}'.");
+
+            // Postcondition: Pastikan tugas dibuat dengan status default
             var tugas = new Tugas
             {
                 Judul = judul,
@@ -57,33 +69,46 @@ namespace Tubes_KPL.src.Application.Services
             _repository.Perbarui(tugas);
             return tugas;
         }
+        
+        // bintang : poin 3 automata
         private bool IsValidStatusTransition(StatusTugas currentStatus, StatusTugas newStatus)
         {
+            bool isValid = false; // Variabel penanda apakah transisi status valid
+
+            // Mengecek transisi yang diperbolehkan berdasarkan status saat ini
             switch (currentStatus)
             {
                 case StatusTugas.BelumMulai:
-                    // From BelumMulai can go to SedangDikerjakan, Selesai, or Terlewat
-                    return newStatus == StatusTugas.SedangDikerjakan || 
-                           newStatus == StatusTugas.Selesai || 
-                           newStatus == StatusTugas.Terlewat;
+                    // Jika status saat ini BelumMulai, hanya bisa ke SedangDikerjakan, Selesai, atau Terlewat
+                    isValid = newStatus == StatusTugas.SedangDikerjakan ||
+                              newStatus == StatusTugas.Selesai ||
+                              newStatus == StatusTugas.Terlewat;
+                    break;
 
                 case StatusTugas.SedangDikerjakan:
-                    // From SedangDikerjakan can go to Selesai or Terlewat
-                    return newStatus == StatusTugas.Selesai || 
-                           newStatus == StatusTugas.Terlewat;
+                    // Jika SedangDikerjakan, hanya bisa ke Selesai atau Terlewat
+                    isValid = newStatus == StatusTugas.Selesai ||
+                              newStatus == StatusTugas.Terlewat;
+                    break;
 
                 case StatusTugas.Selesai:
-                    // From Selesai can only go to Terlewat (if deadline passed)
-                    return newStatus == StatusTugas.Terlewat;
+                    // Jika Selesai, hanya bisa ke Terlewat (misalnya untuk validasi deadline)
+                    isValid = newStatus == StatusTugas.Terlewat;
+                    break;
 
                 case StatusTugas.Terlewat:
-                    // Terlewat is a terminal state
-                    return false;
-
-                default:
-                    return false;
+                    // Terlewat adalah status akhir, tidak bisa transisi ke status lain
+                    isValid = false;
+                    break;
             }
+
+            // Logging hasil validasi transisi status
+            Console.WriteLine($"[LOG] Transisi dari {currentStatus} ke {newStatus} " +
+                              (isValid ? "valid." : "tidak valid."));
+
+            return isValid; // Mengembalikan hasil validasi
         }
+
         public Tugas PerbaruiTugas(int id, string judul, DateTime deadline, KategoriTugas kategori)
         {
             var tugas = _repository.AmbilById(id);
@@ -145,5 +170,30 @@ namespace Tubes_KPL.src.Application.Services
                 }
             }
         }
+        public void CetakDaftarTugas(string jsonFilePath, string textFilePath)
+        {
+            // Ambil semua tugas dari repository
+            var tugasList = _repository.AmbilSemua().ToList();
+
+            if (!tugasList.Any())
+            {
+                Console.WriteLine("[INFO] Tidak ada tugas yang tersedia untuk dicetak.");
+                return;
+            }
+
+            Console.WriteLine($"[DEBUG] Jumlah tugas yang ditemukan: {tugasList.Count}");
+
+            // Serialize daftar tugas ke file JSON
+            var jsonContent = JsonSerializer.Serialize(tugasList, new JsonSerializerOptions { WriteIndented = true });
+            File.WriteAllText(jsonFilePath, jsonContent);
+
+            Console.WriteLine($"[INFO] Daftar tugas berhasil disimpan ke file JSON: {jsonFilePath}");
+
+            // Konversi file JSON ke file teks
+            JsonToTextConverter.ConvertJsonToText(jsonFilePath, textFilePath);
+
+            Console.WriteLine($"[INFO] Daftar tugas berhasil dikonversi ke file teks: {textFilePath}");
+        }
     }
 } 
+

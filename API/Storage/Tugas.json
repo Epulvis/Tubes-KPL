@@ -1,72 +1,79 @@
 [
   {
-    "Id": 1,
-    "Judul": "Judul baru nich",
-    "Deadline": "2026-08-09T00:00:00",
-    "Status": 1,
-    "Kategori": 0
-  },
-  {
     "Id": 2,
-    "Judul": "Judul Test 4",
-    "Deadline": "2025-04-30T00:41:32.901Z",
+    "Judul": "Judul tugas 2",
+    "Deadline": "2025-07-01T00:41:32.901Z",
     "Status": 0,
     "Kategori": 1
   },
   {
     "Id": 3,
-    "Judul": "Judul Test 5",
-    "Deadline": "2025-04-30T00:41:32.901Z",
+    "Judul": "Judul tugas 3",
+    "Deadline": "2025-07-01T00:41:32.901Z",
     "Status": 0,
     "Kategori": 1
   },
   {
     "Id": 4,
-    "Judul": "Tugas KPL",
-    "Deadline": "2025-04-30T01:25:19.327Z",
+    "Judul": "Judul tugas 4",
+    "Deadline": "2025-07-01T01:25:19.327Z",
     "Status": 1,
     "Kategori": 0
   },
   {
     "Id": 5,
-    "Judul": "Tugas 10",
-    "Deadline": "2025-04-30T01:29:56.297Z",
+    "Judul": "Judul tugas 5",
+    "Deadline": "2025-07-01T01:29:56.297Z",
     "Status": 0,
     "Kategori": 0
   },
   {
     "Id": 6,
-    "Judul": "tugas 1",
-    "Deadline": "2025-04-30T05:43:23.317Z",
+    "Judul": "Judul tugas 6",
+    "Deadline": "2025-07-01T05:43:23.317Z",
     "Status": 0,
     "Kategori": 0
   },
   {
     "Id": 7,
-    "Judul": "Tugas Kelompok",
-    "Deadline": "2025-05-04T00:00:00",
+    "Judul": "Judul tugas 7",
+    "Deadline": "2025-07-04T00:00:00",
     "Status": 0,
     "Kategori": 0
   },
   {
     "Id": 8,
-    "Judul": "tugas baru 2",
-    "Deadline": "2025-05-20T00:00:00",
+    "Judul": "Judul tugas 8",
+    "Deadline": "2025-07-20T00:00:00",
     "Status": 0,
     "Kategori": 0
   },
   {
     "Id": 9,
-    "Judul": "tugas baru 12",
-    "Deadline": "2025-05-30T16:03:42.962Z",
+    "Judul": "Judul tugas 9",
+    "Deadline": "2025-07-30T16:03:42.962Z",
     "Status": 1,
     "Kategori": 1
   },
   {
     "Id": 10,
-    "Judul": "tugas baru 13",
-    "Deadline": "2025-06-25T16:03:42.962Z",
+    "Judul": "Judul tugas 10",
+    "Deadline": "2025-07-20T00:00:00",
     "Status": 1,
+    "Kategori": 0
+  },
+  {
+    "Id": 11,
+    "Judul": "Judul Tugas 20",
+    "Deadline": "2025-07-20T00:00:00",
+    "Status": 0,
+    "Kategori": 0
+  },
+  {
+    "Id": 12,
+    "Judul": "Judul tugas 21",
+    "Deadline": "2025-07-21T00:00:00",
+    "Status": 3,
     "Kategori": 1
   }
 ]
