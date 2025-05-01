@@ -35,7 +35,6 @@ namespace Tubes_KPL.src.Presentation.Presenters
         {
             try
             {
-                // Validate input
                 if (string.IsNullOrWhiteSpace(judul))
                 {
                     var defaultTaskConfig = _configProvider.GetConfig<Dictionary<string, string>>("DefaultTask");
@@ -46,16 +45,13 @@ namespace Tubes_KPL.src.Presentation.Presenters
 
                 if (!DateHelper.TryParseDate(deadlineStr, out DateTime deadline))
                 {
-                    // Use default deadline from configuration
                     var defaultTaskConfig = _configProvider.GetConfig<Dictionary<string, string>>("DefaultTask");
                     int defaultDays = int.Parse(defaultTaskConfig["DeadlineDaysFromNow"]);
                     deadline = DateTime.Now.AddDays(defaultDays);
                 }
 
-                // Convert kategori index to enum
                 KategoriTugas kategori = kategoriIndex == 0 ? KategoriTugas.Akademik : KategoriTugas.NonAkademik;
 
-                // Create task object
                 var newTugas = new Tugas
                 {
                     Judul = judul,
@@ -63,8 +59,7 @@ namespace Tubes_KPL.src.Presentation.Presenters
                     Kategori = kategori,
                     Status = StatusTugas.BelumMulai
                 };
-
-                // Send POST request to API
+                
                 var response = await _httpClient.PostAsJsonAsync(BaseUrl, newTugas, _jsonOptions);
                 if (response.IsSuccessStatusCode)
                 {
@@ -83,19 +78,14 @@ namespace Tubes_KPL.src.Presentation.Presenters
         {
             try
             {
-                // Validate ID
                 if (!InputValidator.TryParseId(idStr, out int id))
                     return "ID tugas tidak valid! Pastikan berupa angka positif.";
 
-
-
-                // Convert status index to enum
                 if (statusIndex < 0 || statusIndex > 3)
                     return "Indeks status tidak valid! Gunakan 0-3.";
 
                 StatusTugas newStatus = (StatusTugas)statusIndex;
 
-                // Get current task
                 var getResponse = await _httpClient.GetAsync($"{BaseUrl}/{id}");
                 if (!getResponse.IsSuccessStatusCode)
                     return "Tugas tidak ditemukan!";
@@ -103,7 +93,6 @@ namespace Tubes_KPL.src.Presentation.Presenters
                 var task = await getResponse.Content.ReadFromJsonAsync<Tugas>(_jsonOptions);
                 task.Status = newStatus;
 
-                // Update task
                 var updateResponse = await _httpClient.PutAsJsonAsync($"{BaseUrl}/{id}", task, _jsonOptions);
                 if (updateResponse.IsSuccessStatusCode)
                 {
@@ -122,7 +111,6 @@ namespace Tubes_KPL.src.Presentation.Presenters
         {
             try
             {
-                // Validate input
                 if (!InputValidator.IsValidJudul(judul))
                     return "Judul tugas tidak valid! Pastikan tidak kosong dan maksimal 100 karakter.";
 
@@ -135,13 +123,8 @@ namespace Tubes_KPL.src.Presentation.Presenters
                 if (!InputValidator.IsValidDeadline(deadline))
                     return "Deadline tidak dapat diatur di masa lalu.";
 
-
-
-
-                // Convert kategori index to enum
                 KategoriTugas kategori = kategoriIndex == 0 ? KategoriTugas.Akademik : KategoriTugas.NonAkademik;
 
-                // Get current task
                 var getResponse = await _httpClient.GetAsync($"{BaseUrl}/{id}");
                 if (!getResponse.IsSuccessStatusCode)
                     return "Tugas tidak ditemukan!";
@@ -150,8 +133,7 @@ namespace Tubes_KPL.src.Presentation.Presenters
                 task.Judul = judul;
                 task.Deadline = deadline;
                 task.Kategori = kategori;
-
-                // Update task
+                
                 var updateResponse = await _httpClient.PutAsJsonAsync($"{BaseUrl}/{id}", task, _jsonOptions);
                 if (updateResponse.IsSuccessStatusCode)
                 {
@@ -170,11 +152,9 @@ namespace Tubes_KPL.src.Presentation.Presenters
         {
             try
             {
-                // Validate ID
                 if (!InputValidator.TryParseId(idStr, out int id))
                     return "ID tugas tidak valid! Pastikan berupa angka positif.";
 
-                // Get task before deletion
                 var getResponse = await _httpClient.GetAsync($"{BaseUrl}/{id}");
                 if (!getResponse.IsSuccessStatusCode)
                     return "Tugas tidak ditemukan!";
@@ -182,7 +162,6 @@ namespace Tubes_KPL.src.Presentation.Presenters
                 var task = await getResponse.Content.ReadFromJsonAsync<Tugas>(_jsonOptions);
                 string judulTugas = task.Judul;
 
-                // Delete task
                 var deleteResponse = await _httpClient.DeleteAsync($"{BaseUrl}/{id}");
                 if (deleteResponse.IsSuccessStatusCode)
                 {
@@ -243,12 +222,9 @@ namespace Tubes_KPL.src.Presentation.Presenters
                     return $"Error: {response.StatusCode}";
 
                 var tasks = await response.Content.ReadFromJsonAsync<List<Tugas>>(_jsonOptions);
-                
-                // Check if there are no tasks
                 if (!tasks.Any())
                     return "Tidak ada tugas yang tersedia.";
 
-                // Format tasks as table
                 string result = "Daftar Tugas:\n";
                 result += "=================================================================================================\n";
                 result += "| ID |            Judul            |   Kategori   |      Status      |       Deadline        |\n";
@@ -259,7 +235,6 @@ namespace Tubes_KPL.src.Presentation.Presenters
                     string deadline = DateHelper.FormatDate(t.Deadline);
                     string status = t.Status.ToString();
                     
-                    // Add warning symbol for approaching deadlines
                     if (DateHelper.IsDeadlineApproaching(t.Deadline) && t.Status != StatusTugas.Selesai && t.Status != StatusTugas.Terlewat)
                     {
                         deadline += " ⚠️";
@@ -283,7 +258,6 @@ namespace Tubes_KPL.src.Presentation.Presenters
             {
                 Console.WriteLine($"[DEBUG] Mengakses API di: {BaseUrl}");
 
-                // Ambil data dari API
                 var response = await _httpClient.GetAsync(BaseUrl);
                 if (!response.IsSuccessStatusCode)
                     return $"[ERROR] Gagal mengambil data dari API. Status code: {response.StatusCode}";
@@ -292,14 +266,11 @@ namespace Tubes_KPL.src.Presentation.Presenters
                 if (tasks == null || !tasks.Any())
                     return "[INFO] Tidak ada tugas yang tersedia untuk dicetak.";
 
-                // Simpan data ke file JSON
                 var jsonContent = JsonSerializer.Serialize(tasks, new JsonSerializerOptions { WriteIndented = true });
                 File.WriteAllText(jsonFilePath, jsonContent);
 
-                // Konversi data ke format teks dan simpan ke file TXT
                 var textContent = JsonToTextConverter.ConvertTasksToText(tasks);
                 File.WriteAllText(textFilePath, textContent);
-
 
                 return $"[INFO] Daftar tugas berhasil dicetak ke file JSON: {jsonFilePath} dan file TXT: {textFilePath}.";
             }

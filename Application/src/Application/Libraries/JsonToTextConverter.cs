@@ -25,7 +25,6 @@ namespace Tubes_KPL.src.Application.Libraries
 
                 textContent += $"| {t.Id,-3}| {t.Judul,-28} | {t.Kategori,-12} | {status,-16} | {deadline,-21} |\n";
             }
-
             textContent += "=================================================================================================\n";
             return textContent;
         }

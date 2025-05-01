@@ -1,7 +1,7 @@
 [
   {
     "Id": 1,
-    "Judul": "Judul baru nich",
+    "Judul": "Judul tugas 1",
     "Deadline": "2026-08-09T00:00:00",
     "Status": 1,
     "Kategori": 0
@@ -68,26 +68,5 @@
     "Deadline": "2025-07-20T00:00:00",
     "Status": 1,
     "Kategori": 0
-  },
-  {
-    "Id": 11,
-    "Judul": "Judul Tugas 20",
-    "Deadline": "2025-07-20T00:00:00",
-    "Status": 0,
-    "Kategori": 0
-  },
-  {
-    "Id": 12,
-    "Judul": "Judul tugas 21",
-    "Deadline": "2025-07-21T00:00:00",
-    "Status": 3,
-    "Kategori": 1
-  },
-  {
-    "Id": 14,
-    "Judul": "Judul Baru 22",
-    "Deadline": "2025-05-04T00:00:00",
-    "Status": 0,
-    "Kategori": 1
   }
 ]
