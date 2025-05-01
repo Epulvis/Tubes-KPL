@@ -1,12 +1,9 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
 using System.Net.Http.Json;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 using Tubes_KPL.src.Application.Helpers;
+using Tubes_KPL.src.Application.Libraries;
+using Tubes_KPL.src.Application.Services;
 using Tubes_KPL.src.Domain.Models;
 using Tubes_KPL.src.Infrastructure.Configuration;
 
@@ -16,19 +13,23 @@ namespace Tubes_KPL.src.Presentation.Presenters
     {
         private readonly HttpClient _httpClient;
         private const string BaseUrl = "http://localhost:4000/api/tugas";
+        
         private readonly JsonSerializerOptions _jsonOptions;
         private readonly IConfigProvider _configProvider;
+        private readonly TaskService _taskService; // tambahkan ini
 
-        public TaskPresenter(IConfigProvider configProvider)
+        public TaskPresenter(IConfigProvider configProvider, TaskService taskService)
         {
             _httpClient = new HttpClient();
             _configProvider = configProvider ?? throw new ArgumentNullException(nameof(configProvider));
+            _taskService = taskService ?? throw new ArgumentNullException(nameof(taskService)); // tambahkan ini
             _jsonOptions = new JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true,
                 Converters = { new JsonStringEnumConverter() }
             };
         }
+
 
         public async Task<string> CreateTask(string judul, string deadlineStr, int kategoriIndex)
         {
@@ -210,10 +211,9 @@ namespace Tubes_KPL.src.Presentation.Presenters
 
                 var reminderSettings = _configProvider.GetConfig<Dictionary<string, object>>("ReminderSettings");
                 if (reminderSettings == null)
-                    return "Pengaturan pengingat tidak ditemukan!";
+                    return "Pengaturan pengingat deadline tidak ditemukan!";
 
                 int daysBeforeDeadline = ((JsonElement)reminderSettings["DaysBeforeDeadline"]).GetInt32();
-
 
                 string statusWarning = "";
                 if (DateHelper.DaysUntilDeadline(tugas.Deadline) <= daysBeforeDeadline && tugas.Status != StatusTugas.Selesai)
@@ -233,7 +233,6 @@ namespace Tubes_KPL.src.Presentation.Presenters
                 return $"Error: {ex.Message}";
             }
         }
-
 
         public async Task<string> GetAllTasks()
         {
@@ -277,5 +276,38 @@ namespace Tubes_KPL.src.Presentation.Presenters
                 return $"Error: {ex.Message}";
             }
         }
+        
+        public async Task<string> PrintTasksToFilesFromApi(string jsonFilePath, string textFilePath)
+        {
+            try
+            {
+                Console.WriteLine($"[DEBUG] Mengakses API di: {BaseUrl}");
+
+                // Ambil data dari API
+                var response = await _httpClient.GetAsync(BaseUrl);
+                if (!response.IsSuccessStatusCode)
+                    return $"[ERROR] Gagal mengambil data dari API. Status code: {response.StatusCode}";
+
+                var tasks = await response.Content.ReadFromJsonAsync<List<Tugas>>(_jsonOptions);
+                if (tasks == null || !tasks.Any())
+                    return "[INFO] Tidak ada tugas yang tersedia untuk dicetak.";
+
+                // Simpan data ke file JSON
+                var jsonContent = JsonSerializer.Serialize(tasks, new JsonSerializerOptions { WriteIndented = true });
+                File.WriteAllText(jsonFilePath, jsonContent);
+
+                // Konversi data ke format teks dan simpan ke file TXT
+                var textContent = JsonToTextConverter.ConvertTasksToText(tasks);
+                File.WriteAllText(textFilePath, textContent);
+
+
+                return $"[INFO] Daftar tugas berhasil dicetak ke file JSON: {jsonFilePath} dan file TXT: {textFilePath}.";
+            }
+            catch (Exception ex)
+            {
+                return $"[ERROR] Gagal mencetak daftar tugas: {ex.Message}";
+            }
+        }
     }
 } 
+

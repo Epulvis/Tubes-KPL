@@ -1,8 +1,4 @@
-using System;
-using System.Text.Json;
-using System.Threading.Tasks;
 using Tubes_KPL.src.Application.Helpers;
-using Tubes_KPL.src.Domain.Models;
 using Tubes_KPL.src.Infrastructure.Configuration;
 using Tubes_KPL.src.Presentation.Presenters;
 
@@ -33,6 +29,7 @@ namespace Tubes_KPL.src.Presentation.Views
                 Console.WriteLine("4. Perbarui Tugas");
                 Console.WriteLine("5. Ubah Status Tugas");
                 Console.WriteLine("6. Hapus Tugas");
+                Console.WriteLine("7. Cetak Daftar Tugas ke File JSON dan TXT");
                 Console.WriteLine("0. Keluar");
                 Console.Write("\nPilihan Anda: ");
 
@@ -63,6 +60,9 @@ namespace Tubes_KPL.src.Presentation.Views
                     case 6:
                         await DeleteTask();
                         break;
+                    case 7:
+                        await PrintTasksToFiles();
+                        break;
                     case 0:
                         isRunning = false;
                         break;
@@ -73,7 +73,6 @@ namespace Tubes_KPL.src.Presentation.Views
                 }
             }
         }
-
         private async Task ShowAllTasks()
         {
             Console.Clear();
@@ -236,5 +235,30 @@ namespace Tubes_KPL.src.Presentation.Views
             Console.WriteLine("\nTekan Enter untuk kembali ke menu utama...");
             Console.ReadLine();
         }
+        private async Task PrintTasksToFiles()
+        {
+            Console.Clear();
+            Console.WriteLine("=== CETAK DAFTAR TUGAS KE FILE ===\n");
+
+            Console.Write("Masukkan path untuk file JSON: ");
+            string jsonFilePath = Console.ReadLine();
+
+            Console.Write("Masukkan path untuk file TXT: ");
+            string textFilePath = Console.ReadLine();
+
+            try
+            {
+                string result = await _presenter.PrintTasksToFilesFromApi(jsonFilePath, textFilePath);
+                Console.WriteLine("\n" + result);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[ERROR] Terjadi kesalahan: {ex.Message}");
+            }
+
+            Console.WriteLine("\nTekan Enter untuk kembali ke menu utama...");
+            Console.ReadLine();
+        }
     }
 } 
+
