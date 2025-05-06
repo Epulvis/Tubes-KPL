@@ -1,3 +1,4 @@
+using System.Drawing;
 using System.Net.Http.Json;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -6,6 +7,7 @@ using Tubes_KPL.src.Application.Libraries;
 using Tubes_KPL.src.Application.Services;
 using Tubes_KPL.src.Domain.Models;
 using Tubes_KPL.src.Infrastructure.Configuration;
+using Spectre.Console;
 
 namespace Tubes_KPL.src.Presentation.Presenters
 {
@@ -16,13 +18,11 @@ namespace Tubes_KPL.src.Presentation.Presenters
         
         private readonly JsonSerializerOptions _jsonOptions;
         private readonly IConfigProvider _configProvider;
-        private readonly TaskService _taskService; // tambahkan ini
 
         public TaskPresenter(IConfigProvider configProvider, TaskService taskService)
         {
             _httpClient = new HttpClient();
             _configProvider = configProvider ?? throw new ArgumentNullException(nameof(configProvider));
-            _taskService = taskService ?? throw new ArgumentNullException(nameof(taskService)); // tambahkan ini
             _jsonOptions = new JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true,
@@ -81,7 +81,7 @@ namespace Tubes_KPL.src.Presentation.Presenters
                 if (!InputValidator.TryParseId(idStr, out int id))
                     return "ID tugas tidak valid! Pastikan berupa angka positif.";
 
-                if (statusIndex < 0 || statusIndex > 3)
+                if (!Enum.IsDefined(typeof(StatusTugas), statusIndex))
                     return "Indeks status tidak valid! Gunakan 0-3.";
 
                 StatusTugas newStatus = (StatusTugas)statusIndex;
@@ -91,9 +91,17 @@ namespace Tubes_KPL.src.Presentation.Presenters
                     return "Tugas tidak ditemukan!";
 
                 var task = await getResponse.Content.ReadFromJsonAsync<Tugas>(_jsonOptions);
-                task.Status = newStatus;
 
+                if (!StatusStateMachine.CanTransition(task.Status, newStatus))
+                {
+                    var currentStatus = task.Status;
+                    var requestedStatus = newStatus;
+                    return $"Tidak bisa mengubah status dari {currentStatus} ke {requestedStatus}!";
+                }
+
+                task.Status = newStatus;
                 var updateResponse = await _httpClient.PutAsJsonAsync($"{BaseUrl}/{id}", task, _jsonOptions);
+
                 if (updateResponse.IsSuccessStatusCode)
                 {
                     var updatedTask = await updateResponse.Content.ReadFromJsonAsync<Tugas>(_jsonOptions);
@@ -219,39 +227,70 @@ namespace Tubes_KPL.src.Presentation.Presenters
             {
                 var response = await _httpClient.GetAsync(BaseUrl);
                 if (!response.IsSuccessStatusCode)
-                    return $"Error: {response.StatusCode}";
+                    return $"[red]Error: {response.StatusCode}[/]";
 
                 var tasks = await response.Content.ReadFromJsonAsync<List<Tugas>>(_jsonOptions);
                 if (!tasks.Any())
-                    return "Tidak ada tugas yang tersedia.";
+                    return "[yellow]Tidak ada tugas yang tersedia.[/]";
 
-                string result = "Daftar Tugas:\n";
-                result += "=================================================================================================\n";
-                result += "| ID |            Judul            |   Kategori   |      Status      |       Deadline        |\n";
-                result += "=================================================================================================\n";
+                var table = new Table()
+                    .Border(TableBorder.Rounded)
+                    .BorderColor(Spectre.Console.Color.Blue)
+                    .Title("[bold yellow]Daftar Tugas[/]")
+                    .AddColumn(new TableColumn("[bold]ID[/]").Centered())
+                    .AddColumn(new TableColumn("[bold]Judul[/]").LeftAligned())
+                    .AddColumn(new TableColumn("[bold]Kategori[/]").Centered())
+                    .AddColumn(new TableColumn("[bold]Status[/]").Centered())
+                    .AddColumn(new TableColumn("[bold]Deadline[/]").Centered());
 
                 foreach (var t in tasks)
                 {
-                    string deadline = DateHelper.FormatDate(t.Deadline);
-                    string status = t.Status.ToString();
-                    
-                    if (DateHelper.IsDeadlineApproaching(t.Deadline) && t.Status != StatusTugas.Selesai && t.Status != StatusTugas.Terlewat)
+                    var deadlineText = DateHelper.FormatDate(t.Deadline);
+                    var statusText = t.Status.ToString();
+
+                    if (DateHelper.IsDeadlineApproaching(t.Deadline))
                     {
-                        deadline += " ⚠️";
+                        if (t.Status != StatusTugas.Selesai && t.Status != StatusTugas.Terlewat)
+                        {
+                            deadlineText = $"[bold yellow on red]{deadlineText} ⚠️[/]";
+                        }
                     }
 
-                    result += $"| {t.Id,-3}| {t.Judul,-28} | {t.Kategori,-12} | {status,-16} | {deadline,-21} |\n";
+                    switch (t.Status)
+                    {
+                        case StatusTugas.BelumMulai:
+                            statusText = $"[grey]{statusText}[/]";
+                            break;
+                        case StatusTugas.SedangDikerjakan:
+                            statusText = $"[blue]{statusText}[/]";
+                            break;
+                        case StatusTugas.Selesai:
+                            statusText = $"[green]{statusText}[/]";
+                            break;
+                        case StatusTugas.Terlewat:
+                            statusText = $"[red]{statusText}[/]";
+                            break;
+                    }
+
+                    table.AddRow(
+                        t.Id.ToString(),
+                        t.Judul.EscapeMarkup(),
+                        t.Kategori.ToString(),
+                        statusText,
+                        deadlineText
+                    );
                 }
-                
-                result += "=================================================================================================\n";
-                return result;
+
+                AnsiConsole.Write(table);
+
+                return string.Empty;
             }
             catch (Exception ex)
             {
-                return $"Error: {ex.Message}";
+                return $"[red]Error: {ex.Message.EscapeMarkup()}[/]";
             }
         }
-        
+
         public async Task<string> PrintTasksToFilesFromApi(string jsonFilePath, string textFilePath)
         {
             try

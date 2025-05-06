@@ -76,7 +76,6 @@ namespace Tubes_KPL.src.Presentation.Views
         private async Task ShowAllTasks()
         {
             Console.Clear();
-            Console.WriteLine("=== DAFTAR TUGAS ===\n");
             
             string result = await _presenter.GetAllTasks();
             Console.WriteLine(result);
