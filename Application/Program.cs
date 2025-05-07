@@ -5,7 +5,7 @@ using Tubes_KPL.src.Infrastructure.Configuration;
 using Tubes_KPL.src.Presentation.Presenters;
 using Tubes_KPL.src.Presentation.Views;
 using Tubes_KPL.src.Application.Services;
-using Tubes_KPL.src.Infrastructure.Repositories;
+//using Tubes_KPL.src.Infrastructure.Repositories;
 
 namespace Tubes_KPL
 {
@@ -24,9 +24,9 @@ namespace Tubes_KPL
                 
                 var configProvider = new JsonConfigProvider(configFilePath);
                 
-                var repository = new TugasRepository();
+                //var repository = new TugasRepository();
                 
-                var taskService = new TaskService(repository);
+                //var taskService = new TaskService(repository);
 
                 var taskPresenter = new TaskPresenter(configProvider);
                 
