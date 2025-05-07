@@ -1,4 +1,3 @@
-using System.Drawing;
 using System.Net.Http.Json;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -8,6 +7,7 @@ using Tubes_KPL.src.Application.Services;
 using Tubes_KPL.src.Domain.Models;
 using Tubes_KPL.src.Infrastructure.Configuration;
 using Spectre.Console;
+using Tubes_KPL.src.Services.Libraries;
 
 namespace Tubes_KPL.src.Presentation.Presenters
 {
@@ -19,7 +19,7 @@ namespace Tubes_KPL.src.Presentation.Presenters
         private readonly JsonSerializerOptions _jsonOptions;
         private readonly IConfigProvider _configProvider;
 
-        public TaskPresenter(IConfigProvider configProvider, TaskService taskService)
+        public TaskPresenter(IConfigProvider configProvider)
         {
             _httpClient = new HttpClient();
             _configProvider = configProvider ?? throw new ArgumentNullException(nameof(configProvider));
@@ -38,9 +38,8 @@ namespace Tubes_KPL.src.Presentation.Presenters
                 if (string.IsNullOrWhiteSpace(judul))
                 {
                     var defaultTaskConfig = _configProvider.GetConfig<Dictionary<string, string>>("DefaultTask");
-                    judul = defaultTaskConfig.ContainsKey("Judul") && !string.IsNullOrWhiteSpace(defaultTaskConfig["Judul"])
-                        ? defaultTaskConfig["Judul"]
-                        : "Tugas Default";
+                    judul = defaultTaskConfig.TryGetValue("Judul", out string? value) && !string.IsNullOrWhiteSpace(value)
+                        ? value : "Tugas Default";
                 }
 
                 if (!DateHelper.TryParseDate(deadlineStr, out DateTime deadline))
@@ -59,7 +58,7 @@ namespace Tubes_KPL.src.Presentation.Presenters
                     Kategori = kategori,
                     Status = StatusTugas.BelumMulai
                 };
-                
+
                 var response = await _httpClient.PostAsJsonAsync(BaseUrl, newTugas, _jsonOptions);
                 if (response.IsSuccessStatusCode)
                 {
@@ -74,46 +73,50 @@ namespace Tubes_KPL.src.Presentation.Presenters
             }
         }
 
-        public async Task<string> UpdateTaskStatus(string idStr, int statusIndex)
+        public async Task<Result<string>> UpdateTaskStatus(string idStr)
         {
+            int statusIndex = InputValidator.InputValidStatus();
+
             try
             {
+                // Design by Contract: Precondition by zuhri
                 if (!InputValidator.TryParseId(idStr, out int id))
-                    return "ID tugas tidak valid! Pastikan berupa angka positif.";
+                    return Result<string>.Failure("ID tugas tidak valid! Pastikan berupa angka positif.");
 
                 if (!Enum.IsDefined(typeof(StatusTugas), statusIndex))
-                    return "Indeks status tidak valid! Gunakan 0-3.";
+                    return Result<string>.Failure("Indeks status tidak valid! Gunakan 0-3.");
 
                 StatusTugas newStatus = (StatusTugas)statusIndex;
 
                 var getResponse = await _httpClient.GetAsync($"{BaseUrl}/{id}");
                 if (!getResponse.IsSuccessStatusCode)
-                    return "Tugas tidak ditemukan!";
+                    return Result<string>.Failure("Tugas tidak ditemukan!");
 
                 var task = await getResponse.Content.ReadFromJsonAsync<Tugas>(_jsonOptions);
+                if (task is null)
+                    return Result<string>.Failure("Gagal membaca data tugas dari server.");
 
                 if (!StatusStateMachine.CanTransition(task.Status, newStatus))
                 {
-                    var currentStatus = task.Status;
-                    var requestedStatus = newStatus;
-                    return $"Tidak bisa mengubah status dari {currentStatus} ke {requestedStatus}!";
+                    return Result<string>.Failure($"Tidak bisa mengubah status dari {task.Status} ke {newStatus}!");
                 }
 
                 task.Status = newStatus;
                 var updateResponse = await _httpClient.PutAsJsonAsync($"{BaseUrl}/{id}", task, _jsonOptions);
 
-                if (updateResponse.IsSuccessStatusCode)
-                {
-                    var updatedTask = await updateResponse.Content.ReadFromJsonAsync<Tugas>(_jsonOptions);
-                    return $"Status tugas '{updatedTask.Judul}' berhasil diubah menjadi {updatedTask.Status}";
-                }
-                return $"Error: {updateResponse.StatusCode}";
+                if (!updateResponse.IsSuccessStatusCode)
+                    return Result<string>.Failure($"Gagal memperbarui status. Kode: {updateResponse.StatusCode}");
+
+                var updatedTask = await updateResponse.Content.ReadFromJsonAsync<Tugas>(_jsonOptions);
+
+                return Result<string>.Success($"Status tugas '{updatedTask?.Judul}' berhasil diubah menjadi {updatedTask?.Status}");
             }
             catch (Exception ex)
             {
-                return $"Error: {ex.Message}";
+                return Result<string>.Failure($"Terjadi kesalahan: {ex.Message}");
             }
         }
+
 
         public async Task<string> UpdateTask(string idStr, string judul, string deadlineStr, int kategoriIndex)
         {

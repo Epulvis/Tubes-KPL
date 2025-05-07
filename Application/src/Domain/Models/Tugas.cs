@@ -8,10 +8,10 @@
 
     public enum StatusTugas
     {
-        BelumMulai,
-        SedangDikerjakan,
-        Selesai,
-        Terlewat
+        BelumMulai = 0,
+        SedangDikerjakan = 1,
+        Selesai = 2,
+        Terlewat = 3
     }
 
     public class Tugas

@@ -1,3 +1,4 @@
+﻿using Spectre.Console;
 using Tubes_KPL.src.Application.Helpers;
 using Tubes_KPL.src.Infrastructure.Configuration;
 using Tubes_KPL.src.Presentation.Presenters;
@@ -17,58 +18,58 @@ namespace Tubes_KPL.src.Presentation.Views
 
         public async Task ShowMainMenu()
         {
-            bool isRunning = true;
+            var isRunning = true;
 
             while (isRunning)
             {
-                Console.Clear();
-                Console.WriteLine("=== APLIKASI MANAJEMEN TUGAS MAHASISWA ===");
-                Console.WriteLine("1. Lihat Daftar Tugas");
-                Console.WriteLine("2. Lihat Detail Tugas");
-                Console.WriteLine("3. Tambah Tugas Baru");
-                Console.WriteLine("4. Perbarui Tugas");
-                Console.WriteLine("5. Ubah Status Tugas");
-                Console.WriteLine("6. Hapus Tugas");
-                Console.WriteLine("7. Cetak Daftar Tugas ke File JSON dan TXT");
-                Console.WriteLine("0. Keluar");
-                Console.Write("\nPilihan Anda: ");
+                AnsiConsole.Clear();
 
-                if (!int.TryParse(Console.ReadLine(), out int choice))
-                {
-                    Console.WriteLine("Input tidak valid! Tekan Enter untuk melanjutkan...");
-                    Console.ReadLine();
-                    continue;
-                }
+                var choice = AnsiConsole.Prompt(
+                    new SelectionPrompt<string>()
+                        .Title("[bold yellow]=== APLIKASI MANAJEMEN TUGAS MAHASISWA ===[/]")
+                        .PageSize(10)
+                        .MoreChoicesText("[grey](Gunakan panah atas/bawah untuk memilih)[/]")
+                        .AddChoices([
+                            "Lihat Daftar Tugas",
+                            "Lihat Detail Tugas",
+                            "Tambah Tugas Baru",
+                            "Perbarui Tugas",
+                            "Ubah Status Tugas",
+                            "Hapus Tugas",
+                            "Cetak Daftar Tugas ke File JSON dan TXT",
+                            "Keluar"
+                         ]));
 
                 switch (choice)
                 {
-                    case 1:
+                    case "Lihat Daftar Tugas":
                         await ShowAllTasks();
                         break;
-                    case 2:
+                    case "Lihat Detail Tugas":
                         await ShowTaskDetails();
                         break;
-                    case 3:
+                    case "Tambah Tugas Baru":
                         await AddNewTask();
                         break;
-                    case 4:
+                    case "Perbarui Tugas":
                         await UpdateTask();
                         break;
-                    case 5:
+                    case "Ubah Status Tugas":
                         await UpdateTaskStatus();
                         break;
-                    case 6:
+                    case "Hapus Tugas":
                         await DeleteTask();
                         break;
-                    case 7:
+                    case "Cetak Daftar Tugas ke File JSON dan TXT":
                         await PrintTasksToFiles();
                         break;
-                    case 0:
-                        isRunning = false;
-                        break;
-                    default:
-                        Console.WriteLine("Pilihan tidak valid! Tekan Enter untuk melanjutkan...");
-                        Console.ReadLine();
+                    case "Keluar":
+                        if (AnsiConsole.Confirm("Apakah Anda yakin ingin keluar?"))
+                        {
+                            isRunning = false;
+                            AnsiConsole.MarkupLine("[green]Terima kasih! Program akan ditutup.[/]");
+                            await Task.Delay(1000);
+                        }
                         break;
                 }
             }
@@ -150,7 +151,7 @@ namespace Tubes_KPL.src.Presentation.Views
         private async Task UpdateTask()
         {
             Console.Clear();
-            Console.WriteLine("=== PERBARUI TUGAS ===\n");
+            AnsiConsole.MarkupLine("[bold yellow]PERBARUI TUGAS[/]");
             
             Console.Write("Masukkan ID Tugas: ");
             string idStr = Console.ReadLine();
@@ -183,28 +184,12 @@ namespace Tubes_KPL.src.Presentation.Views
         {
             Console.Clear();
             Console.WriteLine("=== UBAH STATUS TUGAS ===\n");
-            
-            Console.Write("Masukkan ID Tugas: ");
-            string idStr = Console.ReadLine();
-            
-            Console.WriteLine("Status Tugas:");
-            Console.WriteLine("0. Belum Mulai");
-            Console.WriteLine("1. Sedang Dikerjakan");
-            Console.WriteLine("2. Selesai");
-            Console.WriteLine("3. Terlewat");
-            Console.Write("Pilih Status (0-3): ");
-            
-            if (!int.TryParse(Console.ReadLine(), out int statusIndex) || statusIndex < 0 || statusIndex > 3)
-            {
-                Console.WriteLine("Status tidak valid! Operasi dibatalkan.");
-                Console.WriteLine("\nTekan Enter untuk kembali ke menu utama...");
-                Console.ReadLine();
-                return;
-            }
-            
-            string result = await _presenter.UpdateTaskStatus(idStr, statusIndex);
-            Console.WriteLine("\n" + result);
-            
+
+            string idStr = InputValidator.NonEmptyInput("Masukkan ID Tugas: ");
+
+            var result = await _presenter.UpdateTaskStatus(idStr);
+
+            AnsiConsole.MarkupLine($"\n{result}");
             Console.WriteLine("\nTekan Enter untuk kembali ke menu utama...");
             Console.ReadLine();
         }

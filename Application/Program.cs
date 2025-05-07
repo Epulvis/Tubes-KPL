@@ -28,7 +28,7 @@ namespace Tubes_KPL
                 
                 var taskService = new TaskService(repository);
 
-                var taskPresenter = new TaskPresenter(configProvider, taskService);
+                var taskPresenter = new TaskPresenter(configProvider);
                 
                 var taskView = new TaskView(taskPresenter, configProvider);
 
