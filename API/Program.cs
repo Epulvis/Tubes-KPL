@@ -2,7 +2,10 @@
 using API.Storage;
 using System.Text.Json.Serialization;
 using Tubes_KPL.src.Domain.Models;
+<<<<<<< HEAD
 using Tubes_KPL.src.Application.Helpers;
+=======
+>>>>>>> f494d3bf8a712e286a8eabbde08f269ba5eeaf94
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -59,6 +62,7 @@ app.MapGet("/api/tugas/{id:int}", (int id) =>
 app.MapPost("/api/tugas", (Tugas newTugas) =>
 {
         var tasks = TugasStorage<List<Tugas>>.GetTugas();
+<<<<<<< HEAD
 
         if (!InputValidator.IsValidDeadline(newTugas.Deadline))
             return Results.BadRequest("Input not valid");
@@ -68,6 +72,11 @@ app.MapPost("/api/tugas", (Tugas newTugas) =>
         tasks.Add(newTugas);
 
         
+=======
+        newTugas.Id = tasks.Count == 0 ? 1 : tasks.Max(u => u.Id) + 1;
+        tasks.Add(newTugas);
+
+>>>>>>> f494d3bf8a712e286a8eabbde08f269ba5eeaf94
         TugasStorage<List<Tugas>>.SaveTugas(tasks);
         return Results.Created($"/users/{newTugas.Id}", newTugas);
     
@@ -76,6 +85,7 @@ app.MapPost("/api/tugas", (Tugas newTugas) =>
 app.MapPut("/api/tugas/{id:int}", (int id, Tugas updatedTugas) =>
 {
         var tasks = TugasStorage<List<Tugas>>.GetTugas();
+<<<<<<< HEAD
 
         if (!InputValidator.IsValidDeadline(updatedTugas.Deadline))
             return Results.BadRequest("Input not valid");
@@ -86,6 +96,11 @@ app.MapPut("/api/tugas/{id:int}", (int id, Tugas updatedTugas) =>
 
         if (!InputValidator.IsValidDeadline(updatedTugas.Deadline)) return Results.BadRequest("Input not valid");
 
+=======
+        var task = tasks.FirstOrDefault(u => u.Id == id);
+        if (task is null) return Results.NotFound();
+
+>>>>>>> f494d3bf8a712e286a8eabbde08f269ba5eeaf94
         task.Judul = updatedTugas.Judul;
         task.Status = updatedTugas.Status;
         task.Deadline = updatedTugas.Deadline;
@@ -108,6 +123,10 @@ app.MapDelete("/api/tugas/{id:int}", (int id) =>
 // filter untuk by params (deadline, status, kategori)
 app.MapGet("/api/tugas/filter", (string? status, string? kategori, DateTime? deadline) =>
 {
+<<<<<<< HEAD
+=======
+
+>>>>>>> f494d3bf8a712e286a8eabbde08f269ba5eeaf94
         var tasks = TugasStorage<List<Tugas>>.GetTugas();
         if (status != null)
         {
