@@ -41,19 +41,20 @@ public class TaskPresenter_UpdateTaskStatus_Tests
 
         _presenter = (TaskPresenter)Activator.CreateInstance(typeof(TaskPresenter), _configProviderMock.Object);
         typeof(TaskPresenter).GetField("_httpClient", BindingFlags.NonPublic | BindingFlags.Instance).SetValue(_presenter, _httpClient);
+
+        _httpMessageHandlerMock.Protected()
+            .Setup("Dispose", ItExpr.IsAny<bool>());
     }
 
     /// Test  valid ID and valid status transition.
     [Test]
-    public async Task UpdateTaskStatus_ValidIdAndStatus_ReturnsSuccess()
+    public void UpdateTaskStatus_ValidIdAndStatus_ReturnsSuccess()
     {
+        // Arrange
         string idStr = "1";
         int statusIndex = 1; // SedangDikerjakan
         var existingTask = new Tugas { Id = 1, Judul = "Test Tugas", Status = StatusTugas.BelumMulai, Kategori = KategoriTugas.Akademik, Deadline = DateTime.Now.AddDays(2) };
         var updatedTask = new Tugas { Id = 1, Judul = "Test Tugas", Status = StatusTugas.SedangDikerjakan, Kategori = KategoriTugas.Akademik, Deadline = DateTime.Now.AddDays(2) };
-
-        StaticHelper.SetStaticMethodReturnValue(typeof(Tubes_KPL.src.Application.Helpers.InputValidator), "InputValidStatus", statusIndex);
-        StaticHelper.SetStaticMethodReturnValue(typeof(Tubes_KPL.src.Application.Helpers.InputValidator), "TryParseId", true, outValue: 1);
 
         _httpMessageHandlerMock.Protected()
             .Setup<Task<HttpResponseMessage>>("SendAsync", ItExpr.Is<HttpRequestMessage>(req => req.Method == HttpMethod.Get), ItExpr.IsAny<CancellationToken>())
@@ -69,10 +70,19 @@ public class TaskPresenter_UpdateTaskStatus_Tests
                 Content = JsonContent.Create(updatedTask, options: _jsonOptions)
             });
 
-        var result = await _presenter.UpdateTaskStatus(idStr);
+        _httpMessageHandlerMock.Protected().Setup("Dispose", ItExpr.IsAny<bool>());
 
-        Assert.That(result.IsSuccess, NUnit.Framework.Is.True);
-        StringAssert.Contains("berhasil diubah menjadi", result.Value);
+        Shim shim1 = Shim.Replace(() => Tubes_KPL.src.Application.Helpers.InputValidator.InputValidStatus())
+            .With(() => statusIndex);
+        Shim shim2 = Shim.Replace(() => Tubes_KPL.src.Application.Helpers.InputValidator.TryParseId(default, out It.Ref<int>.IsAny))
+            .With((string s, out int id) => { id = 1; return true; });
+
+        PoseContext.Isolate(() =>
+        {
+            var result = _presenter.UpdateTaskStatus(idStr).Result;
+            ClassicAssert.IsTrue(result.IsSuccess);
+            StringAssert.Contains("berhasil diubah menjadi", result.Value);
+        }, shim1, shim2);
     }
 
     /// Test invalid ID.
