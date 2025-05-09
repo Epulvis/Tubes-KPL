@@ -26,12 +26,9 @@ namespace Tubes_KPL.src.Infrastructure.Configuration
             }
 
             Console.WriteLine($"[INFO] Mengambil konfigurasi dengan key '{key}'.");
-
-            // Jika value sudah bertipe T, langsung kembalikan
             if (value is T typedValue)
                 return typedValue;
 
-            // Jika value adalah JsonElement, deserialisasi ulang ke tipe T
             if (value is JsonElement jsonElement)
             {
                 try
@@ -45,7 +42,6 @@ namespace Tubes_KPL.src.Infrastructure.Configuration
                 }
             }
 
-            // Jika value adalah string, coba deserialisasi ke tipe T
             if (value is string stringValue)
             {
                 try
@@ -59,7 +55,6 @@ namespace Tubes_KPL.src.Infrastructure.Configuration
                 }
             }
 
-            // Jika tidak dapat dikonversi, lempar error
             Console.WriteLine($"[ERROR] Tidak dapat mengonversi konfigurasi dengan key '{key}' ke tipe '{typeof(T)}'.");
             throw new InvalidCastException($"Tidak dapat mengonversi konfigurasi dengan key '{key}' ke tipe '{typeof(T)}'.");
         }

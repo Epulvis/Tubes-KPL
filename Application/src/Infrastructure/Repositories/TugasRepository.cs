@@ -11,7 +11,6 @@ namespace Tubes_KPL.src.Infrastructure.Repositories
 
         public TugasRepository()
         {
-            // Load data dari file JSON saat repository diinisialisasi
             if (File.Exists(_filePath))
             {
                 var jsonContent = File.ReadAllText(_filePath);
@@ -70,4 +69,3 @@ namespace Tubes_KPL.src.Infrastructure.Repositories
         }
     }
 }
-//Users/bintang/Documents/tes.json

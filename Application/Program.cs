@@ -15,7 +15,6 @@ namespace Tubes_KPL
         {
             try
             {
-                // Pastikan path file konfigurasi valid
                 string configFilePath = "../../../src/Infrastructure/Configuration/config.json";
                 if (!System.IO.File.Exists(configFilePath))
                 {
@@ -23,18 +22,16 @@ namespace Tubes_KPL
                     return;
                 }
 
-                // Inisialisasi konfigurasi
                 var configProvider = new JsonConfigProvider(configFilePath);
 
-                // Inisialisasi repository dan service
                 var repository = new TugasRepository();
+
                 var taskService = new TaskService(repository);
 
-                // Inisialisasi presenter dan view
-                var taskPresenter = new TaskPresenter(configProvider, taskService);
+                var taskPresenter = new TaskPresenter(configProvider);
+
                 var taskView = new TaskView(taskPresenter, configProvider);
 
-                // Jalankan aplikasi
                 Console.WriteLine("Memulai aplikasi Manajemen Tugas Mahasiswa...");
                 await taskView.ShowMainMenu();
 

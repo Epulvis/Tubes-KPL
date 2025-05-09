@@ -9,7 +9,20 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="040239bf-91dc-4de9-b868-3b1c91f04eff" name="Changes" comment="" />
+    <list default="true" id="040239bf-91dc-4de9-b868-3b1c91f04eff" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/../API/Storage/Tugas.json" beforeDir="false" afterPath="$PROJECT_DIR$/../API/Storage/Tugas.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Program.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Application/Helpers/DateHelper.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/Application/Helpers/DateHelper.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Application/Helpers/InputValidator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/Application/Helpers/InputValidator.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Application/Libraries/JsonToTextConverter.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/Application/Libraries/JsonToTextConverter.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Application/Services/TaskService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/Application/Services/TaskService.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Domain/Interfaces/ITugasRepository.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/Domain/Interfaces/ITugasRepository.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Infrastructure/Configuration/IConfigProvider.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/Infrastructure/Configuration/IConfigProvider.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Infrastructure/Configuration/JsonConfigProvider.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/Infrastructure/Configuration/JsonConfigProvider.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Infrastructure/Configuration/config.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/Infrastructure/Configuration/config.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Infrastructure/Repositories/TugasRepository.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/Infrastructure/Repositories/TugasRepository.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Presentation/Presenters/TaskPresenter.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/Presentation/Presenters/TaskPresenter.cs" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -44,6 +57,7 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
+<<<<<<< HEAD
   <component name="PropertiesComponent">{
   &quot;keyToString&quot;: {
     &quot;.NET Launch Settings Profile.API: http.executor&quot;: &quot;Run&quot;,
@@ -57,8 +71,24 @@
     &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+=======
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    ".NET Launch Settings Profile.API: http.executor": "Run",
+    ".NET Launch Settings Profile.API: https.executor": "Run",
+    ".NET Project.Tubes-KPL.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "master",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "vue.rearranger.settings.migration": "true"
+>>>>>>> 0a02d5b66f3b9277eb1b816f7d22deadc99e93bf
   }
-}</component>
+}]]></component>
   <component name="RunManager" selected=".NET Project.Tubes-KPL">
     <configuration name="Tubes-KPL" type="DotNetProject" factoryName=".NET Project">
       <option name="EXE_PATH" value="" />
@@ -118,6 +148,7 @@
       <option name="presentableId" value="Default" />
       <updated>1746022937287</updated>
       <workItem from="1746022938751" duration="8394000" />
+      <workItem from="1746108308279" duration="5675000" />
     </task>
     <servers />
   </component>
