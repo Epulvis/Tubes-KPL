@@ -224,6 +224,54 @@ namespace Tubes_KPL.src.Presentation.Presenters
             }
         }
 
+        public async Task<string> GetTasksByDateRange(string startDateStr, string endDateStr)
+        {
+            try
+            {
+                if (!DateHelper.TryParseDate(startDateStr, out DateTime startDate))
+                    return "Tanggal mulai tidak valid! Gunakan format DD/MM/YYYY.";
+
+                if (!DateHelper.TryParseDate(endDateStr, out DateTime endDate))
+                    return "Tanggal akhir tidak valid! Gunakan format DD/MM/YYYY.";
+
+                var response = await _httpClient.GetAsync($"{BaseUrl}/date-range?startDate={startDate:yyyy-MM-dd}&endDate={endDate:yyyy-MM-dd}");
+                if (!response.IsSuccessStatusCode)
+                    return $"Error: {response.StatusCode}";
+
+                var tasks = await response.Content.ReadFromJsonAsync<List<Tugas>>(_jsonOptions);
+                if (tasks == null || !tasks.Any())
+                    return "Tidak ada tugas yang ditemukan dalam rentang waktu tersebut.";
+
+                var table = new Table()
+                    .Border(TableBorder.Rounded)
+                    .BorderColor(Spectre.Console.Color.Blue)
+                    .Title("[bold yellow]Daftar Tugas Berdasarkan Rentang Waktu[/]")
+                    .AddColumn(new TableColumn("[bold]ID[/]").Centered())
+                    .AddColumn(new TableColumn("[bold]Judul[/]").LeftAligned())
+                    .AddColumn(new TableColumn("[bold]Kategori[/]").Centered())
+                    .AddColumn(new TableColumn("[bold]Status[/]").Centered())
+                    .AddColumn(new TableColumn("[bold]Deadline[/]").Centered());
+
+                foreach (var t in tasks)
+                {
+                    table.AddRow(
+                        t.Id.ToString(),
+                        t.Judul.EscapeMarkup(),
+                        t.Kategori.ToString(),
+                        t.Status.ToString(),
+                        DateHelper.FormatDate(t.Deadline)
+                    );
+                }
+
+                AnsiConsole.Write(table);
+                return string.Empty;
+            }
+            catch (Exception ex)
+            {
+                return $"Error: {ex.Message}";
+            }
+        }
+
         public async Task<string> GetAllTasks()
         {
             try
