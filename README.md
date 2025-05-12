@@ -55,8 +55,8 @@ Struktur folder mengacu pada praktik terbaik dalam pengembangan perangkat lunak 
 |---------|------------------------------------|----------------------------------------|----------------------------------------------------------------------------|
 | **Zuhri**       | Modul CRUD Tugas                   | Automata, Code Reuse/Library           | Validasi status, helper reusable (InputValidator, DateHelper)             |
 | **Aryo**      | Filtering dan Statistik            | Table-driven, Parameterization         | Tabel mapping + filter generik List<T>                                    |
-| **Zhafran**       | Modul Konfigurasi Aplikasi         | Runtime Configuration, Code Reuse      | Baca config.json (default notifikasi, format tanggal), reusable config    |
-| **Bintang**      | Defensive Programming + Logging    | Design by Contract (DbC), Automata     | Validasi input (pre/postcondition), pengecekan state, logging handler     |
+| **Zhafran**       | Modul Konfigurasi Aplikasi         | Runtime Configuration, API     | Baca config.json (default notifikasi, format tanggal), reusable config    |
+| **Bintang**      | Defensive Programming + Logging    | Code Reuse, Automata     | Validasi input (pre/postcondition), pengecekan state, logging handler     |
 | **Rifki**    | Unit & Performance Testing         | Parameterization, API                  | Unit test TaskService + performa filter + interface API internal TaskService |
 
 ---

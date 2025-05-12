@@ -1,15 +1,13 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
 using System.Net.Http.Json;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 using Tubes_KPL.src.Application.Helpers;
+using Tubes_KPL.src.Application.Libraries;
 using Tubes_KPL.src.Application.Services;
 using Tubes_KPL.src.Domain.Models;
 using Tubes_KPL.src.Infrastructure.Configuration;
+using Spectre.Console;
+using Tubes_KPL.src.Services.Libraries;
 
 namespace Tubes_KPL.src.Presentation.Presenters
 {
@@ -17,16 +15,14 @@ namespace Tubes_KPL.src.Presentation.Presenters
     {
         private readonly HttpClient _httpClient;
         private const string BaseUrl = "http://localhost:4000/api/tugas";
-        
+
         private readonly JsonSerializerOptions _jsonOptions;
         private readonly IConfigProvider _configProvider;
-        private readonly TaskService _taskService; // tambahkan ini
 
-        public TaskPresenter(IConfigProvider configProvider, TaskService taskService)
+        public TaskPresenter(IConfigProvider configProvider)
         {
             _httpClient = new HttpClient();
             _configProvider = configProvider ?? throw new ArgumentNullException(nameof(configProvider));
-            _taskService = taskService ?? throw new ArgumentNullException(nameof(taskService)); // tambahkan ini
             _jsonOptions = new JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true,
@@ -39,27 +35,22 @@ namespace Tubes_KPL.src.Presentation.Presenters
         {
             try
             {
-                // Validate input
                 if (string.IsNullOrWhiteSpace(judul))
                 {
                     var defaultTaskConfig = _configProvider.GetConfig<Dictionary<string, string>>("DefaultTask");
-                    judul = defaultTaskConfig.ContainsKey("Judul") && !string.IsNullOrWhiteSpace(defaultTaskConfig["Judul"])
-                        ? defaultTaskConfig["Judul"]
-                        : "Tugas Default";
+                    judul = defaultTaskConfig.TryGetValue("Judul", out string? value) && !string.IsNullOrWhiteSpace(value)
+                        ? value : "Tugas Default";
                 }
 
                 if (!DateHelper.TryParseDate(deadlineStr, out DateTime deadline))
                 {
-                    // Use default deadline from configuration
                     var defaultTaskConfig = _configProvider.GetConfig<Dictionary<string, string>>("DefaultTask");
                     int defaultDays = int.Parse(defaultTaskConfig["DeadlineDaysFromNow"]);
                     deadline = DateTime.Now.AddDays(defaultDays);
                 }
 
-                // Convert kategori index to enum
                 KategoriTugas kategori = kategoriIndex == 0 ? KategoriTugas.Akademik : KategoriTugas.NonAkademik;
 
-                // Create task object
                 var newTugas = new Tugas
                 {
                     Judul = judul,
@@ -68,7 +59,6 @@ namespace Tubes_KPL.src.Presentation.Presenters
                     Status = StatusTugas.BelumMulai
                 };
 
-                // Send POST request to API
                 var response = await _httpClient.PostAsJsonAsync(BaseUrl, newTugas, _jsonOptions);
                 if (response.IsSuccessStatusCode)
                 {
@@ -83,50 +73,55 @@ namespace Tubes_KPL.src.Presentation.Presenters
             }
         }
 
-        public async Task<string> UpdateTaskStatus(string idStr, int statusIndex)
+        public async Task<Result<string>> UpdateTaskStatus(string idStr)
         {
+            int statusIndex = InputValidator.InputValidStatus();
+
             try
             {
-                // Validate ID
+                // Design by Contract: Precondition by zuhri
                 if (!InputValidator.TryParseId(idStr, out int id))
-                    return "ID tugas tidak valid! Pastikan berupa angka positif.";
+                    return Result<string>.Failure("ID tugas tidak valid! Pastikan berupa angka positif.");
 
-
-
-                // Convert status index to enum
-                if (statusIndex < 0 || statusIndex > 3)
-                    return "Indeks status tidak valid! Gunakan 0-3.";
+                if (!Enum.IsDefined(typeof(StatusTugas), statusIndex))
+                    return Result<string>.Failure("Indeks status tidak valid! Gunakan 0-3.");
 
                 StatusTugas newStatus = (StatusTugas)statusIndex;
 
-                // Get current task
                 var getResponse = await _httpClient.GetAsync($"{BaseUrl}/{id}");
                 if (!getResponse.IsSuccessStatusCode)
-                    return "Tugas tidak ditemukan!";
+                    return Result<string>.Failure("Tugas tidak ditemukan!");
 
                 var task = await getResponse.Content.ReadFromJsonAsync<Tugas>(_jsonOptions);
-                task.Status = newStatus;
+                if (task is null)
+                    return Result<string>.Failure("Gagal membaca data tugas dari server.");
 
-                // Update task
-                var updateResponse = await _httpClient.PutAsJsonAsync($"{BaseUrl}/{id}", task, _jsonOptions);
-                if (updateResponse.IsSuccessStatusCode)
+                if (!StatusStateMachine.CanTransition(task.Status, newStatus))
                 {
-                    var updatedTask = await updateResponse.Content.ReadFromJsonAsync<Tugas>(_jsonOptions);
-                    return $"Status tugas '{updatedTask.Judul}' berhasil diubah menjadi {updatedTask.Status}";
+                    return Result<string>.Failure($"Tidak bisa mengubah status dari {task.Status} ke {newStatus}!");
                 }
-                return $"Error: {updateResponse.StatusCode}";
+
+                task.Status = newStatus;
+                var updateResponse = await _httpClient.PutAsJsonAsync($"{BaseUrl}/{id}", task, _jsonOptions);
+
+                if (!updateResponse.IsSuccessStatusCode)
+                    return Result<string>.Failure($"Gagal memperbarui status. Kode: {updateResponse.StatusCode}");
+
+                var updatedTask = await updateResponse.Content.ReadFromJsonAsync<Tugas>(_jsonOptions);
+
+                return Result<string>.Success($"Status tugas '{updatedTask?.Judul}' berhasil diubah menjadi {updatedTask?.Status}");
             }
             catch (Exception ex)
             {
-                return $"Error: {ex.Message}";
+                return Result<string>.Failure($"Terjadi kesalahan: {ex.Message}");
             }
         }
+
 
         public async Task<string> UpdateTask(string idStr, string judul, string deadlineStr, int kategoriIndex)
         {
             try
             {
-                // Validate input
                 if (!InputValidator.IsValidJudul(judul))
                     return "Judul tugas tidak valid! Pastikan tidak kosong dan maksimal 100 karakter.";
 
@@ -139,13 +134,8 @@ namespace Tubes_KPL.src.Presentation.Presenters
                 if (!InputValidator.IsValidDeadline(deadline))
                     return "Deadline tidak dapat diatur di masa lalu.";
 
-
-
-
-                // Convert kategori index to enum
                 KategoriTugas kategori = kategoriIndex == 0 ? KategoriTugas.Akademik : KategoriTugas.NonAkademik;
 
-                // Get current task
                 var getResponse = await _httpClient.GetAsync($"{BaseUrl}/{id}");
                 if (!getResponse.IsSuccessStatusCode)
                     return "Tugas tidak ditemukan!";
@@ -155,7 +145,6 @@ namespace Tubes_KPL.src.Presentation.Presenters
                 task.Deadline = deadline;
                 task.Kategori = kategori;
 
-                // Update task
                 var updateResponse = await _httpClient.PutAsJsonAsync($"{BaseUrl}/{id}", task, _jsonOptions);
                 if (updateResponse.IsSuccessStatusCode)
                 {
@@ -174,11 +163,9 @@ namespace Tubes_KPL.src.Presentation.Presenters
         {
             try
             {
-                // Validate ID
                 if (!InputValidator.TryParseId(idStr, out int id))
                     return "ID tugas tidak valid! Pastikan berupa angka positif.";
 
-                // Get task before deletion
                 var getResponse = await _httpClient.GetAsync($"{BaseUrl}/{id}");
                 if (!getResponse.IsSuccessStatusCode)
                     return "Tugas tidak ditemukan!";
@@ -186,7 +173,6 @@ namespace Tubes_KPL.src.Presentation.Presenters
                 var task = await getResponse.Content.ReadFromJsonAsync<Tugas>(_jsonOptions);
                 string judulTugas = task.Judul;
 
-                // Delete task
                 var deleteResponse = await _httpClient.DeleteAsync($"{BaseUrl}/{id}");
                 if (deleteResponse.IsSuccessStatusCode)
                 {
@@ -215,10 +201,9 @@ namespace Tubes_KPL.src.Presentation.Presenters
 
                 var reminderSettings = _configProvider.GetConfig<Dictionary<string, object>>("ReminderSettings");
                 if (reminderSettings == null)
-                    return "Pengaturan pengingat tidak ditemukan!";
+                    return "Pengaturan pengingat deadline tidak ditemukan!";
 
                 int daysBeforeDeadline = ((JsonElement)reminderSettings["DaysBeforeDeadline"]).GetInt32();
-
 
                 string statusWarning = "";
                 if (DateHelper.DaysUntilDeadline(tugas.Deadline) <= daysBeforeDeadline && tugas.Status != StatusTugas.Selesai)
@@ -239,6 +224,53 @@ namespace Tubes_KPL.src.Presentation.Presenters
             }
         }
 
+        public async Task<string> GetTasksByDateRange(string startDateStr, string endDateStr)
+        {
+            try
+            {
+                if (!DateHelper.TryParseDate(startDateStr, out DateTime startDate))
+                    return "Tanggal mulai tidak valid! Gunakan format DD/MM/YYYY.";
+
+                if (!DateHelper.TryParseDate(endDateStr, out DateTime endDate))
+                    return "Tanggal akhir tidak valid! Gunakan format DD/MM/YYYY.";
+
+                var response = await _httpClient.GetAsync($"{BaseUrl}/date-range?startDate={startDate:yyyy-MM-dd}&endDate={endDate:yyyy-MM-dd}");
+                if (!response.IsSuccessStatusCode)
+                    return $"Error: {response.StatusCode}";
+
+                var tasks = await response.Content.ReadFromJsonAsync<List<Tugas>>(_jsonOptions);
+                if (tasks == null || !tasks.Any())
+                    return "Tidak ada tugas yang ditemukan dalam rentang waktu tersebut.";
+
+                var table = new Table()
+                    .Border(TableBorder.Rounded)
+                    .BorderColor(Spectre.Console.Color.Blue)
+                    .Title("[bold yellow]Daftar Tugas Berdasarkan Rentang Waktu[/]")
+                    .AddColumn(new TableColumn("[bold]ID[/]").Centered())
+                    .AddColumn(new TableColumn("[bold]Judul[/]").LeftAligned())
+                    .AddColumn(new TableColumn("[bold]Kategori[/]").Centered())
+                    .AddColumn(new TableColumn("[bold]Status[/]").Centered())
+                    .AddColumn(new TableColumn("[bold]Deadline[/]").Centered());
+
+                foreach (var t in tasks)
+                {
+                    table.AddRow(
+                        t.Id.ToString(),
+                        t.Judul.EscapeMarkup(),
+                        t.Kategori.ToString(),
+                        t.Status.ToString(),
+                        DateHelper.FormatDate(t.Deadline)
+                    );
+                }
+
+                AnsiConsole.Write(table);
+                return string.Empty;
+            }
+            catch (Exception ex)
+            {
+                return $"Error: {ex.Message}";
+            }
+        }
 
         public async Task<string> GetAllTasks()
         {
@@ -246,85 +278,89 @@ namespace Tubes_KPL.src.Presentation.Presenters
             {
                 var response = await _httpClient.GetAsync(BaseUrl);
                 if (!response.IsSuccessStatusCode)
-                    return $"Error: {response.StatusCode}";
+                    return $"[red]Error: {response.StatusCode}[/]";
 
                 var tasks = await response.Content.ReadFromJsonAsync<List<Tugas>>(_jsonOptions);
-                
-                // Check if there are no tasks
                 if (!tasks.Any())
-                    return "Tidak ada tugas yang tersedia.";
+                    return "[yellow]Tidak ada tugas yang tersedia.[/]";
 
-                // Format tasks as table
-                string result = "Daftar Tugas:\n";
-                result += "=================================================================================================\n";
-                result += "| ID |            Judul            |   Kategori   |      Status      |       Deadline        |\n";
-                result += "=================================================================================================\n";
+                var table = new Table()
+                    .Border(TableBorder.Rounded)
+                    .BorderColor(Spectre.Console.Color.Blue)
+                    .Title("[bold yellow]Daftar Tugas[/]")
+                    .AddColumn(new TableColumn("[bold]ID[/]").Centered())
+                    .AddColumn(new TableColumn("[bold]Judul[/]").LeftAligned())
+                    .AddColumn(new TableColumn("[bold]Kategori[/]").Centered())
+                    .AddColumn(new TableColumn("[bold]Status[/]").Centered())
+                    .AddColumn(new TableColumn("[bold]Deadline[/]").Centered());
 
                 foreach (var t in tasks)
                 {
-                    string deadline = DateHelper.FormatDate(t.Deadline);
-                    string status = t.Status.ToString();
-                    
-                    // Add warning symbol for approaching deadlines
-                    if (DateHelper.IsDeadlineApproaching(t.Deadline) && t.Status != StatusTugas.Selesai && t.Status != StatusTugas.Terlewat)
+                    var deadlineText = DateHelper.FormatDate(t.Deadline);
+                    var statusText = t.Status.ToString();
+
+                    if (DateHelper.IsDeadlineApproaching(t.Deadline))
                     {
-                        deadline += " ⚠️";
+                        if (t.Status != StatusTugas.Selesai && t.Status != StatusTugas.Terlewat)
+                        {
+                            deadlineText = $"[bold yellow on red]{deadlineText} ⚠️[/]";
+                        }
                     }
 
-                    result += $"| {t.Id,-3}| {t.Judul,-28} | {t.Kategori,-12} | {status,-16} | {deadline,-21} |\n";
+                    switch (t.Status)
+                    {
+                        case StatusTugas.BelumMulai:
+                            statusText = $"[grey]{statusText}[/]";
+                            break;
+                        case StatusTugas.SedangDikerjakan:
+                            statusText = $"[blue]{statusText}[/]";
+                            break;
+                        case StatusTugas.Selesai:
+                            statusText = $"[green]{statusText}[/]";
+                            break;
+                        case StatusTugas.Terlewat:
+                            statusText = $"[red]{statusText}[/]";
+                            break;
+                    }
+
+                    table.AddRow(
+                        t.Id.ToString(),
+                        t.Judul.EscapeMarkup(),
+                        t.Kategori.ToString(),
+                        statusText,
+                        deadlineText
+                    );
                 }
-                
-                result += "=================================================================================================\n";
-                return result;
+
+                AnsiConsole.Write(table);
+
+                return string.Empty;
             }
             catch (Exception ex)
             {
-                return $"Error: {ex.Message}";
+                return $"[red]Error: {ex.Message.EscapeMarkup()}[/]";
             }
         }
-        
-        public async Task<string> PrintTasksToFiles(string jsonFilePath, string textFilePath)
-        {
-            try
-            {
-                // Karena method ini tidak async, kamu bisa panggil langsung
-                _taskService.CetakDaftarTugas(jsonFilePath, textFilePath);
-                return $"[INFO] Daftar tugas berhasil dicetak ke file JSON: {jsonFilePath} dan file TXT: {textFilePath}.";
-            }
-            catch (Exception ex)
-            {
-                return $"[ERROR] Gagal mencetak daftar tugas: {ex.Message}";
-            }
-        }
-        
+
         public async Task<string> PrintTasksToFilesFromApi(string jsonFilePath, string textFilePath)
         {
             try
             {
                 Console.WriteLine($"[DEBUG] Mengakses API di: {BaseUrl}");
 
-                // Ambil data dari API
                 var response = await _httpClient.GetAsync(BaseUrl);
-                Console.WriteLine(response);
                 if (!response.IsSuccessStatusCode)
                     return $"[ERROR] Gagal mengambil data dari API. Status code: {response.StatusCode}";
 
                 var tasks = await response.Content.ReadFromJsonAsync<List<Tugas>>(_jsonOptions);
-                Console.WriteLine(tasks);
                 if (tasks == null || !tasks.Any())
                     return "[INFO] Tidak ada tugas yang tersedia untuk dicetak.";
 
-                // Simpan data ke file JSON
                 var jsonContent = JsonSerializer.Serialize(tasks, new JsonSerializerOptions { WriteIndented = true });
                 File.WriteAllText(jsonFilePath, jsonContent);
-                Console.WriteLine(jsonContent);
 
-
-                // Konversi data ke format teks dan simpan ke file TXT
-                var textContent = ConvertTasksToText(tasks);
+                var textContent = JsonToTextConverter.ConvertTasksToText(tasks);
                 File.WriteAllText(textFilePath, textContent);
-                Console.WriteLine(textContent);
-
 
                 return $"[INFO] Daftar tugas berhasil dicetak ke file JSON: {jsonFilePath} dan file TXT: {textFilePath}.";
             }
@@ -333,31 +369,5 @@ namespace Tubes_KPL.src.Presentation.Presenters
                 return $"[ERROR] Gagal mencetak daftar tugas: {ex.Message}";
             }
         }
-
-        private string ConvertTasksToText(List<Tugas> tasks)
-        {
-            var textContent = "Daftar Tugas:\n";
-            textContent += "=================================================================================================\n";
-            textContent += "| ID |            Judul            |   Kategori   |      Status      |       Deadline        |\n";
-            textContent += "=================================================================================================\n";
-
-            foreach (var t in tasks)
-            {
-                string deadline = DateHelper.FormatDate(t.Deadline);
-                string status = t.Status.ToString();
-
-                // Add warning symbol for approaching deadlines
-                if (DateHelper.IsDeadlineApproaching(t.Deadline) && t.Status != StatusTugas.Selesai && t.Status != StatusTugas.Terlewat)
-                {
-                    deadline += " ⚠️";
-                }
-
-                textContent += $"| {t.Id,-3}| {t.Judul,-28} | {t.Kategori,-12} | {status,-16} | {deadline,-21} |\n";
-            }
-
-            textContent += "=================================================================================================\n";
-            return textContent;
-        }
     }
-} 
-
+}

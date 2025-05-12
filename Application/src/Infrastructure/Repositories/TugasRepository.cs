@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text.Json;
+﻿using System.Text.Json;
 using Tubes_KPL.src.Domain.Interfaces;
 using Tubes_KPL.src.Domain.Models;
 
@@ -14,7 +11,6 @@ namespace Tubes_KPL.src.Infrastructure.Repositories
 
         public TugasRepository()
         {
-            // Load data dari file JSON saat repository diinisialisasi
             if (File.Exists(_filePath))
             {
                 var jsonContent = File.ReadAllText(_filePath);
@@ -73,4 +69,3 @@ namespace Tubes_KPL.src.Infrastructure.Repositories
         }
     }
 }
-//Users/bintang/Documents/tes.json
