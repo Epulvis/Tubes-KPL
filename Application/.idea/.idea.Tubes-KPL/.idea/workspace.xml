@@ -9,7 +9,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="040239bf-91dc-4de9-b868-3b1c91f04eff" name="Changes" comment="" />
+    <list default="true" id="040239bf-91dc-4de9-b868-3b1c91f04eff" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.Tubes-KPL/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Tubes-KPL/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Services/Libraries/Result.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/Services/Libraries/Result.cs" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -51,6 +54,7 @@
     &quot;.NET Project.Tubes-KPL.executor&quot;: &quot;Run&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
@@ -118,6 +122,11 @@
       <option name="presentableId" value="Default" />
       <updated>1746022937287</updated>
       <workItem from="1746022938751" duration="8394000" />
+      <workItem from="1746108308279" duration="5816000" />
+      <workItem from="1746173748993" duration="3007000" />
+      <workItem from="1746625589249" duration="1056000" />
+      <workItem from="1746626654424" duration="1345000" />
+      <workItem from="1746628007782" duration="2240000" />
     </task>
     <servers />
   </component>
