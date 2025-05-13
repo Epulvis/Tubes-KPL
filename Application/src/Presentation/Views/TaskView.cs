@@ -170,18 +170,21 @@ namespace Tubes_KPL.src.Presentation.Views
                 deadline = DateTime.Now;
             }
 
+            
             Console.WriteLine("Kategori Tugas:");
             Console.WriteLine("0. Akademik");
             Console.WriteLine("1. Non-Akademik");
             Console.Write("Pilih Kategori (0/1): ");
+            int kategori = InputHelper.GetValidatedInput("Pilih Kategori (0/1): ", s =>
+                (int.TryParse(s, out int val) && (val == 0 || val == 1), val));
 
-            if (!int.TryParse(Console.ReadLine(), out int kategoriIndex) || kategoriIndex < 0 || kategoriIndex > 1)
-            {
-                Console.WriteLine("Kategori tidak valid! Menggunakan default: Akademik");
-                kategoriIndex = 0;
-            }
+            //if (!int.TryParse(Console.ReadLine(), out int kategoriIndex) || kategoriIndex < 0 || kategoriIndex > 1)
+            //{
+            //    Console.WriteLine("Kategori tidak valid! Menggunakan default: Akademik");
+            //    kategoriIndex = 0;
+            //}
 
-            string result = await _presenter.CreateTask(judul, deadline.ToString("dd/MM/yyyy"), kategoriIndex);
+            string result = await _presenter.CreateTask(judul, deadline.ToString("dd/MM/yyyy"), kategori);
             Console.WriteLine("\n" + result);
 
             Console.WriteLine("\nTekan Enter untuk kembali ke menu utama...");
@@ -282,6 +285,21 @@ namespace Tubes_KPL.src.Presentation.Views
 
             Console.WriteLine("\nTekan Enter untuk kembali ke menu utama...");
             Console.ReadLine();
+        }
+    }
+    public static class InputHelper
+    {
+        public static T GetValidatedInput<T>(string prompt, Func<string, (bool, T)> parser)
+        {
+            while (true)
+            {
+                Console.Write(prompt);
+                string input = Console.ReadLine();
+                var (isValid, value) = parser(input);
+                if (isValid)
+                    return value;
+                Console.WriteLine("Input tidak valid, coba lagi.");
+            }
         }
     }
 }
