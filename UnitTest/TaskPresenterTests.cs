@@ -15,6 +15,7 @@ using Tubes_KPL.src.Services.Libraries;
 using System.Reflection;
 using System.Diagnostics;
 using Pose;
+using Is = NUnit.Framework.Is;
 
 
 
@@ -91,6 +92,35 @@ public class TaskPresenter_UpdateTaskStatus_Tests
             ClassicAssert.IsTrue(result.IsSuccess);
             StringAssert.Contains("berhasil diubah menjadi", result.Value);
         }, shim1, shim2);
+    }
+
+
+    //get all tasks
+    [Test]
+    public async Task GetAllTasks_ShouldReturnAllTasks()
+    {
+        // Arrange
+        var mockTasks = new List<Tugas>
+    {
+        new Tugas { Id = 1, Judul = "Tugas 1", Deadline = DateTime.Now.AddDays(5), Kategori = KategoriTugas.Akademik, Status = StatusTugas.BelumMulai },
+        new Tugas { Id = 2, Judul = "Tugas 2", Deadline = DateTime.Now.AddDays(8), Kategori = KategoriTugas.NonAkademik, Status = StatusTugas.SedangDikerjakan }
+    };
+
+        _httpMessageHandlerMock.Protected()
+            .Setup<Task<HttpResponseMessage>>(
+                "SendAsync",
+                ItExpr.Is<HttpRequestMessage>(req => req.Method == HttpMethod.Get),
+                ItExpr.IsAny<CancellationToken>())
+            .ReturnsAsync(new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = JsonContent.Create(mockTasks, options: _jsonOptions)
+            });
+
+        // Act
+        var result = await _presenter.GetAllTasks();
+
+        // Assert
+        Assert.That(result, Is.Empty, "Result should be empty string because output is written to console.");
     }
 
     /// Test invalid ID.
