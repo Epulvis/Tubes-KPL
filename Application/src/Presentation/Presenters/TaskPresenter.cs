@@ -216,7 +216,7 @@ namespace Tubes_KPL.src.Presentation.Presenters
                        $"Kategori: {tugas.Kategori}\n" +
                        $"Status: {tugas.Status}\n" +
                        $"Deadline: {DateHelper.FormatDate(tugas.Deadline)}" +
-                       statusWarning;
+                 statusWarning;
             }
             catch (Exception ex)
             {

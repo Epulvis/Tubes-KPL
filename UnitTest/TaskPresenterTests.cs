@@ -16,6 +16,8 @@ using System.Reflection;
 using System.Diagnostics;
 using Pose;
 
+
+
 namespace UnitTest;
 
 [TestFixture]
@@ -39,7 +41,13 @@ public class TaskPresenter_UpdateTaskStatus_Tests
             Converters = { new System.Text.Json.Serialization.JsonStringEnumConverter() }
         };
 
-        _presenter = (TaskPresenter)Activator.CreateInstance(typeof(TaskPresenter), _configProviderMock.Object);
+        _configProviderMock.Setup(m => m.GetConfig<Dictionary<string, object>>("ReminderSettings"))
+        .Returns(new Dictionary<string, object>
+        {
+                      { "DaysBeforeDeadline", JsonSerializer.SerializeToElement(3) }
+        }).Verifiable();
+                // Inisialisasi presenter dengan dependensi
+                _presenter = new TaskPresenter(_configProviderMock.Object);
         typeof(TaskPresenter).GetField("_httpClient", BindingFlags.NonPublic | BindingFlags.Instance).SetValue(_presenter, _httpClient);
 
         _httpMessageHandlerMock.Protected()
@@ -188,6 +196,37 @@ public class TaskPresenter_UpdateTaskStatus_Tests
         Assert.That(result, Does.Contain("Tugas 1"), "Result should contain 'Tugas 1'.");
         Assert.That(result, Does.Contain("Tugas 2"), "Result should contain 'Tugas 2'.");
     }
+    //[Test]
+    //public async Task GetTaskDetails_ShouldReturnCorrectTaskDetails()
+    //{
+    //    // Arrange
+    //    var taskId = "1"; // ID tugas yang valid
+    //    var expectedTask = new Tugas
+    //    {
+    //        Id = 1,
+    //        Judul = "Judul tugas 1",
+    //        Deadline = new DateTime(2026, 8, 9),
+    //        Kategori = KategoriTugas.Akademik,
+    //        Status = StatusTugas.Selesai
+    //    };
+
+    //    // Act
+    //    var result = await _presenter.GetTaskDetails(taskId);
+
+    //    // Assert
+    //    var expectedOutput = "Detail Tugas #1:\n" +
+    //                         $"Judul: {expectedTask.Judul}\n" +
+    //                         $"Kategori: {expectedTask.Kategori}\n" +
+    //                         $"Status: {expectedTask.Status}\n" +
+    //                         $"Deadline: 09 August 2026";
+
+    //    // Verifikasi apakah hasil yang diterima sesuai dengan ekspektasi
+    //    Assert.That(result, NUnitIs.EqualTo(expectedOutput));
+
+    //    // Untuk tujuan debug, Anda bisa mencetak hasilnya
+    //    Console.WriteLine("Expected:\n" + expectedOutput);
+    //    Console.WriteLine("Actual:\n" + result);
+    //}
 
     [TearDown]
     public void TearDown()
@@ -225,3 +264,4 @@ public static class StaticHelper
         }
     }
 }
+
