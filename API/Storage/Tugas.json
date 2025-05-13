@@ -75,5 +75,12 @@
     "Deadline": "2025-07-08T00:00:00",
     "Status": 2,
     "Kategori": 1
+  },
+  {
+    "Id": 12,
+    "Judul": "test 13/05",
+    "Deadline": "2025-05-16T00:00:00",
+    "Status": 0,
+    "Kategori": 0
   }
 ]
