@@ -17,8 +17,6 @@ using System.Diagnostics;
 using Pose;
 using Is = NUnit.Framework.Is;
 
-
-
 namespace UnitTest;
 
 [TestFixture]
