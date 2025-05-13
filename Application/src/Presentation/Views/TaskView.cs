@@ -10,10 +10,26 @@ namespace Tubes_KPL.src.Presentation.Views
         private readonly TaskPresenter _presenter;
         private readonly IConfigProvider _configProvider;
 
+        private readonly Dictionary<string, Func<Task>> _menuActions;
+
         public TaskView(TaskPresenter presenter, IConfigProvider configProvider)
         {
             _presenter = presenter ?? throw new ArgumentNullException(nameof(presenter));
             _configProvider = configProvider ?? throw new ArgumentNullException(nameof(configProvider));
+
+            // Table-driven: mapping menu ke aksi
+            _menuActions = new Dictionary<string, Func<Task>>
+            {
+                { "Lihat Daftar Tugas", ShowAllTasks },
+                { "Lihat Tugas Berdasarkan Rentang Waktu", ShowTasksByDateRange },
+                { "Lihat Detail Tugas", ShowTaskDetails },
+                { "Tambah Tugas Baru", AddNewTask },
+                { "Perbarui Tugas", UpdateTask },
+                { "Ubah Status Tugas", UpdateTaskStatus },
+                { "Hapus Tugas", DeleteTask },
+                { "Cetak Daftar Tugas ke File JSON dan TXT", PrintTasksToFiles }
+                // "Keluar" akan ditangani khusus
+            };
         }
 
         public async Task ShowMainMenu()
