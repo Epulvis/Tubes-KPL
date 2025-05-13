@@ -289,8 +289,19 @@ namespace Tubes_KPL.src.Presentation.Views
     }
     public static class InputHelper
     {
+        /// <summary>
+        /// Mengambil input dari user dan memvalidasi menggunakan parser.
+        /// Precondition: prompt dan parser tidak boleh null/kosong.
+        /// Postcondition: Mengembalikan nilai T yang valid sesuai parser.
+        /// </summary>
         public static T GetValidatedInput<T>(string prompt, Func<string, (bool, T)> parser)
         {
+            // Precondition
+            if (string.IsNullOrWhiteSpace(prompt))
+                throw new ArgumentException("Prompt tidak boleh kosong.", nameof(prompt));
+            if (parser == null)
+                throw new ArgumentNullException(nameof(parser));
+
             while (true)
             {
                 Console.Write(prompt);
@@ -300,6 +311,7 @@ namespace Tubes_KPL.src.Presentation.Views
                     return value;
                 Console.WriteLine("Input tidak valid, coba lagi.");
             }
+            // Postcondition: return value hanya jika isValid == true
         }
     }
 }
