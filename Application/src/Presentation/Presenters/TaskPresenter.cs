@@ -8,6 +8,7 @@ using Tubes_KPL.src.Domain.Models;
 using Tubes_KPL.src.Infrastructure.Configuration;
 using Spectre.Console;
 using Tubes_KPL.src.Services.Libraries;
+// using TaskUtilities.Libraries;
 
 namespace Tubes_KPL.src.Presentation.Presenters
 {
@@ -158,17 +159,36 @@ namespace Tubes_KPL.src.Presentation.Presenters
                 return $"Error: {ex.Message}";
             }
         }
+        
+        // Automata & Enum : by bintang 
+        
+        // Define the enum at the class level
+        private enum DeleteTaskState { Start, Validating, Deleting, Completed, Error }
 
         public async Task<string> DeleteTask(string idStr)
         {
+            DeleteTaskState currentState = DeleteTaskState.Start;
+
             try
             {
+                // Transition to Validating state
+                currentState = DeleteTaskState.Validating;
+
                 if (!InputValidator.TryParseId(idStr, out int id))
+                {
+                    currentState = DeleteTaskState.Error;
                     return "ID tugas tidak valid! Pastikan berupa angka positif.";
+                }
 
                 var getResponse = await _httpClient.GetAsync($"{BaseUrl}/{id}");
                 if (!getResponse.IsSuccessStatusCode)
+                {
+                    currentState = DeleteTaskState.Error;
                     return "Tugas tidak ditemukan!";
+                }
+
+                // Transition to Deleting state
+                currentState = DeleteTaskState.Deleting;
 
                 var task = await getResponse.Content.ReadFromJsonAsync<Tugas>(_jsonOptions);
                 string judulTugas = task.Judul;
@@ -176,12 +196,17 @@ namespace Tubes_KPL.src.Presentation.Presenters
                 var deleteResponse = await _httpClient.DeleteAsync($"{BaseUrl}/{id}");
                 if (deleteResponse.IsSuccessStatusCode)
                 {
+                    // Transition to Completed state
+                    currentState = DeleteTaskState.Completed;
                     return $"Tugas '{judulTugas}' berhasil dihapus";
                 }
+
+                currentState = DeleteTaskState.Error;
                 return $"Error: {deleteResponse.StatusCode}";
             }
             catch (Exception ex)
             {
+                currentState = DeleteTaskState.Error;
                 return $"Error: {ex.Message}";
             }
         }
@@ -369,5 +394,7 @@ namespace Tubes_KPL.src.Presentation.Presenters
                 return $"[ERROR] Gagal mencetak daftar tugas: {ex.Message}";
             }
         }
+        
+        
     }
 }

@@ -68,12 +68,5 @@
     "Deadline": "2025-07-20T00:00:00",
     "Status": 1,
     "Kategori": 0
-  },
-  {
-    "Id": 11,
-    "Judul": "Judul tugas 11",
-    "Deadline": "2025-07-08T00:00:00",
-    "Status": 2,
-    "Kategori": 1
   }
 ]

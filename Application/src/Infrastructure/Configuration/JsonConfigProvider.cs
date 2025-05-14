@@ -16,7 +16,6 @@ namespace Tubes_KPL.src.Infrastructure.Configuration
             //Console.WriteLine(JsonSerializer.Serialize(_configurations, new JsonSerializerOptions { WriteIndented = true }));
         }
 
-        //bintang : poin 5 Logging Handler 
         public T GetConfig<T>(string key)
         {
             if (!_configurations.TryGetValue(key, out var value))
