@@ -45,52 +45,20 @@ namespace Tubes_KPL.src.Presentation.Views
                         .Title("[bold yellow]=== APLIKASI MANAJEMEN TUGAS MAHASISWA ===[/]")
                         .PageSize(10)
                         .MoreChoicesText("[grey](Gunakan panah atas/bawah untuk memilih)[/]")
-                        .AddChoices([
-                            "Lihat Daftar Tugas",
-                            "Lihat Tugas Berdasarkan Rentang Waktu",
-                            "Lihat Detail Tugas",
-                            "Tambah Tugas Baru",
-                            "Perbarui Tugas",
-                            "Ubah Status Tugas",
-                            "Hapus Tugas",
-                            "Cetak Daftar Tugas ke File JSON dan TXT",
-                            "Keluar"
-                         ]));
+                        .AddChoices(_menuActions.Keys.Concat(new[] { "Keluar" })));
 
-                switch (choice)
+                if (choice == "Keluar")
                 {
-                    case "Lihat Daftar Tugas":
-                        await ShowAllTasks();
-                        break;
-                    case "Lihat Tugas Berdasarkan Rentang Waktu":
-                        await ShowTasksByDateRange();
-                        break;
-                    case "Lihat Detail Tugas":
-                        await ShowTaskDetails();
-                        break;
-                    case "Tambah Tugas Baru":
-                        await AddNewTask();
-                        break;
-                    case "Perbarui Tugas":
-                        await UpdateTask();
-                        break;
-                    case "Ubah Status Tugas":
-                        await UpdateTaskStatus();
-                        break;
-                    case "Hapus Tugas":
-                        await DeleteTask();
-                        break;
-                    case "Cetak Daftar Tugas ke File JSON dan TXT":
-                        await PrintTasksToFiles();
-                        break;
-                    case "Keluar":
-                        if (AnsiConsole.Confirm("Apakah Anda yakin ingin keluar?"))
-                        {
-                            isRunning = false;
-                            AnsiConsole.MarkupLine("[green]Terima kasih! Program akan ditutup.[/]");
-                            await Task.Delay(1000);
-                        }
-                        break;
+                    if (AnsiConsole.Confirm("Apakah Anda yakin ingin keluar?"))
+                    {
+                        isRunning = false;
+                        AnsiConsole.MarkupLine("[green]Terima kasih! Program akan ditutup.[/]");
+                        await Task.Delay(1000);
+                    }
+                }
+                else if (_menuActions.TryGetValue(choice, out var action))
+                {
+                    await action();
                 }
             }
         }
