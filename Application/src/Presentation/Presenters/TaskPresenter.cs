@@ -118,27 +118,27 @@ namespace Tubes_KPL.src.Presentation.Presenters
         }
 
 
-        public async Task<string> UpdateTask(string idStr, string judul, string deadlineStr, int kategoriIndex)
+        public async Task<Result<string>> UpdateTask(string idStr, string judul, string deadlineStr, int kategoriIndex)
         {
             try
             {
                 if (!InputValidator.IsValidJudul(judul))
-                    return "Judul tugas tidak valid! Pastikan tidak kosong dan maksimal 100 karakter.";
+                    return Result<string>.Failure("Judul tugas tidak valid! Pastikan tidak melebihi 100 karakter.");
 
                 if (!InputValidator.TryParseId(idStr, out int id))
-                    return "ID tugas tidak valid! Pastikan berupa angka positif.";
+                    return Result<string>.Failure("ID tugas tidak valid! Pastikan berupa angka positif.");
 
                 if (!DateHelper.TryParseDate(deadlineStr, out DateTime deadline))
-                    return "Format tanggal tidak valid! Gunakan format DD/MM/YYYY.";
+                    return Result<string>.Failure("Format tanggal tidak valid! Gunakan format DD/MM/YYYY.");
 
                 if (!InputValidator.IsValidDeadline(deadline))
-                    return "Deadline tidak dapat diatur di masa lalu.";
+                    return Result<string>.Failure("Deadline tidak dapat diatur di masa lalu.");
 
                 KategoriTugas kategori = kategoriIndex == 0 ? KategoriTugas.Akademik : KategoriTugas.NonAkademik;
 
                 var getResponse = await _httpClient.GetAsync($"{BaseUrl}/{id}");
                 if (!getResponse.IsSuccessStatusCode)
-                    return "Tugas tidak ditemukan!";
+                    return Result<string>.Failure("Tugas tidak ditemukan!");
 
                 var task = await getResponse.Content.ReadFromJsonAsync<Tugas>(_jsonOptions);
                 task.Judul = judul;
@@ -149,13 +149,13 @@ namespace Tubes_KPL.src.Presentation.Presenters
                 if (updateResponse.IsSuccessStatusCode)
                 {
                     var updatedTask = await updateResponse.Content.ReadFromJsonAsync<Tugas>(_jsonOptions);
-                    return $"Tugas '{updatedTask.Judul}' berhasil diperbarui";
+                    return Result<string>.Success($"Tugas '{updatedTask.Judul}' berhasil diperbarui");
                 }
-                return $"Error: {updateResponse.StatusCode}";
+                return Result<string>.Failure($"Error: {updateResponse.StatusCode}");
             }
             catch (Exception ex)
             {
-                return $"Error: {ex.Message}";
+                return Result<string>.Failure($"Error: {ex.Message}");
             }
         }
 

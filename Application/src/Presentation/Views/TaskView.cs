@@ -196,11 +196,9 @@ namespace Tubes_KPL.src.Presentation.Views
             Console.Clear();
             AnsiConsole.MarkupLine("[bold yellow]PERBARUI TUGAS[/]");
 
-            Console.Write("Masukkan ID Tugas: ");
-            string idStr = Console.ReadLine();
+            string idStr = InputValidator.NonEmptyInput("Masukkan ID Tugas: ");
 
-            Console.Write("Judul Tugas Baru: ");
-            string judul = Console.ReadLine();
+            string judul = InputValidator.NonEmptyInput("Judul Tugas Baru: ");
 
             Console.Write("Deadline Baru (DD/MM/YYYY): ");
             string deadlineStr = Console.ReadLine();
@@ -216,8 +214,8 @@ namespace Tubes_KPL.src.Presentation.Views
                 kategoriIndex = 0;
             }
 
-            string result = await _presenter.UpdateTask(idStr, judul, deadlineStr, kategoriIndex);
-            Console.WriteLine("\n" + result);
+            var result = await _presenter.UpdateTask(idStr, judul, deadlineStr, kategoriIndex);
+            AnsiConsole.MarkupLine("\n" + result);
 
             Console.WriteLine("\nTekan Enter untuk kembali ke menu utama...");
             Console.ReadLine();
