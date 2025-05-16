@@ -203,27 +203,6 @@ public class TaskPresenter_UpdateTaskStatus_Tests
         ClassicAssert.Less(stopwatch.ElapsedMilliseconds, 1000, "Performance: UpdateTaskStatus should complete within 1 second.");
     }
 
-    [Test]
-    public async Task GetTasksByDateRange_ShouldReturnMockedTasks()
-    {
-        // Arrange
-        var mockTasks = new List<Tugas>
-            {
-                new Tugas { Id = 1, Judul = "Tugas 1", Deadline = new System.DateTime(2025, 5, 5), Kategori = KategoriTugas.Akademik, Status = StatusTugas.BelumMulai },
-                new Tugas { Id = 2, Judul = "Tugas 2", Deadline = new System.DateTime(2025, 5, 8), Kategori = KategoriTugas.NonAkademik, Status = StatusTugas.SedangDikerjakan }
-            };
-
-        // Simulate the behavior of GetTasksByDateRange without accessing the API
-        var startDate = "01/05/2025";
-        var endDate = "10/05/2025";
-
-        // Act
-        var result = await Task.FromResult($"Mocked Tasks:\n- {mockTasks[0].Judul}\n- {mockTasks[1].Judul}");
-
-        // Assert
-        Assert.That(result, Does.Contain("Tugas 1"), "Result should contain 'Tugas 1'.");
-        Assert.That(result, Does.Contain("Tugas 2"), "Result should contain 'Tugas 2'.");
-    }
     //[Test]
     //public async Task GetTaskDetails_ShouldReturnCorrectTaskDetails()
     //{
