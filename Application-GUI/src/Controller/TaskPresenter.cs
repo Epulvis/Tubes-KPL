@@ -1,8 +1,7 @@
 ﻿using Application.Models;
-using Application.Helpers;
-using Application.Libraries;
-using Application.View;
 using Application.Services;
+using Application.Helpers;
+using Application.View;
 
 namespace Application.Controller
 {
@@ -29,128 +28,100 @@ namespace Application.Controller
             _view.ExportTasksRequested += OnExportTasksRequested;
         }
 
-        private async void OnFormLoaded(object sender, EventArgs e) // Menjadi async void
+        private void OnFormLoaded()
         {
-            await LoadTasksAsync(); // Memuat tugas saat form pertama kali ditampilkan
+            OnViewTasksRequested();
         }
 
-        public async void OnAddTaskRequested(object sender, EventArgs e) // Menjadi async void
+        public async void OnAddTaskRequested()
         {
             try
             {
                 string title = _view.GetTaskTitleInput();
+                string description = _view.GetTaskDescriptionInput();
                 DateTime dueDate = _view.GetTaskDueDateInput();
-                // Asumsi ITaskView sekarang memiliki metode untuk mendapatkan KategoriIndex
-                // Jika belum ada, Anda perlu menambahkannya ke ITaskView dan implementasinya di TaskManagementForm
-                int kategoriIndex = _view.GetTaskKategoriIndexInput(); // Anda perlu implementasi ini di View
 
-                // Validasi input
-                if (!_validator.IsValidTitle(title)) // Menggunakan _validator yang di-inject
+                if (!_validator.IsValidTitle(title) || !_validator.IsValidTitle(description) || !_validator.IsValidDeadline(dueDate))
                 {
-                    _view.DisplayMessage("Judul tidak valid. Tidak boleh kosong dan maksimal 100 karakter.", "Error Validasi", MessageBoxIcon.Warning);
+                    _view.DisplayMessage("Input tidak valid. Pastikan semua field terisi dengan benar.", "Error Validasi", MessageBoxIcon.Error);
                     return;
                 }
-                if (!_validator.IsValidDeadline(dueDate))
-                {
-                    _view.DisplayMessage("Tanggal jatuh tempo tidak valid.", "Error Validasi", MessageBoxIcon.Warning);
-                    return;
-                }
-                // Anda bisa menambahkan validasi untuk kategoriIndex di sini jika perlu
-                // if (kategoriIndex <= 0) { /* tampilkan error */ return; }
+                // perlu fix
+                int kategoriIndex = 0;
 
-                // Memanggil metode async dari TaskService dengan parameter baru
-                Result<Tugas> result = await _taskService.CreateTaskAsync(title, dueDate, kategoriIndex);
-
+                var result = await _taskService.CreateTaskAsync(title, dueDate, kategoriIndex);
                 if (result.IsSuccess)
                 {
                     _view.DisplayMessage("Tugas berhasil ditambahkan.", "Sukses", MessageBoxIcon.Information);
                     _view.ClearInputs();
-                    await LoadTasksAsync(); // Refresh daftar tugas
                 }
                 else
                 {
-                    // Menggunakan result.Error
-                    _view.DisplayMessage($"Gagal menambahkan tugas: {result.Error}", "Error", MessageBoxIcon.Error);
+                    _view.DisplayMessage($"Gagal menamb000an tugas: {result.Value}", "Error", MessageBoxIcon.Error);
                 }
             }
             catch (Exception ex)
             {
-                // Secure Coding: Log exception dan tampilkan pesan umum
-                Console.WriteLine($"[TaskPresenter:OnAddTaskRequested] Exception: {ex.Message}\n{ex.StackTrace}"); // Placeholder logging
-                _view.DisplayMessage($"Terjadi kesalahan sistem saat menambahkan tugas: {ex.Message}", "Error Sistem", MessageBoxIcon.Error);
+                // Secure Coding: Log exception (tidak diimplementasikan di sini) dan tampilkan pesan umum
+                _view.DisplayMessage($"Terjadi kesalahan: {ex.Message}", "Error Sistem", MessageBoxIcon.Error);
             }
         }
 
-        // Event handler untuk ViewTasksRequested (jika masih ada tombol refresh manual)
-        // atau dipanggil secara internal.
-        private async void OnViewTasksRequested(object? sender, EventArgs e) // Menjadi async void
-        {
-            await LoadTasksAsync();
-        }
-
-        // Metode helper untuk memuat tugas, bisa dipanggil dari beberapa tempat
-        private async Task LoadTasksAsync()
+        public async void OnViewTasksRequested()
         {
             try
             {
-                Result<List<Tugas>> result = await _taskService.GetAllTasksAsync();
-                if (result.IsSuccess && result.Value != null)
+                var result = await _taskService.GetAllTasksAsync();
+                if (result.IsSuccess)
                 {
                     _view.DisplayTasks(result.Value);
                 }
                 else
                 {
-                    // Menggunakan result.Error
-                    _view.DisplayMessage($"Gagal mengambil daftar tugas: {result.Error}", "Error", MessageBoxIcon.Error);
-                    _view.DisplayTasks(new List<Tugas>()); // Tampilkan list kosong
+                    _view.DisplayMessage($"Gagal mengambil daftar tugas: {result.Value}", "Error", MessageBoxIcon.Error);
+                    _view.DisplayTasks([]);
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"[TaskPresenter:LoadTasksAsync] Exception: {ex.Message}\n{ex.StackTrace}");
-                _view.DisplayMessage($"Terjadi kesalahan sistem saat mengambil tugas: {ex.Message}", "Error Sistem", MessageBoxIcon.Error);
-                _view.DisplayTasks(new List<Tugas>()); // Tampilkan list kosong pada error
+                _view.DisplayMessage($"Terjadi kesalahan saat mengambil tugas: {ex.Message}", "Error Sistem", MessageBoxIcon.Error);
             }
         }
 
-
-        public async void OnViewTaskDetailsRequested(object? sender, EventArgs e) // Menjadi async void
+        public async void OnViewTaskDetailsRequested()
         {
             try
             {
                 int taskId = _view.GetSelectedTaskId();
                 if (taskId == -1)
                 {
-                    _view.DisplayMessage("Pilih tugas terlebih dahulu.", "Info", MessageBoxIcon.Information);
+                    _view.DisplayMessage("Pilih tugas terlebih dahulu atau masukkan ID yang valid.", "Info", MessageBoxIcon.Information);
                     return;
                 }
 
-                // Asumsi _validator adalah instance, jika static gunakan InputValidator.IsValidId
                 if (!_validator.IsValidId(taskId.ToString()))
                 {
                     _view.DisplayMessage("ID tugas tidak valid.", "Error Validasi", MessageBoxIcon.Warning);
                     return;
                 }
 
-                Result<Tugas> result = await _taskService.GetTaskByIdAsync(taskId);
-                if (result.IsSuccess && result.Value != null)
+                var result = await _taskService.GetTaskByIdAsync(taskId);
+                if (result.IsSuccess)
                 {
                     _view.DisplayTaskDetails(result.Value);
                 }
                 else
                 {
-                    // Menggunakan result.Error
-                    _view.DisplayMessage($"Gagal mengambil detail tugas: {result.Error}", "Error", MessageBoxIcon.Error);
+                    _view.DisplayMessage($"Gagal mengambil detail tugas: {result.Value}", "Error", MessageBoxIcon.Error);
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"[TaskPresenter:OnViewTaskDetailsRequested] Exception: {ex.Message}\n{ex.StackTrace}");
-                _view.DisplayMessage($"Terjadi kesalahan sistem: {ex.Message}", "Error Sistem", MessageBoxIcon.Error);
+                _view.DisplayMessage($"Terjadi kesalahan: {ex.Message}", "Error Sistem", MessageBoxIcon.Error);
             }
         }
 
-        public async void OnUpdateTaskStatusRequested(object sender, EventArgs e) // Menjadi async void
+        public async void OnUpdateTaskStatusRequested()
         {
             try
             {
@@ -168,15 +139,14 @@ namespace Application.Controller
 
                 StatusTugas newStatus = _view.GetNewTaskStatusInput();
 
-                Result result = await _taskService.UpdateTaskStatusAsync(taskId, newStatus);
+                var result =  await _taskService.UpdateTaskStatusAsync(taskId, newStatus);
                 if (result.IsSuccess)
                 {
                     _view.DisplayMessage("Status tugas berhasil diperbarui.", "Sukses", MessageBoxIcon.Information);
-                    await LoadTasksAsync(); // Refresh list
+                    OnViewTasksRequested();
                 }
                 else
                 {
-                    // Menggunakan result.Error
                     _view.DisplayMessage($"Gagal memperbarui status: {result.Error}", "Error", MessageBoxIcon.Error);
                 }
             }
@@ -186,12 +156,11 @@ namespace Application.Controller
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"[TaskPresenter:OnUpdateTaskStatusRequested] Exception: {ex.Message}\n{ex.StackTrace}");
-                _view.DisplayMessage($"Terjadi kesalahan sistem: {ex.Message}", "Error Sistem", MessageBoxIcon.Error);
+                _view.DisplayMessage($"Terjadi kesalahan: {ex.Message}", "Error Sistem", MessageBoxIcon.Error);
             }
         }
 
-        public async void OnDeleteTaskRequested(object? sender, EventArgs e) // Menjadi async void
+        public async void OnDeleteTaskRequested()
         {
             try
             {
@@ -207,53 +176,59 @@ namespace Application.Controller
                     return;
                 }
 
-                // Pertimbangkan untuk menambahkan dialog konfirmasi di View sebelum memanggil ini
-                // if (!_view.ConfirmAction("Anda yakin ingin menghapus tugas ini?")) return;
+                // Konfirmasi sebelum menghapus
+                // Dialog konfirmasi bisa jadi bagian dari ITaskView atau dibuat di presenter jika lebih kompleks
+                // Untuk sekarang, asumsikan View yang menangani konfirmasi atau langsung hapus
+                // Contoh sederhana jika Presenter menangani konfirmasi:
+                // if (!_view.ConfirmAction("Apakah Anda yakin ingin menghapus tugas ini?")) return;
 
-                Result result = await _taskService.DeleteTaskAsync(taskId);
+
+                var result = await _taskService.DeleteTaskAsync(taskId);
                 if (result.IsSuccess)
                 {
                     _view.DisplayMessage("Tugas berhasil dihapus.", "Sukses", MessageBoxIcon.Information);
-                    await LoadTasksAsync(); // Refresh list
+                    OnViewTasksRequested();
                 }
                 else
                 {
-                    // Menggunakan result.Error
                     _view.DisplayMessage($"Gagal menghapus tugas: {result.Error}", "Error", MessageBoxIcon.Error);
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"[TaskPresenter:OnDeleteTaskRequested] Exception: {ex.Message}\n{ex.StackTrace}");
-                _view.DisplayMessage($"Terjadi kesalahan sistem: {ex.Message}", "Error Sistem", MessageBoxIcon.Error);
+                _view.DisplayMessage($"Terjadi kesalahan: {ex.Message}", "Error Sistem", MessageBoxIcon.Error);
             }
         }
 
-        public async void OnFilterTasksByDateRequested(object? sender, EventArgs e) // Menjadi async void
+        public async void OnFilterTasksByDateRequested()
         {
             try
             {
                 DateTime startDate = _view.GetFilterStartDateInput();
                 DateTime endDate = _view.GetFilterEndDateInput();
 
-                // Validasi di presenter bisa menggunakan _validator instance
+                if (startDate > endDate)
+                {
+                    _view.DisplayMessage("Tanggal mulai tidak boleh lebih besar dari tanggal akhir.", "Error Validasi", MessageBoxIcon.Warning);
+                    return;
+                }
+                // Validasi tanggal bisa ditambahkan di _validator
                 if (!_validator.IsValidDateRange(startDate, endDate))
                 {
-                    _view.DisplayMessage("Rentang tanggal tidak valid (tanggal mulai tidak boleh setelah tanggal akhir).", "Error Validasi", MessageBoxIcon.Warning);
+                    _view.DisplayMessage("Rentang tanggal tidak valid.", "Error Validasi", MessageBoxIcon.Warning);
                     return;
                 }
 
-                Result<List<Tugas>> result = await _taskService.GetTasksByDateRangeAsync(startDate, endDate);
-                if (result.IsSuccess && result.Value != null)
+
+                var result = await _taskService.GetTasksByDateRangeAsync(startDate, endDate);
+                if (result.IsSuccess)
                 {
                     _view.DisplayTasks(result.Value);
                     _view.DisplayMessage($"Menampilkan tugas dari {startDate:dd/MM/yyyy} hingga {endDate:dd/MM/yyyy}.", "Filter Diterapkan", MessageBoxIcon.Information);
                 }
                 else
                 {
-                    // Menggunakan result.Error
                     _view.DisplayMessage($"Gagal memfilter tugas: {result.Error}", "Error", MessageBoxIcon.Error);
-                    _view.DisplayTasks(new List<Tugas>()); // Tampilkan list kosong
                 }
             }
             catch (OperationCanceledException)
@@ -262,31 +237,38 @@ namespace Application.Controller
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"[TaskPresenter:OnFilterTasksByDateRequested] Exception: {ex.Message}\n{ex.StackTrace}");
-                _view.DisplayMessage($"Terjadi kesalahan sistem: {ex.Message}", "Error Sistem", MessageBoxIcon.Error);
+                _view.DisplayMessage($"Terjadi kesalahan: {ex.Message}", "Error Sistem", MessageBoxIcon.Error);
             }
         }
 
-        public async void OnExportTasksRequested(object sender, EventArgs e)
+        public async void OnExportTasksRequested()
         {
             try
             {
-                string format = _view.GetExportFormatInput()?.ToLower() ?? string.Empty;
+                string format = _view.GetExportFormatInput()?.ToLower();
                 if (string.IsNullOrEmpty(format) || (format != "json" && format != "txt"))
                 {
                     _view.DisplayMessage("Format ekspor tidak valid. Pilih 'json' atau 'txt'.", "Error Validasi", MessageBoxIcon.Warning);
                     return;
                 }
 
-                string filePath = _view.GetExportFilePathInput(
-                    $"TugasExport_{DateTime.Now:yyyyMMddHHmmss}" + (format == "json" ? ".json" : ".txt"),
-                    format == "json" ? "JSON files (*.json)|*.json|All files (*.*)|*.*" : "Text files (*.txt)|*.txt|All files (*.*)|*.*"
-                );
+                string defaultFileName = $"TugasExport_{DateTime.Now:yyyyMMddHHmmss}";
+                string fileFilter = format == "json" ? "JSON files (*.json)|*.json" : "Text files (*.txt)|*.txt";
+                defaultFileName += format == "json" ? ".json" : ".txt";
 
-                Result result = await _taskService.ExportTasksAsync(format, filePath);
+                string filePath = _view.GetExportFilePathInput(defaultFileName, fileFilter);
+
+                if (string.IsNullOrWhiteSpace(filePath))
+                {
+                    _view.DisplayMessage("Jalur file ekspor tidak valid.", "Error Validasi", MessageBoxIcon.Warning);
+                    return;
+                }
+
+
+                var result = await _taskService.ExportTasksAsync(format, filePath);
                 if (result.IsSuccess)
                 {
-                    _view.DisplayMessage($"Permintaan ekspor tugas ke {filePath} berhasil dikirim ke server.", "Sukses", MessageBoxIcon.Information);
+                    _view.DisplayMessage($"Tugas berhasil diekspor ke {filePath}", "Sukses", MessageBoxIcon.Information);
                 }
                 else
                 {
@@ -299,8 +281,7 @@ namespace Application.Controller
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"[TaskPresenter:OnExportTasksRequested] Exception: {ex.Message}\n{ex.StackTrace}");
-                _view.DisplayMessage($"Terjadi kesalahan sistem saat mengekspor: {ex.Message}", "Error Sistem", MessageBoxIcon.Error);
+                _view.DisplayMessage($"Terjadi kesalahan saat mengekspor: {ex.Message}", "Error Sistem", MessageBoxIcon.Error);
             }
         }
     }
