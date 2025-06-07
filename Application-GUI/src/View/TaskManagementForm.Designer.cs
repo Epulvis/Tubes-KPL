@@ -28,12 +28,32 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
-            this.Text = "Form1";
+            btnPageFilterTaskByDate = new Button();
+            SuspendLayout();
+            // 
+            // btnPageFilterTaskByDate
+            // 
+            btnPageFilterTaskByDate.Location = new Point(46, 91);
+            btnPageFilterTaskByDate.Name = "btnPageFilterTaskByDate";
+            btnPageFilterTaskByDate.Size = new Size(181, 34);
+            btnPageFilterTaskByDate.TabIndex = 0;
+            btnPageFilterTaskByDate.Text = "Filter Tanggal Tugas ";
+            btnPageFilterTaskByDate.UseVisualStyleBackColor = true;
+            btnPageFilterTaskByDate.Click += button1_Click;
+            // 
+            // TaskManagementForm
+            // 
+            AutoScaleDimensions = new SizeF(10F, 25F);
+            AutoScaleMode = AutoScaleMode.Font;
+            ClientSize = new Size(800, 450);
+            Controls.Add(btnPageFilterTaskByDate);
+            Name = "TaskManagementForm";
+            Text = "Aplikasi Manajemen Tugas";
+            ResumeLayout(false);
         }
 
         #endregion
+
+        private Button btnPageFilterTaskByDate;
     }
 }

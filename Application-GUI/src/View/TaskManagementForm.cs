@@ -1,5 +1,6 @@
 using Application.Models;
 using Application.Helpers;
+using Application_GUI.src.View;
 
 namespace Application.View
 {
@@ -60,7 +61,8 @@ namespace Application.View
 
             var btnOk = new Button { Text = "OK", Dock = DockStyle.Bottom };
             StatusTugas selectedStatus = StatusTugas.BelumMulai;
-            btnOk.Click += (s, e) => {
+            btnOk.Click += (s, e) =>
+            {
                 if (comboBoxStatus.SelectedItem != null)
                 {
                     Enum.TryParse(comboBoxStatus.SelectedItem.ToString(), out selectedStatus);
@@ -190,6 +192,13 @@ namespace Application.View
             txtDescription.Clear();
             dtpDueDate.Value = DateTime.Now;
             txtTitle.Focus();
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            FilteredTaskByDateForm form = new FilteredTaskByDateForm(this);
+            form.Show();
+            this.Hide();
         }
     }
 }
