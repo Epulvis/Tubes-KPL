@@ -1,5 +1,6 @@
 using Application.Models;
 using Application.Helpers;
+using Application_GUI.src.View;
 
 namespace Application.View
 {
@@ -202,6 +203,13 @@ namespace Application.View
         private void ButtonCloseSidebar_Click(object sender, EventArgs e)
         {
             panelSidebar.Visible = false;
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            FilteredTaskByDateForm form = new FilteredTaskByDateForm(this);
+            form.Show();
+            this.Hide();
         }
     }
 }

@@ -28,6 +28,35 @@ partial class TaskManagementForm
 
     #region Windows Form Designer generated code
 
+        /// <summary>
+        ///  Required method for Designer support - do not modify
+        ///  the contents of this method with the code editor.
+        /// </summary>
+        private void InitializeComponent()
+        {
+            btnPageFilterTaskByDate = new Button();
+            SuspendLayout();
+            // 
+            // btnPageFilterTaskByDate
+            // 
+            btnPageFilterTaskByDate.Location = new Point(46, 91);
+            btnPageFilterTaskByDate.Name = "btnPageFilterTaskByDate";
+            btnPageFilterTaskByDate.Size = new Size(181, 34);
+            btnPageFilterTaskByDate.TabIndex = 0;
+            btnPageFilterTaskByDate.Text = "Filter Tanggal Tugas ";
+            btnPageFilterTaskByDate.UseVisualStyleBackColor = true;
+            btnPageFilterTaskByDate.Click += button1_Click;
+            // 
+            // TaskManagementForm
+            // 
+            AutoScaleDimensions = new SizeF(10F, 25F);
+            AutoScaleMode = AutoScaleMode.Font;
+            ClientSize = new Size(800, 450);
+            Controls.Add(btnPageFilterTaskByDate);
+            Name = "TaskManagementForm";
+            Text = "Aplikasi Manajemen Tugas";
+            ResumeLayout(false);
+        }
     /// <summary>
     ///  Required method for Designer support - do not modify
     ///  the contents of this method with the code editor.
@@ -116,5 +145,8 @@ partial class TaskManagementForm
         ResumeLayout(false);
     }
 
-    #endregion
+        #endregion
+
+        private Button btnPageFilterTaskByDate;
+    }
 }
