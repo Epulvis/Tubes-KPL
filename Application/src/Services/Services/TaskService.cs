@@ -12,7 +12,6 @@ namespace Tubes_KPL.src.Application.Services
             _repository = repository ?? throw new ArgumentNullException(nameof(repository));
         }
 
-        //Bintang : poin 1 Defensive Programming + Logging
         public Tugas BuatTugas(string judul, DateTime deadline, KategoriTugas kategori)
         {
             if (string.IsNullOrWhiteSpace(judul))
