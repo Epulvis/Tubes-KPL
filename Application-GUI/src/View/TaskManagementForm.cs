@@ -1,11 +1,13 @@
 using Application.Models;
 using Application.Helpers;
 using Application_GUI.src.View;
+using System.Text.Json;
 
 namespace Application.View
 {
     public partial class TaskManagementForm : Form, ITaskView
     {
+        private List<Tugas> _listTugas;
         private ListBox lstTasks;
         private TextBox txtTitle;
         private TextBox txtDescription;
@@ -30,6 +32,31 @@ namespace Application.View
         public TaskManagementForm()
         {
             InitializeComponent();
+
+            string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\..\API\Storage\Tugas.json");
+
+            // Baca dan deserialisasi file JSON
+            try
+            {
+                string json = File.ReadAllText(filePath);
+                _listTugas = JsonSerializer.Deserialize<List<Tugas>>(json, new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                }) ?? new List<Tugas>();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Gagal membaca data tugas: {ex.Message}");
+                _listTugas = new List<Tugas>();
+            }
+
+            // Tampilkan ke DataGridView
+
+            dataGridView1.AutoGenerateColumns = true;
+            dataGridView1.DataSource = _listTugas;
+
+
+            //MessageBox.Show($"Jumlah tugas: {_listTugas.Count}");
         }
 
         public string GetTaskTitleInput() => txtTitle.Text.Trim();
@@ -198,11 +225,19 @@ namespace Application.View
         {
             // Toggle panel visibility
             panelSidebar.Visible = !panelSidebar.Visible;
+            flowLayoutPanel1.Location = new Point(141, 31);
+            flowLayoutPanel1.Size = new Size(417, 257);
+            dataGridView1.Location = new Point(3, 3);
+            dataGridView1.Size = new Size(491, 252);
         }
 
         private void ButtonCloseSidebar_Click(object sender, EventArgs e)
         {
             panelSidebar.Visible = false;
+            flowLayoutPanel1.Location = new Point(0, 31);
+            flowLayoutPanel1.Size = new Size(558, 257);
+            dataGridView1.Location = new Point(3, 3);
+            dataGridView1.Size = new Size(555, 254);
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -211,5 +246,23 @@ namespace Application.View
             form.Show();
             this.Hide();
         }
+
+        private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+            // Cek jika kolom "Detail" yang diklik
+            if (dataGridView1.Columns[e.ColumnIndex].Name == "detailButton" && e.RowIndex >= 0)
+            {
+                // Ambil baris yang diklik
+                var row = dataGridView1.Rows[e.RowIndex];
+                var tugas = row.DataBoundItem as Tugas;
+
+                if (tugas != null)
+                {
+                    string detail = $"ID: {tugas.Id}\nJudul: {tugas.Judul}\nDeadline: {tugas.Deadline}\nStatus: {tugas.Status}";
+                    MessageBox.Show(detail, "Detail Tugas", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+            }
+        }
+
     }
 }
