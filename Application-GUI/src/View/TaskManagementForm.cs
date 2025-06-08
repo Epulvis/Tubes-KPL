@@ -194,6 +194,17 @@ namespace Application.View
             txtTitle.Focus();
         }
 
+        private void ButtonHamburger_Click(object sender, EventArgs e)
+        {
+            // Toggle panel visibility
+            panelSidebar.Visible = !panelSidebar.Visible;
+        }
+
+        private void ButtonCloseSidebar_Click(object sender, EventArgs e)
+        {
+            panelSidebar.Visible = false;
+        }
+
         private void button1_Click(object sender, EventArgs e)
         {
             FilteredTaskByDateForm form = new FilteredTaskByDateForm(this);
