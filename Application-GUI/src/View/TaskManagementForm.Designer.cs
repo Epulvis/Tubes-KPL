@@ -165,7 +165,7 @@ partial class TaskManagementForm
         label1.Name = "label1";
         label1.Size = new Size(223, 21);
         label1.TabIndex = 3;
-        label1.Text = "Manajement Tugas Mahasiswa";
+        label1.Text = "Manajemen Tugas Mahasiswa";
         // 
         // TaskManagementForm
         // 
