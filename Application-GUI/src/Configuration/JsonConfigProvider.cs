@@ -1,6 +1,6 @@
 ﻿using System.Text.Json;
 
-namespace Tubes_KPL.src.Infrastructure.Configuration
+namespace Application.Configuration
 {
     class JsonConfigProvider : IConfigProvider
     {

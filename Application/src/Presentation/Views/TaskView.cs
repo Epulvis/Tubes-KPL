@@ -10,10 +10,26 @@ namespace Tubes_KPL.src.Presentation.Views
         private readonly TaskPresenter _presenter;
         private readonly IConfigProvider _configProvider;
 
+        private readonly Dictionary<string, Func<Task>> _menuActions;
+
         public TaskView(TaskPresenter presenter, IConfigProvider configProvider)
         {
             _presenter = presenter ?? throw new ArgumentNullException(nameof(presenter));
             _configProvider = configProvider ?? throw new ArgumentNullException(nameof(configProvider));
+
+            // Table-driven: mapping menu ke aksi
+            _menuActions = new Dictionary<string, Func<Task>>
+            {
+                { "Lihat Daftar Tugas", ShowAllTasks },
+                { "Lihat Tugas Berdasarkan Rentang Waktu", ShowTasksByDateRange },
+                { "Lihat Detail Tugas", ShowTaskDetails },
+                { "Tambah Tugas Baru", AddNewTask },
+                { "Perbarui Tugas", UpdateTask },
+                { "Ubah Status Tugas", UpdateTaskStatus },
+                { "Hapus Tugas", DeleteTask },
+                { "Cetak Daftar Tugas ke File JSON dan TXT", PrintTasksToFiles }
+                // "Keluar" akan ditangani khusus
+            };
         }
 
         public async Task ShowMainMenu()
@@ -29,52 +45,20 @@ namespace Tubes_KPL.src.Presentation.Views
                         .Title("[bold yellow]=== APLIKASI MANAJEMEN TUGAS MAHASISWA ===[/]")
                         .PageSize(10)
                         .MoreChoicesText("[grey](Gunakan panah atas/bawah untuk memilih)[/]")
-                        .AddChoices([
-                            "Lihat Daftar Tugas",
-                            "Lihat Tugas Berdasarkan Rentang Waktu",
-                            "Lihat Detail Tugas",
-                            "Tambah Tugas Baru",
-                            "Perbarui Tugas",
-                            "Ubah Status Tugas",
-                            "Hapus Tugas",
-                            "Cetak Daftar Tugas ke File JSON dan TXT",
-                            "Keluar"
-                         ]));
+                        .AddChoices(_menuActions.Keys.Concat(new[] { "Keluar" })));
 
-                switch (choice)
+                if (choice == "Keluar")
                 {
-                    case "Lihat Daftar Tugas":
-                        await ShowAllTasks();
-                        break;
-                    case "Lihat Tugas Berdasarkan Rentang Waktu":
-                        await ShowTasksByDateRange();
-                        break;
-                    case "Lihat Detail Tugas":
-                        await ShowTaskDetails();
-                        break;
-                    case "Tambah Tugas Baru":
-                        await AddNewTask();
-                        break;
-                    case "Perbarui Tugas":
-                        await UpdateTask();
-                        break;
-                    case "Ubah Status Tugas":
-                        await UpdateTaskStatus();
-                        break;
-                    case "Hapus Tugas":
-                        await DeleteTask();
-                        break;
-                    case "Cetak Daftar Tugas ke File JSON dan TXT":
-                        await PrintTasksToFiles();
-                        break;
-                    case "Keluar":
-                        if (AnsiConsole.Confirm("Apakah Anda yakin ingin keluar?"))
-                        {
-                            isRunning = false;
-                            AnsiConsole.MarkupLine("[green]Terima kasih! Program akan ditutup.[/]");
-                            await Task.Delay(1000);
-                        }
-                        break;
+                    if (AnsiConsole.Confirm("Apakah Anda yakin ingin keluar?"))
+                    {
+                        isRunning = false;
+                        AnsiConsole.MarkupLine("[green]Terima kasih! Program akan ditutup.[/]");
+                        await Task.Delay(1000);
+                    }
+                }
+                else if (_menuActions.TryGetValue(choice, out var action))
+                {
+                    await action();
                 }
             }
         }
@@ -154,18 +138,21 @@ namespace Tubes_KPL.src.Presentation.Views
                 deadline = DateTime.Now;
             }
 
+            
             Console.WriteLine("Kategori Tugas:");
             Console.WriteLine("0. Akademik");
             Console.WriteLine("1. Non-Akademik");
             Console.Write("Pilih Kategori (0/1): ");
+            int kategori = InputHelper.GetValidatedInput("Pilih Kategori (0/1): ", s =>
+                (int.TryParse(s, out int val) && (val == 0 || val == 1), val));
 
-            if (!int.TryParse(Console.ReadLine(), out int kategoriIndex) || kategoriIndex < 0 || kategoriIndex > 1)
-            {
-                Console.WriteLine("Kategori tidak valid! Menggunakan default: Akademik");
-                kategoriIndex = 0;
-            }
+            //if (!int.TryParse(Console.ReadLine(), out int kategoriIndex) || kategoriIndex < 0 || kategoriIndex > 1)
+            //{
+            //    Console.WriteLine("Kategori tidak valid! Menggunakan default: Akademik");
+            //    kategoriIndex = 0;
+            //}
 
-            string result = await _presenter.CreateTask(judul, deadline.ToString("dd/MM/yyyy"), kategoriIndex);
+            string result = await _presenter.CreateTask(judul, deadline.ToString("dd/MM/yyyy"), kategori);
             Console.WriteLine("\n" + result);
 
             Console.WriteLine("\nTekan Enter untuk kembali ke menu utama...");
@@ -177,11 +164,9 @@ namespace Tubes_KPL.src.Presentation.Views
             Console.Clear();
             AnsiConsole.MarkupLine("[bold yellow]PERBARUI TUGAS[/]");
 
-            Console.Write("Masukkan ID Tugas: ");
-            string idStr = Console.ReadLine();
+            string idStr = InputValidator.NonEmptyInput("Masukkan ID Tugas: ");
 
-            Console.Write("Judul Tugas Baru: ");
-            string judul = Console.ReadLine();
+            string judul = InputValidator.NonEmptyInput("Judul Tugas Baru: ");
 
             Console.Write("Deadline Baru (DD/MM/YYYY): ");
             string deadlineStr = Console.ReadLine();
@@ -197,8 +182,8 @@ namespace Tubes_KPL.src.Presentation.Views
                 kategoriIndex = 0;
             }
 
-            string result = await _presenter.UpdateTask(idStr, judul, deadlineStr, kategoriIndex);
-            Console.WriteLine("\n" + result);
+            var result = await _presenter.UpdateTask(idStr, judul, deadlineStr, kategoriIndex);
+            AnsiConsole.MarkupLine("\n" + result);
 
             Console.WriteLine("\nTekan Enter untuk kembali ke menu utama...");
             Console.ReadLine();
@@ -266,6 +251,33 @@ namespace Tubes_KPL.src.Presentation.Views
 
             Console.WriteLine("\nTekan Enter untuk kembali ke menu utama...");
             Console.ReadLine();
+        }
+    }
+    public static class InputHelper
+    {
+        /// <summary>
+        /// Mengambil input dari user dan memvalidasi menggunakan parser.
+        /// Precondition: prompt dan parser tidak boleh null/kosong.
+        /// Postcondition: Mengembalikan nilai T yang valid sesuai parser.
+        /// </summary>
+        public static T GetValidatedInput<T>(string prompt, Func<string, (bool, T)> parser)
+        {
+            // Precondition
+            if (string.IsNullOrWhiteSpace(prompt))
+                throw new ArgumentException("Prompt tidak boleh kosong.", nameof(prompt));
+            if (parser == null)
+                throw new ArgumentNullException(nameof(parser));
+
+            while (true)
+            {
+                Console.Write(prompt);
+                string input = Console.ReadLine();
+                var (isValid, value) = parser(input);
+                if (isValid)
+                    return value;
+                Console.WriteLine("Input tidak valid, coba lagi.");
+            }
+            // Postcondition: return value hanya jika isValid == true
         }
     }
 }

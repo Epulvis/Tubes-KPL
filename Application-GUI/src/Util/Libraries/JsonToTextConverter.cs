@@ -1,7 +1,7 @@
-using Tubes_KPL.src.Application.Helpers;
-using Tubes_KPL.src.Domain.Models;
+using Application.Helpers;
+using Application.Models;
 
-namespace Tubes_KPL.src.Application.Libraries
+namespace Application.Libraries
 {
     class JsonToTextConverter
     {
