@@ -13,6 +13,7 @@ partial class TaskManagementForm
     private Button buttonCloseSidebar;
     private Button buttonSettings;
     private DataGridViewButtonColumn detailButton;
+    private Button buttonAdd;
 
     /// <summary>
     ///  Clean up any resources being used.
@@ -44,6 +45,7 @@ partial class TaskManagementForm
         buttonSettings = new Button();
         btnPageFilterTaskByDate = new Button();
         buttonCloseSidebar = new Button();
+        buttonAdd = new Button();
         detailButton = new DataGridViewButtonColumn();
         buttonHamburger = new Button();
         flowLayoutPanel1 = new FlowLayoutPanel();
@@ -61,6 +63,7 @@ partial class TaskManagementForm
         panelSidebar.Controls.Add(buttonSettings);
         panelSidebar.Controls.Add(btnPageFilterTaskByDate);
         panelSidebar.Controls.Add(buttonCloseSidebar);
+        panelSidebar.Controls.Add(buttonAdd);
         panelSidebar.Location = new Point(0, 0);
         panelSidebar.Margin = new Padding(2);
         panelSidebar.Name = "panelSidebar";
@@ -68,22 +71,23 @@ partial class TaskManagementForm
         panelSidebar.TabIndex = 0;
         panelSidebar.Visible = false;
         // 
-        // buttonDelete
+        // buttonHome
         // 
         buttonHome.BackColor = Color.LightCyan;
         buttonHome.ForeColor = SystemColors.ControlText;
-        buttonHome.Location = new Point(7, 36);
+        buttonHome.Location = new Point(7, 75);
         buttonHome.Margin = new Padding(2);
         buttonHome.Name = "buttonHome";
         buttonHome.Size = new Size(129, 24);
         buttonHome.TabIndex = 0;
-        buttonHome.Text = "Home";
+        buttonHome.Text = "Delete Task";
         buttonHome.UseVisualStyleBackColor = false;
+        buttonHome.Click += buttonHome_Click;
         // 
-        // buttonUpdate
+        // buttonSettings
         // 
         buttonSettings.BackColor = Color.LightCyan;
-        buttonSettings.Location = new Point(7, 66);
+        buttonSettings.Location = new Point(7, 109);
         buttonSettings.Margin = new Padding(2);
         buttonSettings.Name = "buttonSettings";
         buttonSettings.Size = new Size(129, 24);
@@ -94,7 +98,7 @@ partial class TaskManagementForm
         // btnPageFilterTaskByDate
         // 
         btnPageFilterTaskByDate.BackColor = Color.LightCyan;
-        btnPageFilterTaskByDate.Location = new Point(7, 94);
+        btnPageFilterTaskByDate.Location = new Point(7, 144);
         btnPageFilterTaskByDate.Margin = new Padding(2);
         btnPageFilterTaskByDate.Name = "btnPageFilterTaskByDate";
         btnPageFilterTaskByDate.Size = new Size(129, 24);
@@ -119,13 +123,23 @@ partial class TaskManagementForm
         buttonCloseSidebar.UseVisualStyleBackColor = false;
         buttonCloseSidebar.Click += ButtonCloseSidebar_Click;
         // 
+        // buttonAdd
+        // 
+        buttonAdd.BackColor = Color.LightCyan;
+        buttonAdd.Location = new Point(7, 40);
+        buttonAdd.Margin = new Padding(2);
+        buttonAdd.Name = "buttonAdd";
+        buttonAdd.Size = new Size(129, 24);
+        buttonAdd.TabIndex = 0;
+        buttonAdd.Text = "Add Task";
+        buttonAdd.UseVisualStyleBackColor = false;
+        // 
         // detailButton
         // 
         detailButton.HeaderText = "Detail";
         detailButton.Name = "detailButton";
         detailButton.Text = "🔍";
         detailButton.UseColumnTextForButtonValue = true;
-        dataGridView1.Columns.Add(detailButton);
         // 
         // buttonHamburger
         // 
@@ -142,20 +156,20 @@ partial class TaskManagementForm
         // 
         flowLayoutPanel1.Controls.Add(dataGridView1);
         flowLayoutPanel1.Name = "flowLayoutPanel1";
-        flowLayoutPanel1.TabIndex = 2;
         flowLayoutPanel1.Location = new Point(0, 31);
         flowLayoutPanel1.Size = new Size(558, 257);
+        flowLayoutPanel1.TabIndex = 2;
         // 
         // dataGridView1
         // 
         dataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+        dataGridView1.Columns.AddRange(new DataGridViewColumn[] { detailButton });
+        dataGridView1.Location = new Point(3, 3);
         dataGridView1.Name = "dataGridView1";
+        dataGridView1.RowTemplate.Height = 24;
+        dataGridView1.Size = new Size(555, 254);
         dataGridView1.TabIndex = 0;
         dataGridView1.CellContentClick += dataGridView1_CellContentClick;
-        dataGridView1.Location = new Point(3, 3);
-        dataGridView1.Size = new Size(555, 254);
-        dataGridView1.Columns["detailButton"].Width = 40;
-        dataGridView1.RowTemplate.Height = 24;
         // 
         // label1
         // 
@@ -163,7 +177,7 @@ partial class TaskManagementForm
         label1.Font = new Font("Segoe UI", 12F);
         label1.Location = new Point(172, 4);
         label1.Name = "label1";
-        label1.Size = new Size(223, 21);
+        label1.Size = new Size(218, 21);
         label1.TabIndex = 3;
         label1.Text = "Manajemen Tugas Mahasiswa";
         // 
