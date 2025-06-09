@@ -1,4 +1,4 @@
-﻿namespace Application.View;
+namespace Application.View;
 
 partial class TaskManagementForm
 {
@@ -15,18 +15,18 @@ partial class TaskManagementForm
     private DataGridViewButtonColumn detailButton;
     private Button buttonAdd;
 
-partial class TaskManagementForm
-{
+//    partial class TaskManagementForm
+//{
 
-    /// <summary>
-    ///  Required designer variable.
-    /// </summary>
-    private System.ComponentModel.IContainer components = null;
-    private Panel panelSidebar;
-    private Button buttonHamburger;
-    private Button buttonHome;
-    private Button buttonCloseSidebar;
-    private Button buttonSettings;
+//    /// <summary>
+//    ///  Required designer variable.
+//    /// </summary>
+//    private System.ComponentModel.IContainer components = null;
+//    private Panel panelSidebar;
+//    private Button buttonHamburger;
+//    private Button buttonHome;
+//    private Button buttonCloseSidebar;
+//    private Button buttonSettings;
 
     /// <summary>
     ///  Clean up any resources being used.

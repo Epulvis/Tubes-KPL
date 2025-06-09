@@ -2,13 +2,15 @@ using System.Net.Http.Json;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Tubes_KPL.src.Application.Helpers;
-using Tubes_KPL.src.Application.Libraries;
 using Tubes_KPL.src.Application.Services;
 using Tubes_KPL.src.Domain.Models;
 using Tubes_KPL.src.Infrastructure.Configuration;
 using Spectre.Console;
 using Tubes_KPL.src.Services.Libraries;
-// using TaskUtilities.Libraries;
+using TaskUtilities.Libraries;
+
+using JsonToTextTugas = TaskUtilities.Libraries.JsonToTextConverter.Tugas;
+
 
 namespace Tubes_KPL.src.Presentation.Presenters
 {
@@ -367,6 +369,7 @@ namespace Tubes_KPL.src.Presentation.Presenters
             }
         }
 
+        // Tambahkan using untuk JsonToTextConverter.Tugas
         public async Task<string> PrintTasksToFilesFromApi(string jsonFilePath, string textFilePath)
         {
             try
@@ -377,14 +380,24 @@ namespace Tubes_KPL.src.Presentation.Presenters
                 if (!response.IsSuccessStatusCode)
                     return $"[ERROR] Gagal mengambil data dari API. Status code: {response.StatusCode}";
 
-                var tasks = await response.Content.ReadFromJsonAsync<List<Tugas>>(_jsonOptions);
+                List<Tugas>? tasks = await response.Content.ReadFromJsonAsync<List<Tugas>>(_jsonOptions);
                 if (tasks == null || !tasks.Any())
                     return "[INFO] Tidak ada tugas yang tersedia untuk dicetak.";
 
                 var jsonContent = JsonSerializer.Serialize(tasks, new JsonSerializerOptions { WriteIndented = true });
                 File.WriteAllText(jsonFilePath, jsonContent);
 
-                var textContent = JsonToTextConverter.ConvertTasksToText(tasks);
+                // Mapping ke tipe yang sesuai
+                var mappedTasks = tasks.Select(t => new JsonToTextTugas
+                {
+                    Id = t.Id,
+                    Judul = t.Judul,
+                    Deadline = t.Deadline,
+                    Status = (TaskUtilities.Libraries.JsonToTextConverter.StatusTugas)t.Status,
+                    Kategori = (TaskUtilities.Libraries.JsonToTextConverter.KategoriTugas)t.Kategori
+                }).ToList();
+
+                var textContent = JsonToTextConverter.ConvertTasksToText(mappedTasks);
                 File.WriteAllText(textFilePath, textContent);
 
                 return $"[INFO] Daftar tugas berhasil dicetak ke file JSON: {jsonFilePath} dan file TXT: {textFilePath}.";
@@ -394,6 +407,34 @@ namespace Tubes_KPL.src.Presentation.Presenters
                 return $"[ERROR] Gagal mencetak daftar tugas: {ex.Message}";
             }
         }
+
+        // public async Task<string> PrintTasksToFilesFromApi(string jsonFilePath, string textFilePath)
+        // {
+        //     try
+        //     {
+        //         Console.WriteLine($"[DEBUG] Mengakses API di: {BaseUrl}");
+        //
+        //         var response = await _httpClient.GetAsync(BaseUrl);
+        //         if (!response.IsSuccessStatusCode)
+        //             return $"[ERROR] Gagal mengambil data dari API. Status code: {response.StatusCode}";
+        //
+        //         List<Tugas>? tasks = await response.Content.ReadFromJsonAsync<List<Tugas>>(_jsonOptions);
+        //         if (tasks == null || !tasks.Any())
+        //             return "[INFO] Tidak ada tugas yang tersedia untuk dicetak.";
+        //
+        //         var jsonContent = JsonSerializer.Serialize(tasks, new JsonSerializerOptions { WriteIndented = true });
+        //         File.WriteAllText(jsonFilePath, jsonContent);
+        //
+        //         var textContent = JsonToTextConverter.ConvertTasksToText(tasks);
+        //         File.WriteAllText(textFilePath, textContent);
+        //
+        //         return $"[INFO] Daftar tugas berhasil dicetak ke file JSON: {jsonFilePath} dan file TXT: {textFilePath}.";
+        //     }
+        //     catch (Exception ex)
+        //     {
+        //         return $"[ERROR] Gagal mencetak daftar tugas: {ex.Message}";
+        //     }
+        // }
         
         
     }
