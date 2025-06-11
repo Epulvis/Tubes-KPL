@@ -1,4 +1,4 @@
-﻿namespace Application.View;
+namespace Application.View;
 
 partial class TaskManagementForm
 {
