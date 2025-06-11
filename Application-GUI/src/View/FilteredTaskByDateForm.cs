@@ -1,5 +1,6 @@
 ﻿using Application.Models;
 using Application.View;
+using Application.Services;
 using System;
 using System.Buffers.Text;
 using System.Collections.Generic;
@@ -12,42 +13,77 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Application.Helpers;
 
 namespace Application_GUI.src.View
 {
     public partial class FilteredTaskByDateForm : Form
     {
         private TaskManagementForm _taskManagementForm;
-        private List<Tugas> _listTugas;
+        private List<Tugas> _listTugas = new List<Tugas>();
+        //private List<Tugas> _listTugas;
+        private TaskService _taskService;
 
         public FilteredTaskByDateForm(TaskManagementForm form)
         {
             InitializeComponent();
             this._taskManagementForm = form;
 
-            // Path relatif ke file JSON (pastikan path ini benar sesuai struktur project Anda)
-            string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\..\API\Storage\Tugas.json");
+            // Inisialisasi dependency TaskService
+            var httpClient = new HttpClient();
+            var validator = new InputValidator();
+            var statusStateMachine = new StatusStateMachine();
+            _taskService = new TaskService(httpClient, validator, statusStateMachine);
 
-            // Baca dan deserialisasi file JSON
-            try
+            // Load data dari API saat form di-load
+            this.Load += FilteredTaskByDateForm_Load;
+
+            //// Path relatif ke file JSON (pastikan path ini benar sesuai struktur project Anda)
+            //string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\..\API\Storage\Tugas.json");
+
+            //// Baca dan deserialisasi file JSON
+            //try
+            //{
+            //    string json = File.ReadAllText(filePath);
+            //    _listTugas = JsonSerializer.Deserialize<List<Tugas>>(json, new JsonSerializerOptions
+            //    {
+            //        PropertyNameCaseInsensitive = true
+            //    }) ?? new List<Tugas>();
+            //}
+            //catch (Exception ex)
+            //{
+            //    MessageBox.Show($"Gagal membaca data tugas: {ex.Message}");
+            //    _listTugas = new List<Tugas>();
+            //}
+
+            //// Tampilkan ke DataGridView
+            //dataGridViewTasks.AutoGenerateColumns = true;
+            //dataGridViewTasks.DataSource = _listTugas;
+
+            //MessageBox.Show($"Jumlah tugas: {_listTugas.Count}");
+        }
+
+        private async void FilteredTaskByDateForm_Load(object? sender, EventArgs e)
+        {
+            await LoadTugasFromApiAsync();
+        }
+
+        private async Task LoadTugasFromApiAsync()
+        {
+            var result = await _taskService.GetAllTasksAsync();
+            if (result.IsSuccess)
             {
-                string json = File.ReadAllText(filePath);
-                _listTugas = JsonSerializer.Deserialize<List<Tugas>>(json, new JsonSerializerOptions
-                {
-                    PropertyNameCaseInsensitive = true
-                }) ?? new List<Tugas>();
+                _listTugas = result.Value ?? new List<Tugas>();
+                dataGridViewTasks.AutoGenerateColumns = true;
+                dataGridViewTasks.DataSource = _listTugas;
+                MessageBox.Show($"Jumlah tugas: {_listTugas.Count}");
             }
-            catch (Exception ex)
+            else
             {
-                MessageBox.Show($"Gagal membaca data tugas: {ex.Message}");
+                MessageBox.Show($"Gagal mengambil data tugas dari API: {result.Error}");
                 _listTugas = new List<Tugas>();
+                dataGridViewTasks.DataSource = _listTugas;
             }
-
-            // Tampilkan ke DataGridView
-            dataGridViewTasks.AutoGenerateColumns = true;
-            dataGridViewTasks.DataSource = _listTugas;
-
-            MessageBox.Show($"Jumlah tugas: {_listTugas.Count}");
         }
 
         private void btnBack_Click1(object sender, EventArgs e)

@@ -3,6 +3,7 @@ using System.Text.Json;
 using Application.Models;
 using Application.Helpers;
 using Application.Libraries;
+using System.Text.Json.Serialization;
 
 namespace Application.Services
 {
@@ -17,7 +18,7 @@ namespace Application.Services
         {
             PropertyNameCaseInsensitive = true,
             // Tambahkan konverter jika enum di API direpresentasikan sebagai string
-            // Converters = { new JsonStringEnumConverter() } // Uncomment jika API menggunakan string untuk enum
+            Converters = { new JsonStringEnumConverter() } // Uncomment jika API menggunakan string untuk enum
         };
 
         // Constructor diubah untuk menerima HttpClient
@@ -33,7 +34,7 @@ namespace Application.Services
         {
             try
             {
-                var response = await _httpClient.GetAsync($"{_apiBaseUrl}/tasks");
+                var response = await _httpClient.GetAsync($"{_apiBaseUrl}");
                 if (response.IsSuccessStatusCode)
                 {
                     var tasks = await response.Content.ReadFromJsonAsync<List<Tugas>>(_jsonOptions);
