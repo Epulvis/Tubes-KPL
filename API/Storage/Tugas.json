@@ -28,37 +28,44 @@
     "Kategori": 0
   },
   {
-    "Id": 6,
+    "Id": 5,
     "Judul": "Judul tugas 6",
     "Deadline": "2025-07-01T05:43:23.317Z",
     "Status": 1,
     "Kategori": 0
   },
   {
-    "Id": 7,
+    "Id": 6,
     "Judul": "Judul tugas 7",
     "Deadline": "2025-07-04T00:00:00",
     "Status": 0,
     "Kategori": 0
   },
   {
-    "Id": 8,
+    "Id": 7,
     "Judul": "Judul tugas 8",
     "Deadline": "2025-07-20T00:00:00",
     "Status": 0,
     "Kategori": 0
   },
   {
-    "Id": 9,
+    "Id": 8,
     "Judul": "Judul tugas 9",
     "Deadline": "2025-07-30T16:03:42.962Z",
     "Status": 1,
     "Kategori": 1
   },
   {
-    "Id": 10,
+    "Id": 9,
     "Judul": "Judul tugas 10",
     "Deadline": "2025-07-20T00:00:00",
+    "Status": 1,
+    "Kategori": 0
+  },
+  {
+    "Id": 10,
+    "Judul": "Judul tugas 11",
+    "Deadline": "2025-06-14T14:30:00",
     "Status": 1,
     "Kategori": 0
   }

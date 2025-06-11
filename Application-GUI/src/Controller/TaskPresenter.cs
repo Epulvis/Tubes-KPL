@@ -2,6 +2,8 @@
 using Application.Services;
 using Application.Helpers;
 using Application.View;
+using System.Text.Json;
+using Application.Configuration;
 
 namespace Application.Controller
 {
@@ -10,18 +12,27 @@ namespace Application.Controller
         private readonly ITaskView _view;
         private readonly TaskService _taskService;
         private readonly InputValidator _validator;
+        private readonly IConfigProvider _configProvider;
 
         public TaskPresenter(ITaskView view, TaskService taskService, InputValidator validator)
         {
             _view = view;
             _taskService = taskService;
             _validator = validator;
+            string configFilePath = "../../../src/Configuration/config.json";
+            if (!System.IO.File.Exists(configFilePath))
+            {
+                _view.DisplayMessage($"File konfigurasi tidak ditemukan: {configFilePath}", "Error", MessageBoxIcon.Error);
+            }
+
+            var configProvider = new JsonConfigProvider(configFilePath);
+            _configProvider = configProvider ?? throw new ArgumentNullException(nameof(configProvider));
 
             // Subscribe ke event dari View
             _view.FormLoaded += OnFormLoaded;
             _view.AddTaskRequested += OnAddTaskRequested;
-            _view.ViewTasksRequested += OnViewTasksRequested;
-            _view.ViewTaskDetailsRequested += OnViewTaskDetailsRequested;
+            //_view.ViewTasksRequested += OnViewTasksRequested;
+            //_view.ViewTaskDetailsRequested += OnViewTaskDetailsRequested;
             _view.UpdateTaskStatusRequested += OnUpdateTaskStatusRequested;
             _view.DeleteTaskRequested += OnDeleteTaskRequested;
             _view.FilterTasksByDateRequested += OnFilterTasksByDateRequested;
@@ -67,11 +78,19 @@ namespace Application.Controller
             }
         }
 
+        // get all task
         public async void OnViewTasksRequested()
         {
             try
             {
+                string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\..\API\Storage\Tugas.json");
+                string json = File.ReadAllText(filePath);
+                var dataJson = JsonSerializer.Deserialize<List<Tugas>>(json, new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                }) ?? new List<Tugas>();
                 var result = await _taskService.GetAllTasksAsync();
+                //_view.DisplayMessage($"Gagal mengambil daftar tugas: {result}", "Error", MessageBoxIcon.Error);
                 if (result.IsSuccess)
                 {
                     _view.DisplayTasks(result.Value);
@@ -79,7 +98,7 @@ namespace Application.Controller
                 else
                 {
                     _view.DisplayMessage($"Gagal mengambil daftar tugas: {result.Value}", "Error", MessageBoxIcon.Error);
-                    _view.DisplayTasks([]);
+                    _view.DisplayTasks(dataJson);
                 }
             }
             catch (Exception ex)
@@ -88,27 +107,50 @@ namespace Application.Controller
             }
         }
 
-        public async void OnViewTaskDetailsRequested()
+        // view task details
+        public async void OnViewTaskDetailsRequested(int taskId)
         {
             try
             {
-                int taskId = _view.GetSelectedTaskId();
+                // check valid task id
                 if (taskId == -1)
                 {
                     _view.DisplayMessage("Pilih tugas terlebih dahulu atau masukkan ID yang valid.", "Info", MessageBoxIcon.Information);
                     return;
                 }
 
-                if (!_validator.IsValidId(taskId.ToString()))
-                {
-                    _view.DisplayMessage("ID tugas tidak valid.", "Error Validasi", MessageBoxIcon.Warning);
-                    return;
-                }
-
+                //if (!_validator.IsValidId(taskId.ToString()))
+                //{
+                //    _view.DisplayMessage("ID tugas tidak valid.", "Error Validasi", MessageBoxIcon.Warning);
+                //    return;
+                //}
                 var result = await _taskService.GetTaskByIdAsync(taskId);
+
                 if (result.IsSuccess)
                 {
-                    _view.DisplayTaskDetails(result.Value);
+                    // Secure Coding: Pastikan konfigurasi pengingat deadline ada
+                    var reminderSettings = _configProvider.GetConfig<Dictionary<string, object>>("ReminderSettings");
+                    if (reminderSettings == null)
+                        _view.DisplayMessage("Pengaturan pengingat deadline tidak ditemukan!", "Error", MessageBoxIcon.Error);
+
+
+                    // Secure Coding: Pastikan pengaturan 'DaysBeforeDeadline' ada dan valid
+                    int daysBeforeDeadline = ((JsonElement)reminderSettings["DaysBeforeDeadline"]).GetInt32();
+
+                    string statusWarning = "";
+                    if (DateHelper.DaysUntilDeadline(result.Value.Deadline) <= daysBeforeDeadline && result.Value.Status != StatusTugas.Selesai)
+                    {
+                        statusWarning = $"\nPeringatan: Deadline {DateHelper.DaysUntilDeadline(result.Value.Deadline)} hari lagi!";
+                    }
+
+                    var task =  $"Detail Tugas #{result.Value.Id}:\n" +
+                                $"Judul: {result.Value.Judul}\n" +
+                               $"Kategori: {result.Value.Kategori}\n" +
+                               $"Status: {result.Value.Status}\n" +
+                               $"Deadline: {DateHelper.FormatDate(result.Value.Deadline)}" +
+                                statusWarning;
+
+                    _view.DisplayTaskDetails(task);
                 }
                 else
                 {

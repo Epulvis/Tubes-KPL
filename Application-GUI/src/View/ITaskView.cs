@@ -18,7 +18,7 @@ namespace Application.View
         string GetExportFilePathInput(string defaultFileName, string filter);
 
         void DisplayTasks(List<Tugas> tasks);
-        void DisplayTaskDetails(Tugas task);
+        void DisplayTaskDetails(string task);
         void DisplayMessage(string message, string caption, MessageBoxIcon icon);
         void ClearInputs();
 
