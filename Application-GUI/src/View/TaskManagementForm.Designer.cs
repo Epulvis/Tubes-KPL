@@ -15,18 +15,18 @@ partial class TaskManagementForm
     private DataGridViewButtonColumn detailButton;
     private Button buttonAdd;
 
-//    partial class TaskManagementForm
-//{
+    //    partial class TaskManagementForm
+    //{
 
-//    /// <summary>
-//    ///  Required designer variable.
-//    /// </summary>
-//    private System.ComponentModel.IContainer components = null;
-//    private Panel panelSidebar;
-//    private Button buttonHamburger;
-//    private Button buttonHome;
-//    private Button buttonCloseSidebar;
-//    private Button buttonSettings;
+    //    /// <summary>
+    //    ///  Required designer variable.
+    //    /// </summary>
+    //    private System.ComponentModel.IContainer components = null;
+    //    private Panel panelSidebar;
+    //    private Button buttonHamburger;
+    //    private Button buttonHome;
+    //    private Button buttonCloseSidebar;
+    //    private Button buttonSettings;
 
     /// <summary>
     ///  Clean up any resources being used.
@@ -38,46 +38,7 @@ partial class TaskManagementForm
         {
             components.Dispose();
         }
-<<<<<<< HEAD
         base.Dispose(disposing);
-=======
-
-        #region Windows Form Designer generated code
-
-        /// <summary>
-        ///  Required method for Designer support - do not modify
-        ///  the contents of this method with the code editor.
-        /// </summary>
-        private void InitializeComponent()
-        {
-            btnPageFilterTaskByDate = new Button();
-            SuspendLayout();
-            // 
-            // btnPageFilterTaskByDate
-            // 
-            btnPageFilterTaskByDate.Location = new Point(46, 91);
-            btnPageFilterTaskByDate.Name = "btnPageFilterTaskByDate";
-            btnPageFilterTaskByDate.Size = new Size(181, 34);
-            btnPageFilterTaskByDate.TabIndex = 0;
-            btnPageFilterTaskByDate.Text = "Filter Tanggal Tugas ";
-            btnPageFilterTaskByDate.UseVisualStyleBackColor = true;
-            btnPageFilterTaskByDate.Click += button1_Click;
-            // 
-            // TaskManagementForm
-            // 
-            AutoScaleDimensions = new SizeF(10F, 25F);
-            AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(800, 450);
-            Controls.Add(btnPageFilterTaskByDate);
-            Name = "TaskManagementForm";
-            Text = "Aplikasi Manajemen Tugas";
-            ResumeLayout(false);
-        }
-
-        #endregion
-
-        private Button btnPageFilterTaskByDate;
->>>>>>> 3bf0f60d06f89923bd2e48048e1c4f95366188d3
     }
 
     #region Windows Form Designer generated code
