@@ -1,7 +1,10 @@
 using Application.Models;
 using Application.Helpers;
 using Application_GUI.src.View;
+<<<<<<< HEAD
 using System.Text.Json;
+=======
+>>>>>>> 3bf0f60d06f89923bd2e48048e1c4f95366188d3
 
 namespace Application.View
 {
@@ -221,6 +224,7 @@ namespace Application.View
             txtTitle.Focus();
         }
 
+<<<<<<< HEAD
         private void ButtonHamburger_Click(object sender, EventArgs e)
         {
             // Toggle panel visibility
@@ -240,12 +244,15 @@ namespace Application.View
             dataGridView1.Size = new Size(555, 254);
         }
 
+=======
+>>>>>>> 3bf0f60d06f89923bd2e48048e1c4f95366188d3
         private void button1_Click(object sender, EventArgs e)
         {
             FilteredTaskByDateForm form = new FilteredTaskByDateForm(this);
             form.Show();
             this.Hide();
         }
+<<<<<<< HEAD
 
         private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
@@ -268,5 +275,7 @@ namespace Application.View
         {
 
         }
+=======
+>>>>>>> 3bf0f60d06f89923bd2e48048e1c4f95366188d3
     }
 }
