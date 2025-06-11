@@ -23,7 +23,7 @@ namespace Tubes_KPL.src.Presentation.Presenters
         public TaskPresenter(IConfigProvider configProvider)
         {
             _httpClient = new HttpClient();
-            _configProvider = configProvider ?? throw new ArgumentNullException(nameof(configProvider));
+            _configProvider =  configProvider ?? throw new ArgumentNullException(nameof(configProvider));
             _jsonOptions = new JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true,
