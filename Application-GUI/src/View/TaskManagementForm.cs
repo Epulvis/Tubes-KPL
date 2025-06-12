@@ -246,9 +246,19 @@ public partial class TaskManagementForm : Form, ITaskView
     }
 
 
-
+    // button delete task
     private void buttonHome_Click(object sender, EventArgs e)
     {
-
+        var deleteTaskForm = new DeleteTask(this); // Kirim referensi dashboard
+        deleteTaskForm.Show();
+        this.Hide();
     }
+    
+    // button delete task
+    // private void btnDeleteTask_Click(object sender, EventArgs e)
+    // {
+    //     var deleteTaskForm = new DeleteTask(this); // Kirim referensi dashboard
+    //     deleteTaskForm.Show();
+    //     this.Hide();
+    // }
 }
