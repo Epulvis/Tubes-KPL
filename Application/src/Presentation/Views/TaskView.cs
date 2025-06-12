@@ -92,7 +92,6 @@ namespace Tubes_KPL.src.Presentation.Views
             Console.ReadLine();
         }
 
-
         private async Task ShowTaskDetails()
         {
             Console.Clear();

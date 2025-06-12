@@ -191,6 +191,7 @@ namespace Tubes_KPL.src.Presentation.Presenters
 
                 // Transition to Deleting state
                 currentState = DeleteTaskState.Deleting;
+              
 
                 // Transition to Deleting state
                 currentState = DeleteTaskState.Deleting;
