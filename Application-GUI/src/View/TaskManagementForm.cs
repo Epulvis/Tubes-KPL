@@ -222,7 +222,7 @@ public partial class TaskManagementForm : Form, ITaskView
         // Cek jika kolom "Detail" yang diklik
         if (dataGridView1.Columns[e.ColumnIndex].Name == "detailButton" && e.RowIndex >= 0)
         {
-            taskPresenter.OnViewTaskDetailsRequested(e.RowIndex + 1);
+            taskPresenter.OnViewTaskDetailsRequested(e.RowIndex+1);
         }
     }
 
@@ -266,9 +266,19 @@ public partial class TaskManagementForm : Form, ITaskView
     }
 
 
-
+    // button delete task
     private void buttonHome_Click(object sender, EventArgs e)
     {
-
+        var deleteTaskForm = new DeleteTask(this); // Kirim referensi dashboard
+        deleteTaskForm.Show();
+        this.Hide();
     }
+    
+    // button delete task
+    // private void btnDeleteTask_Click(object sender, EventArgs e)
+    // {
+    //     var deleteTaskForm = new DeleteTask(this); // Kirim referensi dashboard
+    //     deleteTaskForm.Show();
+    //     this.Hide();
+    // }
 }
