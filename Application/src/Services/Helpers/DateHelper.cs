@@ -14,10 +14,9 @@ namespace Tubes_KPL.src.Application.Helpers
             return date.ToString("dd MMMM yyyy HH:mm");
         }
 
-        // Design by Contract: Precondition by bintang
+        //bintang : poin 2 Design by Contract (DbC)
         public static int DaysUntilDeadline(DateTime deadline)
         {
-            //Preconditions
             if (deadline < DateTime.Today)
             {
                 Console.WriteLine($"[ERROR] Deadline tidak valid. Input: {deadline}");
@@ -27,7 +26,6 @@ namespace Tubes_KPL.src.Application.Helpers
             var today = DateTime.Today;
             var days = (int)Math.Ceiling((deadline.Date - today).TotalDays);
 
-            //Postconditions
             if (days < 0)
             {
                 Console.WriteLine($"[ERROR] Hasil perhitungan tidak valid. Days: {days}");
@@ -41,12 +39,12 @@ namespace Tubes_KPL.src.Application.Helpers
             var daysRemaining = DaysUntilDeadline(deadline);
             return daysRemaining >= 0 && daysRemaining <= 3;
         }
-        
+
         public static bool IsDeadlinePassed(DateTime deadline)
         {
             return deadline < DateTime.Now;
         }
-        
+
         public static bool TryParseDate(string input, out DateTime result)
         {
             return DateTime.TryParseExact(input, "d/M/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out result);

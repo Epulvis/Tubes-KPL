@@ -43,6 +43,7 @@ namespace Tubes_KPL.src.Application.Helpers
             return !string.IsNullOrWhiteSpace(judul) && judul.Length <= 100;
         }
 
+        // bintang : poin 4 Validasi Input (Pre/Postcondition) 
         public static bool IsValidDeadline(DateTime deadline)
         {
             if (deadline < DateTime.Now)
