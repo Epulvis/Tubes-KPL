@@ -186,8 +186,9 @@ public partial class TaskManagementForm : Form, ITaskView
 
     private void buttonSettings_Click(object sender, EventArgs e)
     {
-        UpdateTaskForm form = new UpdateTaskForm();
-        form.Show();
+        var updateForm = new UpdateTaskStatusForm();
+        updateForm.Presenter = this.taskPresenter; // pastikan taskPresenter sudah diinisialisasi
+        updateForm.Show();
         this.Hide();
     }
 
