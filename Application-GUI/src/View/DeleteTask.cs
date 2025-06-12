@@ -10,7 +10,7 @@ namespace Application_GUI.src.View
 {
     public partial class DeleteTask : Form
     {
-        private readonly string apiBaseUrl = "http://localhost:5000/api/tasks";
+        private readonly string apiBaseUrl = "http://localhost:4000/api/tugas";
         private TaskManagementForm _dashboard;
 
         public DeleteTask(TaskManagementForm taskManagementForm)
