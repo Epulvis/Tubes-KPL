@@ -1,22 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Newtonsoft.Json;
+using Application.View; // Pastikan namespace ini benar
 
 namespace Application_GUI.src.View
 {
     public partial class DeleteTask : Form
     {
-        private readonly string apiBaseUrl = "http://localhost:5000/api/tasks"; // Ganti sesuai endpoint API Anda
+        private readonly string apiBaseUrl = "http://localhost:5000/api/tasks";
         private TaskManagementForm _dashboard;
-        
-        public DeleteTask()
+
+        public DeleteTask(TaskManagementForm taskManagementForm)
         {
             InitializeComponent();
-            _dashboard = dashboard;
+            _dashboard = taskManagementForm; // Perbaiki penamaan parameter
         }
 
         private async void DeleteTask_Load(object sender, EventArgs e)
@@ -33,7 +33,7 @@ namespace Application_GUI.src.View
                     var response = await client.GetAsync(apiBaseUrl);
                     response.EnsureSuccessStatusCode();
                     var json = await response.Content.ReadAsStringAsync();
-                    var tasks = JsonConvert.DeserializeObject<List<TaskModel>>(json);
+                    var tasks = JsonConvert.DeserializeObject<List<TaskModel>>(json); // Pastikan TaskModel ada
                     dataGridViewTasks.DataSource = tasks;
                 }
             }
