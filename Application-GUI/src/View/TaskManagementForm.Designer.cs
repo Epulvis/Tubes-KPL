@@ -168,8 +168,8 @@ partial class TaskManagementForm
         // flowLayoutPanel1
         // 
         flowLayoutPanel1.Controls.Add(dataGridView1);
-        flowLayoutPanel1.Name = "flowLayoutPanel1";
         flowLayoutPanel1.Location = new Point(0, 31);
+        flowLayoutPanel1.Name = "flowLayoutPanel1";
         flowLayoutPanel1.Size = new Size(558, 257);
         flowLayoutPanel1.TabIndex = 2;
         // 
@@ -199,9 +199,9 @@ partial class TaskManagementForm
         AutoScaleDimensions = new SizeF(7F, 15F);
         AutoScaleMode = AutoScaleMode.Font;
         ClientSize = new Size(560, 287);
+        Controls.Add(panelSidebar);
         Controls.Add(label1);
         Controls.Add(flowLayoutPanel1);
-        Controls.Add(panelSidebar);
         Controls.Add(buttonHamburger);
         Margin = new Padding(2);
         Name = "TaskManagementForm";
