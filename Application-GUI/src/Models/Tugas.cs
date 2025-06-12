@@ -1,4 +1,4 @@
-﻿namespace Tubes_KPL.src.Domain.Models
+﻿namespace Application.Models
 {
     public enum KategoriTugas
     {
