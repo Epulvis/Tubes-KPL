@@ -233,10 +233,6 @@ public partial class TaskManagementForm : Form, ITaskView
 
     public void ClearInputs()
     {
-        txtTitle.Clear();
-        txtDescription.Clear();
-        dtpDueDate.Value = DateTime.Now;
-        txtTitle.Focus();
     }
 
     private void ButtonHamburger_Click(object sender, EventArgs e)

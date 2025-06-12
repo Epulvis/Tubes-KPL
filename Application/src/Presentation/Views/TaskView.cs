@@ -92,26 +92,6 @@ namespace Tubes_KPL.src.Presentation.Views
             Console.ReadLine();
         }
 
-
-        private async Task ShowTaskDetails()
-        {
-            Console.Clear();
-            Console.WriteLine("=== LIHAT TUGAS BERDASARKAN RENTANG WAKTU ===\n");
-            Console.Write("Masukkan Tanggal Mulai (DD/MM/YYYY): ");
-            string startDateStr = Console.ReadLine();
-
-            Console.Write("Masukkan Tanggal Akhir (DD/MM/YYYY): ");
-            string endDateStr = Console.ReadLine();
-
-            string result = await _presenter.GetTasksByDateRange(startDateStr, endDateStr);
-            if (!string.IsNullOrWhiteSpace(result))
-                Console.WriteLine("\n" + result);
-
-            Console.WriteLine("\nTekan Enter untuk kembali ke menu utama...");
-            Console.ReadLine();
-        }
-
-
         private async Task ShowTaskDetails()
         {
             Console.Clear();
