@@ -92,6 +92,7 @@ public partial class TaskManagementForm : Form, ITaskView
         return -1;
     }
 
+
     public StatusTugas GetNewTaskStatusInput()
     {
         var dialog = new Form();
@@ -200,6 +201,31 @@ public partial class TaskManagementForm : Form, ITaskView
             //lstTasks.Items.Add("Tidak ada tugas.");
         }
     }
+
+    private void buttonSettings_Click(object sender, EventArgs e)
+    {
+        var updateForm = new UpdateTaskStatusForm();
+        updateForm.Presenter = this.taskPresenter; // pastikan taskPresenter sudah diinisialisasi
+        updateForm.Show();
+        this.Hide();
+    }
+
+
+    //private void btnUpdateTask_Click(object sender, EventArgs e)
+    //{
+    //    int selectedId = GetSelectedTaskId();
+    //    if (selectedId == -1)
+    //    {
+    //        DisplayMessage("Pilih task yang ingin diupdate!", "Peringatan", MessageBoxIcon.Warning);
+    //        return;
+    //    }
+    //    // Buka form UpdateTaskForm dan kirimkan id task yang dipilih
+    //    var updateForm = new UpdateTaskForm(selectedId);
+    //    updateForm.ShowDialog();
+    //    // Setelah update, refresh daftar task jika perlu
+    //    taskPresenter.OnViewTasksRequested();
+    //}
+
 
     // display task detait
     public void DisplayTaskDetails(string task)

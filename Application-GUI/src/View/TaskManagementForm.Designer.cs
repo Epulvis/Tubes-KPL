@@ -81,7 +81,7 @@ partial class TaskManagementForm
         panelSidebar.Location = new Point(0, 0);
         panelSidebar.Margin = new Padding(2, 3, 2, 3);
         panelSidebar.Name = "panelSidebar";
-        panelSidebar.Size = new Size(640, 383);
+        panelSidebar.Size = new Size(160, 384);
         panelSidebar.TabIndex = 0;
         panelSidebar.Visible = false;
         // 
@@ -98,7 +98,7 @@ partial class TaskManagementForm
         buttonHome.UseVisualStyleBackColor = false;
         buttonHome.Click += buttonHome_Click;
         // 
-        // buttonSettings
+        // buttonSettingsUpdate!!!
         // 
         buttonSettings.BackColor = Color.LightCyan;
         buttonSettings.Location = new Point(8, 145);
@@ -108,6 +108,7 @@ partial class TaskManagementForm
         buttonSettings.TabIndex = 0;
         buttonSettings.Text = "Update Task";
         buttonSettings.UseVisualStyleBackColor = false;
+        buttonSettings.Click += buttonSettings_Click;
         // 
         // btnPageFilterTaskByDate
         // 
