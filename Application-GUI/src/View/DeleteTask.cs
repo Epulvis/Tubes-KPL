@@ -3,20 +3,20 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Newtonsoft.Json;
-using Application.View; // Pastikan namespace ini benar
+using System.Text.Json;
+using Application.View;
 
 namespace Application_GUI.src.View
 {
     public partial class DeleteTask : Form
     {
-        private readonly string apiBaseUrl = "http://localhost:5000/api/tasks";
+        private readonly string apiBaseUrl = "http://localhost:4000/api/tugas";
         private TaskManagementForm _dashboard;
 
         public DeleteTask(TaskManagementForm taskManagementForm)
         {
             InitializeComponent();
-            _dashboard = taskManagementForm; // Perbaiki penamaan parameter
+            _dashboard = taskManagementForm;
         }
 
         private async void DeleteTask_Load(object sender, EventArgs e)
@@ -33,7 +33,11 @@ namespace Application_GUI.src.View
                     var response = await client.GetAsync(apiBaseUrl);
                     response.EnsureSuccessStatusCode();
                     var json = await response.Content.ReadAsStringAsync();
-                    var tasks = JsonConvert.DeserializeObject<List<TaskModel>>(json); // Pastikan TaskModel ada
+                    var tasks = JsonSerializer.Deserialize<List<TaskModel>>(json, new JsonSerializerOptions
+                    {
+                        PropertyNameCaseInsensitive = true
+                    });
+                    dataGridViewTasks.AutoGenerateColumns = true;
                     dataGridViewTasks.DataSource = tasks;
                 }
             }
@@ -93,9 +97,9 @@ namespace Application_GUI.src.View
     public class TaskModel
     {
         public int Id { get; set; }
-        public string Title { get; set; }
-        public string Description { get; set; }
-        public string Status { get; set; }
-        public DateTime DueDate { get; set; }
+        public string Judul { get; set; }
+        public DateTime Deadline { get; set; }
+        public int Status { get; set; }
+        public int Kategori { get; set; }
     }
 }
