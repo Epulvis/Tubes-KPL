@@ -57,7 +57,7 @@ public partial class TaskManagementForm : Form, ITaskView
         taskPresenter = new TaskPresenter(view, taskService, inputValidator);
 
         taskPresenter.OnViewTasksRequested();
-        this.btnShowAddTaskForm.Click += new System.EventHandler(this.btnShowAddTaskForm_Click);
+        this.btnShowAddTaskForm.Click += new System.EventHandler(this.BtnShowAddTaskForm_Click);
     }
 
     public string GetTaskTitleInput() => _new_task_title;
@@ -65,18 +65,16 @@ public partial class TaskManagementForm : Form, ITaskView
     public DateTime GetTaskDueDateInput() => _new_task_dueDate;
     public int GetKategoriIndexInput() => _new_task_kategoriIndex;
 
-    private void btnShowAddTaskForm_Click(object sender, EventArgs e)
+    private void BtnShowAddTaskForm_Click(object sender, EventArgs e)
     {
-        using (var addTaskForm = new CreateTaskForm())
+        using var addTaskForm = new CreateTaskForm();
+        if (addTaskForm.ShowDialog(this) == DialogResult.OK)
         {
-            if (addTaskForm.ShowDialog(this) == DialogResult.OK)
-            {
-                _new_task_title = addTaskForm.JudulTugas;
-                _new_task_dueDate = addTaskForm.Deadline;
-                _new_task_kategoriIndex = addTaskForm.KategoriIndex;
-                AddTaskRequested?.Invoke();
-                taskPresenter.OnViewTasksRequested();
-            }
+            _new_task_title = addTaskForm.JudulTugas;
+            _new_task_dueDate = addTaskForm.Deadline;
+            _new_task_kategoriIndex = addTaskForm.KategoriIndex;
+            AddTaskRequested?.Invoke();
+            taskPresenter.OnViewTasksRequested();
         }
     }
 
