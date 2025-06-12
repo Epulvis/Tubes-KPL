@@ -70,7 +70,6 @@
             label1.Size = new Size(67, 20);
             label1.TabIndex = 3;
             label1.Text = "ID Tugas";
-            label1.Click += label1_Click;
             // 
             // label2
             // 
@@ -80,7 +79,6 @@
             label2.Size = new Size(92, 20);
             label2.TabIndex = 4;
             label2.Text = "Status Tugas";
-            label2.Click += label2_Click;
             // 
             // UpdateTaskStatusForm
             // 

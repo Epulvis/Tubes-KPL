@@ -16,18 +16,15 @@ namespace Application_GUI.src.View
         public UpdateTaskStatusForm()
         {
             InitializeComponent();
-            // Pastikan event load terhubung
             this.Load += UpdateTaskStatusForm_Load;
         }
 
         private void textBox1_TextChanged(object sender, EventArgs e)
         {
-            // Kosongkan jika tidak perlu
         }
 
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
-            // Kosongkan jika tidak perlu
         }
 
         private void UpdateTaskStatusForm_Load(object sender, EventArgs e)
@@ -128,16 +125,6 @@ namespace Application_GUI.src.View
             var mainForm = new TaskManagementForm();
             mainForm.Show();
             this.Close();
-        }
-
-        private void label1_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void label2_Click(object sender, EventArgs e)
-        {
-
         }
     }
 }
