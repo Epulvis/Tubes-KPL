@@ -19,14 +19,6 @@ namespace Application.Controller
             _view = view;
             _taskService = taskService;
             _validator = validator;
-            string configFilePath = "../../../src/Configuration/config.json";
-            if (!System.IO.File.Exists(configFilePath))
-            {
-                _view.DisplayMessage($"File konfigurasi tidak ditemukan: {configFilePath}", "Error", MessageBoxIcon.Error);
-            }
-
-            var configProvider = new JsonConfigProvider(configFilePath);
-            _configProvider = configProvider ?? throw new ArgumentNullException(nameof(configProvider));
 
             // Subscribe ke event dari View
             _view.FormLoaded += OnFormLoaded;
@@ -49,16 +41,14 @@ namespace Application.Controller
             try
             {
                 string title = _view.GetTaskTitleInput();
-                string description = _view.GetTaskDescriptionInput();
                 DateTime dueDate = _view.GetTaskDueDateInput();
+                int kategoriIndex = _view.GetKategoriIndexInput();
 
-                if (!_validator.IsValidTitle(title) || !_validator.IsValidTitle(description) || !_validator.IsValidDeadline(dueDate))
+                if (!_validator.IsValidTitle(title) || !_validator.IsValidDeadline(dueDate))
                 {
                     _view.DisplayMessage("Input tidak valid. Pastikan semua field terisi dengan benar.", "Error Validasi", MessageBoxIcon.Error);
                     return;
                 }
-                // perlu fix
-                int kategoriIndex = 0;
 
                 var result = await _taskService.CreateTaskAsync(title, dueDate, kategoriIndex);
                 if (result.IsSuccess)
@@ -68,7 +58,7 @@ namespace Application.Controller
                 }
                 else
                 {
-                    _view.DisplayMessage($"Gagal menamb000an tugas: {result.Value}", "Error", MessageBoxIcon.Error);
+                    _view.DisplayMessage($"Gagal menambahkan tugas: {result.Value}", "Error", MessageBoxIcon.Error);
                 }
             }
             catch (Exception ex)
@@ -83,12 +73,6 @@ namespace Application.Controller
         {
             try
             {
-                string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\..\API\Storage\Tugas.json");
-                string json = File.ReadAllText(filePath);
-                var dataJson = JsonSerializer.Deserialize<List<Tugas>>(json, new JsonSerializerOptions
-                {
-                    PropertyNameCaseInsensitive = true
-                }) ?? new List<Tugas>();
                 var result = await _taskService.GetAllTasksAsync();
                 //_view.DisplayMessage($"Gagal mengambil daftar tugas: {result}", "Error", MessageBoxIcon.Error);
                 if (result.IsSuccess)
@@ -98,7 +82,6 @@ namespace Application.Controller
                 else
                 {
                     _view.DisplayMessage($"Gagal mengambil daftar tugas: {result.Value}", "Error", MessageBoxIcon.Error);
-                    _view.DisplayTasks(dataJson);
                 }
             }
             catch (Exception ex)

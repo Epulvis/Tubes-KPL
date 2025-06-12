@@ -15,7 +15,6 @@ public partial class TaskManagementForm : Form, ITaskView
     private TextBox txtTitle;
     private TextBox txtDescription;
     private DateTimePicker dtpDueDate;
-    //private Button btnAddTask;
     //private Button btnViewDetails;
     //private Button btnUpdateStatus;
     //private Button btnDeleteTask;
@@ -40,6 +39,11 @@ public partial class TaskManagementForm : Form, ITaskView
     public ITaskView view => this;
     public TaskPresenter taskPresenter;
 
+    private string _new_task_title;
+    private string _new_task_description;
+    private DateTime _new_task_dueDate;
+    private int _new_task_kategoriIndex;
+
     public TaskManagementForm()
     {
         httpClient = new HttpClient();
@@ -52,13 +56,29 @@ public partial class TaskManagementForm : Form, ITaskView
         taskService = new TaskService(httpClient, inputValidator, statusStateMachine);
         taskPresenter = new TaskPresenter(view, taskService, inputValidator);
 
-        // load all task from controller (task presenter)
         taskPresenter.OnViewTasksRequested();
+        this.btnShowAddTaskForm.Click += new System.EventHandler(this.btnShowAddTaskForm_Click);
     }
 
-    public string GetTaskTitleInput() => txtTitle.Text.Trim();
-    public string GetTaskDescriptionInput() => txtDescription.Text.Trim();
-    public DateTime GetTaskDueDateInput() => dtpDueDate.Value;
+    public string GetTaskTitleInput() => _new_task_title;
+    public string GetTaskDescriptionInput() => _new_task_description;
+    public DateTime GetTaskDueDateInput() => _new_task_dueDate;
+    public int GetKategoriIndexInput() => _new_task_kategoriIndex;
+
+    private void btnShowAddTaskForm_Click(object sender, EventArgs e)
+    {
+        using (var addTaskForm = new CreateTaskForm())
+        {
+            if (addTaskForm.ShowDialog(this) == DialogResult.OK)
+            {
+                _new_task_title = addTaskForm.JudulTugas;
+                _new_task_dueDate = addTaskForm.Deadline;
+                _new_task_kategoriIndex = addTaskForm.KategoriIndex;
+                AddTaskRequested?.Invoke();
+                taskPresenter.OnViewTasksRequested();
+            }
+        }
+    }
 
     public int GetSelectedTaskId()
     {
@@ -202,7 +222,7 @@ public partial class TaskManagementForm : Form, ITaskView
         // Cek jika kolom "Detail" yang diklik
         if (dataGridView1.Columns[e.ColumnIndex].Name == "detailButton" && e.RowIndex >= 0)
         {
-            taskPresenter.OnViewTaskDetailsRequested(e.RowIndex+1);
+            taskPresenter.OnViewTaskDetailsRequested(e.RowIndex + 1);
         }
     }
 

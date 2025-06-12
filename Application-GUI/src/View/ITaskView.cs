@@ -21,6 +21,7 @@ namespace Application.View
         void DisplayTaskDetails(string task);
         void DisplayMessage(string message, string caption, MessageBoxIcon icon);
         void ClearInputs();
+        int GetKategoriIndexInput();
 
         event Action AddTaskRequested;
         event Action ViewTasksRequested;
