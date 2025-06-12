@@ -13,7 +13,7 @@ partial class TaskManagementForm
     private Button buttonCloseSidebar;
     private Button buttonSettings;
     private DataGridViewButtonColumn detailButton;
-    private Button buttonAdd;
+    private Button btnShowAddTaskForm;
 
 //    partial class TaskManagementForm
 //{
@@ -58,7 +58,7 @@ partial class TaskManagementForm
         buttonSettings = new Button();
         btnPageFilterTaskByDate = new Button();
         buttonCloseSidebar = new Button();
-        buttonAdd = new Button();
+        btnShowAddTaskForm = new Button();
         detailButton = new DataGridViewButtonColumn();
         buttonHamburger = new Button();
         flowLayoutPanel1 = new FlowLayoutPanel();
@@ -76,11 +76,12 @@ partial class TaskManagementForm
         panelSidebar.Controls.Add(buttonSettings);
         panelSidebar.Controls.Add(btnPageFilterTaskByDate);
         panelSidebar.Controls.Add(buttonCloseSidebar);
-        panelSidebar.Controls.Add(buttonAdd);
+        panelSidebar.Controls.Add(btnShowAddTaskForm);
+        panelSidebar.Dock = DockStyle.Fill;
         panelSidebar.Location = new Point(0, 0);
-        panelSidebar.Margin = new Padding(2);
+        panelSidebar.Margin = new Padding(2, 3, 2, 3);
         panelSidebar.Name = "panelSidebar";
-        panelSidebar.Size = new Size(140, 288);
+        panelSidebar.Size = new Size(640, 383);
         panelSidebar.TabIndex = 0;
         panelSidebar.Visible = false;
         // 
@@ -88,10 +89,10 @@ partial class TaskManagementForm
         // 
         buttonHome.BackColor = Color.LightCyan;
         buttonHome.ForeColor = SystemColors.ControlText;
-        buttonHome.Location = new Point(7, 75);
-        buttonHome.Margin = new Padding(2);
+        buttonHome.Location = new Point(8, 100);
+        buttonHome.Margin = new Padding(2, 3, 2, 3);
         buttonHome.Name = "buttonHome";
-        buttonHome.Size = new Size(129, 24);
+        buttonHome.Size = new Size(147, 32);
         buttonHome.TabIndex = 0;
         buttonHome.Text = "Delete Task";
         buttonHome.UseVisualStyleBackColor = false;
@@ -100,10 +101,10 @@ partial class TaskManagementForm
         // buttonSettings
         // 
         buttonSettings.BackColor = Color.LightCyan;
-        buttonSettings.Location = new Point(7, 109);
-        buttonSettings.Margin = new Padding(2);
+        buttonSettings.Location = new Point(8, 145);
+        buttonSettings.Margin = new Padding(2, 3, 2, 3);
         buttonSettings.Name = "buttonSettings";
-        buttonSettings.Size = new Size(129, 24);
+        buttonSettings.Size = new Size(147, 32);
         buttonSettings.TabIndex = 0;
         buttonSettings.Text = "Update Task";
         buttonSettings.UseVisualStyleBackColor = false;
@@ -111,10 +112,10 @@ partial class TaskManagementForm
         // btnPageFilterTaskByDate
         // 
         btnPageFilterTaskByDate.BackColor = Color.LightCyan;
-        btnPageFilterTaskByDate.Location = new Point(7, 144);
-        btnPageFilterTaskByDate.Margin = new Padding(2);
+        btnPageFilterTaskByDate.Location = new Point(8, 192);
+        btnPageFilterTaskByDate.Margin = new Padding(2, 3, 2, 3);
         btnPageFilterTaskByDate.Name = "btnPageFilterTaskByDate";
-        btnPageFilterTaskByDate.Size = new Size(129, 24);
+        btnPageFilterTaskByDate.Size = new Size(147, 32);
         btnPageFilterTaskByDate.TabIndex = 0;
         btnPageFilterTaskByDate.Text = "Filter Tanggal Tugas ";
         btnPageFilterTaskByDate.UseVisualStyleBackColor = false;
@@ -127,40 +128,42 @@ partial class TaskManagementForm
         buttonCloseSidebar.FlatStyle = FlatStyle.Flat;
         buttonCloseSidebar.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
         buttonCloseSidebar.ForeColor = Color.Black;
-        buttonCloseSidebar.Location = new Point(108, 2);
-        buttonCloseSidebar.Margin = new Padding(2);
+        buttonCloseSidebar.Location = new Point(123, 3);
+        buttonCloseSidebar.Margin = new Padding(2, 3, 2, 3);
         buttonCloseSidebar.Name = "buttonCloseSidebar";
-        buttonCloseSidebar.Size = new Size(28, 24);
+        buttonCloseSidebar.Size = new Size(32, 32);
         buttonCloseSidebar.TabIndex = 2;
         buttonCloseSidebar.Text = "X";
         buttonCloseSidebar.UseVisualStyleBackColor = false;
         buttonCloseSidebar.Click += ButtonCloseSidebar_Click;
         // 
-        // buttonAdd
+        // btnShowAddTaskForm
         // 
-        buttonAdd.BackColor = Color.LightCyan;
-        buttonAdd.Location = new Point(7, 40);
-        buttonAdd.Margin = new Padding(2);
-        buttonAdd.Name = "buttonAdd";
-        buttonAdd.Size = new Size(129, 24);
-        buttonAdd.TabIndex = 0;
-        buttonAdd.Text = "Add Task";
-        buttonAdd.UseVisualStyleBackColor = false;
+        btnShowAddTaskForm.BackColor = Color.LightCyan;
+        btnShowAddTaskForm.Location = new Point(8, 53);
+        btnShowAddTaskForm.Margin = new Padding(2, 3, 2, 3);
+        btnShowAddTaskForm.Name = "btnShowAddTaskForm";
+        btnShowAddTaskForm.Size = new Size(147, 32);
+        btnShowAddTaskForm.TabIndex = 0;
+        btnShowAddTaskForm.Text = "Add Task";
+        btnShowAddTaskForm.UseVisualStyleBackColor = false;
         // 
         // detailButton
         // 
         detailButton.HeaderText = "Detail";
+        detailButton.MinimumWidth = 6;
         detailButton.Name = "detailButton";
         detailButton.Text = "🔍";
         detailButton.UseColumnTextForButtonValue = true;
+        detailButton.Width = 125;
         // 
         // buttonHamburger
         // 
         buttonHamburger.Font = new Font("Segoe UI", 14F);
-        buttonHamburger.Location = new Point(7, 6);
-        buttonHamburger.Margin = new Padding(2);
+        buttonHamburger.Location = new Point(8, 8);
+        buttonHamburger.Margin = new Padding(2, 3, 2, 3);
         buttonHamburger.Name = "buttonHamburger";
-        buttonHamburger.Size = new Size(28, 24);
+        buttonHamburger.Size = new Size(32, 32);
         buttonHamburger.TabIndex = 1;
         buttonHamburger.Text = "☰";
         buttonHamburger.Click += ButtonHamburger_Click;
@@ -168,19 +171,22 @@ partial class TaskManagementForm
         // flowLayoutPanel1
         // 
         flowLayoutPanel1.Controls.Add(dataGridView1);
-        flowLayoutPanel1.Location = new Point(0, 31);
+        flowLayoutPanel1.Location = new Point(0, 41);
+        flowLayoutPanel1.Margin = new Padding(3, 4, 3, 4);
         flowLayoutPanel1.Name = "flowLayoutPanel1";
-        flowLayoutPanel1.Size = new Size(558, 257);
+        flowLayoutPanel1.Size = new Size(638, 343);
         flowLayoutPanel1.TabIndex = 2;
         // 
         // dataGridView1
         // 
         dataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
         dataGridView1.Columns.AddRange(new DataGridViewColumn[] { detailButton });
-        dataGridView1.Location = new Point(3, 3);
+        dataGridView1.Location = new Point(3, 4);
+        dataGridView1.Margin = new Padding(3, 4, 3, 4);
         dataGridView1.Name = "dataGridView1";
+        dataGridView1.RowHeadersWidth = 51;
         dataGridView1.RowTemplate.Height = 24;
-        dataGridView1.Size = new Size(555, 254);
+        dataGridView1.Size = new Size(634, 339);
         dataGridView1.TabIndex = 0;
         dataGridView1.CellContentClick += dataGridView1_CellContentClick;
         // 
@@ -188,22 +194,22 @@ partial class TaskManagementForm
         // 
         label1.AutoSize = true;
         label1.Font = new Font("Segoe UI", 12F);
-        label1.Location = new Point(172, 4);
+        label1.Location = new Point(197, 5);
         label1.Name = "label1";
-        label1.Size = new Size(218, 21);
+        label1.Size = new Size(269, 28);
         label1.TabIndex = 3;
         label1.Text = "Manajemen Tugas Mahasiswa";
         // 
         // TaskManagementForm
         // 
-        AutoScaleDimensions = new SizeF(7F, 15F);
+        AutoScaleDimensions = new SizeF(8F, 20F);
         AutoScaleMode = AutoScaleMode.Font;
-        ClientSize = new Size(560, 287);
-        Controls.Add(panelSidebar);
+        ClientSize = new Size(640, 383);
         Controls.Add(label1);
         Controls.Add(flowLayoutPanel1);
+        Controls.Add(panelSidebar);
         Controls.Add(buttonHamburger);
-        Margin = new Padding(2);
+        Margin = new Padding(2, 3, 2, 3);
         Name = "TaskManagementForm";
         Text = "Aplikasi Manajemen Tugas";
         panelSidebar.ResumeLayout(false);

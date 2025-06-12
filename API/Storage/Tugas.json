@@ -19,5 +19,75 @@
     "Deadline": "2025-07-01T00:41:32.901Z",
     "Status": 0,
     "Kategori": 1
+  },
+  {
+    "Id": 4,
+    "Judul": "Judul tugas 4",
+    "Deadline": "2025-07-01T01:25:19.327Z",
+    "Status": 1,
+    "Kategori": 0
+  },
+  {
+    "Id": 5,
+    "Judul": "Judul tugas 6",
+    "Deadline": "2025-07-01T05:43:23.317Z",
+    "Status": 1,
+    "Kategori": 0
+  },
+  {
+    "Id": 6,
+    "Judul": "Judul tugas 7",
+    "Deadline": "2025-07-04T00:00:00",
+    "Status": 0,
+    "Kategori": 0
+  },
+  {
+    "Id": 7,
+    "Judul": "Judul tugas 8",
+    "Deadline": "2025-07-20T00:00:00",
+    "Status": 0,
+    "Kategori": 0
+  },
+  {
+    "Id": 8,
+    "Judul": "Judul tugas 9",
+    "Deadline": "2025-07-30T16:03:42.962Z",
+    "Status": 1,
+    "Kategori": 1
+  },
+  {
+    "Id": 9,
+    "Judul": "Judul tugas 10",
+    "Deadline": "2025-07-20T00:00:00",
+    "Status": 1,
+    "Kategori": 0
+  },
+  {
+    "Id": 10,
+    "Judul": "Judul tugas 11",
+    "Deadline": "2025-06-14T14:30:00",
+    "Status": 1,
+    "Kategori": 0
+  },
+  {
+    "Id": 11,
+    "Judul": "tes",
+    "Deadline": "2025-06-20T00:32:00.434",
+    "Status": 0,
+    "Kategori": 0
+  },
+  {
+    "Id": 12,
+    "Judul": "Tes",
+    "Deadline": "2025-06-30T00:55:37.613",
+    "Status": 0,
+    "Kategori": 0
+  },
+  {
+    "Id": 13,
+    "Judul": "wwwww",
+    "Deadline": "2025-07-05T00:56:26.25",
+    "Status": 0,
+    "Kategori": 0
   }
 ]
