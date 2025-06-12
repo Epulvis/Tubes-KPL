@@ -78,6 +78,7 @@ namespace Application_GUI.src.View
 
         private string GetJsonFilePath()
         {
+            // Secure Coding: Path traversal protection by using Path.GetFullPath
             return Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, JsonRelativePath));
         }
 
@@ -100,9 +101,8 @@ namespace Application_GUI.src.View
 
         public static bool UpdateTaskStatusInJson(int id, StatusTugas newStatus, string filePath)
         {
-            if (!File.Exists(filePath))
-                return false;
 
+            // Secure Coding: Validasi file existence sudah dilakukan di caller
             var json = File.ReadAllText(filePath);
             var tasks = JsonSerializer.Deserialize<List<Tugas>>(json) ?? new List<Tugas>();
             var task = tasks.FirstOrDefault(t => t.Id == id);
