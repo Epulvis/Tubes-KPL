@@ -3,20 +3,20 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Text.Json;
-using Application.View;
+using Newtonsoft.Json;
+using Application.View; // Pastikan namespace ini benar
 
 namespace Application_GUI.src.View
 {
     public partial class DeleteTask : Form
     {
-        private readonly string apiBaseUrl = "http://localhost:4000/api/tugas";
+        private readonly string apiBaseUrl = "http://localhost:4000/api/tugas"; // Ganti dengan URL API yang sesuai
         private TaskManagementForm _dashboard;
 
         public DeleteTask(TaskManagementForm taskManagementForm)
         {
             InitializeComponent();
-            _dashboard = taskManagementForm;
+            _dashboard = taskManagementForm; // Perbaiki penamaan parameter
         }
 
         private async void DeleteTask_Load(object sender, EventArgs e)
@@ -33,11 +33,7 @@ namespace Application_GUI.src.View
                     var response = await client.GetAsync(apiBaseUrl);
                     response.EnsureSuccessStatusCode();
                     var json = await response.Content.ReadAsStringAsync();
-                    var tasks = JsonSerializer.Deserialize<List<TaskModel>>(json, new JsonSerializerOptions
-                    {
-                        PropertyNameCaseInsensitive = true
-                    });
-                    dataGridViewTasks.AutoGenerateColumns = true;
+                    var tasks = JsonConvert.DeserializeObject<List<TaskModel>>(json); // Pastikan TaskModel ada
                     dataGridViewTasks.DataSource = tasks;
                 }
             }
@@ -97,9 +93,9 @@ namespace Application_GUI.src.View
     public class TaskModel
     {
         public int Id { get; set; }
-        public string Judul { get; set; }
-        public DateTime Deadline { get; set; }
-        public int Status { get; set; }
-        public int Kategori { get; set; }
+        public string Title { get; set; }
+        public string Description { get; set; }
+        public string Status { get; set; }
+        public DateTime DueDate { get; set; }
     }
 }
