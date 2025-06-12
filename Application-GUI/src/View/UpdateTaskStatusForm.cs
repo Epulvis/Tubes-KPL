@@ -1,7 +1,5 @@
 ﻿using Application.Controller;
 using Application.Models;
-using System;
-using System.Windows.Forms;
 using System.ComponentModel;
 using System.Text.Json;
 using Application.View;
@@ -19,54 +17,13 @@ namespace Application_GUI.src.View
             this.Load += UpdateTaskStatusForm_Load;
         }
 
-        private void textBox1_TextChanged(object sender, EventArgs e)
-        {
-        }
-
-        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
-        {
-        }
-
         private void UpdateTaskStatusForm_Load(object sender, EventArgs e)
         {
-            // Isi comboBox1 dengan nama-nama status dari enum StatusTugas
             comboBox1.Items.Clear();
             comboBox1.Items.AddRange(Enum.GetNames(typeof(StatusTugas)));
             if (comboBox1.Items.Count > 0)
                 comboBox1.SelectedIndex = 0;
         }
-
-        //private async void button1_Click(object sender, EventArgs e)
-        //{
-        //    // Ambil ID dari textbox
-        //    if (!int.TryParse(textBox1.Text.Trim(), out int taskId))
-        //    {
-        //        MessageBox.Show("ID tidak valid!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        //        return;
-        //    }
-
-        //    // Ambil status dari combobox
-        //    if (comboBox1.SelectedItem == null)
-        //    {
-        //        MessageBox.Show("Pilih status!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        //        return;
-        //    }
-        //    var statusStr = comboBox1.SelectedItem.ToString();
-        //    if (!Enum.TryParse<StatusTugas>(statusStr, out var newStatus))
-        //    {
-        //        MessageBox.Show("Status tidak valid!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        //        return;
-        //    }
-
-        //    // Langsung update lewat presenter
-        //    if (Presenter != null)
-        //    {
-        //        await Presenter.UpdateTaskStatusDirect(taskId, newStatus);
-        //    }
-
-        //    // Tutup form setelah update
-        //    this.Close();
-        //}
 
         public static bool UpdateTaskStatusInJson(int id, StatusTugas newStatus, string filePath)
         {
@@ -87,7 +44,7 @@ namespace Application_GUI.src.View
             return true;
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void buttonUpdateOnClick(object sender, EventArgs e)
         {
             if (!int.TryParse(textBox1.Text.Trim(), out int taskId))
             {
@@ -107,7 +64,6 @@ namespace Application_GUI.src.View
                 return;
             }
 
-            //string filePath = @"../../API/Storage/Tugas.json"; // Ganti dengan path file JSON kamu
             string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\..\API\Storage\Tugas.json");
             if (!File.Exists(filePath))
             {
@@ -126,5 +82,39 @@ namespace Application_GUI.src.View
             mainForm.Show();
             this.Close();
         }
+
+
     }
 }
+
+//private async void button1_Click(object sender, EventArgs e)
+//{
+//    // Ambil ID dari textbox
+//    if (!int.TryParse(textBox1.Text.Trim(), out int taskId))
+//    {
+//        MessageBox.Show("ID tidak valid!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+//        return;
+//    }
+
+//    // Ambil status dari combobox
+//    if (comboBox1.SelectedItem == null)
+//    {
+//        MessageBox.Show("Pilih status!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+//        return;
+//    }
+//    var statusStr = comboBox1.SelectedItem.ToString();
+//    if (!Enum.TryParse<StatusTugas>(statusStr, out var newStatus))
+//    {
+//        MessageBox.Show("Status tidak valid!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+//        return;
+//    }
+
+//    // Langsung update lewat presenter
+//    if (Presenter != null)
+//    {
+//        await Presenter.UpdateTaskStatusDirect(taskId, newStatus);
+//    }
+
+//    // Tutup form setelah update
+//    this.Close();
+//}
