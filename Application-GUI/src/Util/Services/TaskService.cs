@@ -17,8 +17,7 @@ namespace Application.Services
         private readonly JsonSerializerOptions _jsonOptions = new JsonSerializerOptions
         {
             PropertyNameCaseInsensitive = true,
-            // Tambahkan konverter jika enum di API direpresentasikan sebagai string
-             Converters = { new JsonStringEnumConverter() } // Uncomment jika API menggunakan string untuk enum
+             Converters = { new JsonStringEnumConverter() }
         };
 
         // Constructor diubah untuk menerima HttpClient
@@ -118,7 +117,7 @@ namespace Application.Services
 
             try
             {
-                var response = await _httpClient.PostAsJsonAsync($"{_apiBaseUrl}/tasks", newTask, _jsonOptions);
+                var response = await _httpClient.PostAsJsonAsync($"{_apiBaseUrl}", newTask, _jsonOptions);
                 if (response.IsSuccessStatusCode)
                 {
                     var createdTask = await response.Content.ReadFromJsonAsync<Tugas>(_jsonOptions);

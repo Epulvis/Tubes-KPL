@@ -1,7 +1,16 @@
 ﻿using Application.Models;
 using Application.View;
 using System;
+using System.Buffers.Text;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Net.Http;
+using System.Text;
+using System.Text.Json;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using Application.Services;
 using Application.Helpers;
@@ -64,6 +73,7 @@ namespace Application_GUI.src.View
 
         private void BtnFilter_Click(object sender, EventArgs e)
         {
+            // Ambil tanggal dari DateTimePicker
             DateTime startDate = dtpStartDate.Value.Date;
             DateTime endDate = dtpEndDate.Value.Date;
 
@@ -82,6 +92,7 @@ namespace Application_GUI.src.View
                 .Where(t => t.Deadline.Date >= startDate && t.Deadline.Date <= endDate)
                 .ToList();
 
+            // Tampilkan hasil filter ke DataGridView
             dataGridViewTasks.DataSource = null;
             dataGridViewTasks.DataSource = filteredTasks;
 
@@ -112,3 +123,4 @@ namespace Application_GUI.src.View
         }
     }
 }
+

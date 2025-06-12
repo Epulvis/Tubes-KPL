@@ -13,7 +13,7 @@ partial class TaskManagementForm
     private Button buttonCloseSidebar;
     private Button buttonSettings;
     private DataGridViewButtonColumn detailButton;
-    private Button buttonAdd;
+    private Button btnShowAddTaskForm;
 
 //    partial class TaskManagementForm
 //{
@@ -58,7 +58,7 @@ partial class TaskManagementForm
         buttonSettings = new Button();
         btnPageFilterTaskByDate = new Button();
         buttonCloseSidebar = new Button();
-        buttonAdd = new Button();
+        btnShowAddTaskForm = new Button();
         detailButton = new DataGridViewButtonColumn();
         buttonHamburger = new Button();
         flowLayoutPanel1 = new FlowLayoutPanel();
@@ -76,7 +76,8 @@ partial class TaskManagementForm
         panelSidebar.Controls.Add(buttonSettings);
         panelSidebar.Controls.Add(btnPageFilterTaskByDate);
         panelSidebar.Controls.Add(buttonCloseSidebar);
-        panelSidebar.Controls.Add(buttonAdd);
+        panelSidebar.Controls.Add(btnShowAddTaskForm);
+        panelSidebar.Dock = DockStyle.Fill;
         panelSidebar.Location = new Point(0, 0);
         panelSidebar.Margin = new Padding(2, 3, 2, 3);
         panelSidebar.Name = "panelSidebar";
@@ -137,16 +138,16 @@ partial class TaskManagementForm
         buttonCloseSidebar.UseVisualStyleBackColor = false;
         buttonCloseSidebar.Click += ButtonCloseSidebar_Click;
         // 
-        // buttonAdd
+        // btnShowAddTaskForm
         // 
-        buttonAdd.BackColor = Color.LightCyan;
-        buttonAdd.Location = new Point(8, 53);
-        buttonAdd.Margin = new Padding(2, 3, 2, 3);
-        buttonAdd.Name = "buttonAdd";
-        buttonAdd.Size = new Size(147, 32);
-        buttonAdd.TabIndex = 0;
-        buttonAdd.Text = "Add Task";
-        buttonAdd.UseVisualStyleBackColor = false;
+        btnShowAddTaskForm.BackColor = Color.LightCyan;
+        btnShowAddTaskForm.Location = new Point(8, 53);
+        btnShowAddTaskForm.Margin = new Padding(2, 3, 2, 3);
+        btnShowAddTaskForm.Name = "btnShowAddTaskForm";
+        btnShowAddTaskForm.Size = new Size(147, 32);
+        btnShowAddTaskForm.TabIndex = 0;
+        btnShowAddTaskForm.Text = "Add Task";
+        btnShowAddTaskForm.UseVisualStyleBackColor = false;
         // 
         // detailButton
         // 
