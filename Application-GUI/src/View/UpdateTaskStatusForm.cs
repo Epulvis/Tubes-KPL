@@ -1,151 +1,42 @@
-﻿using Application.Controller;
-using Application.Models;
-using System.ComponentModel;
-using System.Text.Json;
-using Application.View;
-
-namespace Application_GUI.src.View
+﻿namespace Application_GUI.src.View
 {
     public partial class UpdateTaskStatusForm : Form
     {
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public TaskPresenter Presenter { get; internal set; }
+            public string IdTask => txtIdTask.Text.Trim();
+            public int StatusIndex => cmbStatus.SelectedIndex;
 
-        private const string JsonRelativePath = @"..\..\..\..\API\Storage\Tugas.json";
-
-        public UpdateTaskStatusForm()
-        {
-            InitializeComponent();
-            Load += UpdateTaskStatusForm_Load;
-        }
-
-        private void UpdateTaskStatusForm_Load(object sender, EventArgs e)
-        {
-            comboBox1.Items.Clear();
-            comboBox1.Items.AddRange(Enum.GetNames(typeof(StatusTugas)));
-            if (comboBox1.Items.Count > 0)
-                comboBox1.SelectedIndex = 0;
-        }
-
-        private void buttonUpdateOnClick(object sender, EventArgs e)
-        {
-            if (!TryGetTaskId(out int taskId)) return;
-            if (!TryGetSelectedStatus(out StatusTugas newStatus)) return;
-
-            string filePath = GetJsonFilePath();
-            if (!File.Exists(filePath))
+            public UpdateTaskStatusForm()
             {
-                ShowError($"File tidak ditemukan:\n{filePath}");
-                return;
+                InitializeComponent();
+                InisialisasiStatus();
             }
 
-            bool success = UpdateTaskStatusInJson(taskId, newStatus, filePath);
-
-            if (success)
-                ShowInfo("Status tugas berhasil diperbarui di file JSON.");
-            else
-                ShowError("Gagal memperbarui status tugas di file JSON.");
-
-            ReturnToMainForm();
-        }
-
-        private bool TryGetTaskId(out int taskId)
-        {
-            if (!int.TryParse(textBox1.Text.Trim(), out taskId))
+            private void InisialisasiStatus()
             {
-                ShowError("ID tidak valid!");
-                return false;
+                cmbStatus.Items.Add("BelumMulai");
+                cmbStatus.Items.Add("SedangDikerjakan");
+                cmbStatus.Items.Add("Selesai");
+                cmbStatus.Items.Add("Terlewat");
+                cmbStatus.SelectedIndex = 0;
             }
-            return true;
-        }
 
-        private bool TryGetSelectedStatus(out StatusTugas status)
-        {
-            status = StatusTugas.BelumMulai;
-            if (comboBox1.SelectedItem == null)
+            private void btnSimpan_Click(object sender, EventArgs e)
             {
-                ShowError("Pilih status!");
-                return false;
+                if (string.IsNullOrWhiteSpace(txtIdTask.Text))
+                {
+                    MessageBox.Show("Id tugas tidak boleh kosong.", "Validasi Gagal", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    txtIdTask.Focus();
+                    return;
+                }
+
+                this.DialogResult = DialogResult.OK;
+                this.Close();
             }
-            var statusStr = comboBox1.SelectedItem.ToString();
-            if (!Enum.TryParse(statusStr, out status))
+
+            private void btnKembali_Click(object sender, EventArgs e)
             {
-                ShowError("Status tidak valid!");
-                return false;
+                this.DialogResult = DialogResult.Cancel;
+                this.Close();
             }
-            return true;
-        }
-
-        private string GetJsonFilePath()
-        {
-            // Secure Coding: Path traversal protection by using Path.GetFullPath
-            return Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, JsonRelativePath));
-        }
-
-        private void ShowError(string message)
-        {
-            MessageBox.Show(message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        }
-
-        private void ShowInfo(string message)
-        {
-            MessageBox.Show(message, "Sukses", MessageBoxButtons.OK, MessageBoxIcon.Information);
-        }
-
-        private void ReturnToMainForm()
-        {
-            var mainForm = new TaskManagementForm();
-            mainForm.Show();
-            Close();
-        }
-
-        public static bool UpdateTaskStatusInJson(int id, StatusTugas newStatus, string filePath)
-        {
-
-            // Secure Coding: Validasi file existence sudah dilakukan di caller
-            var json = File.ReadAllText(filePath);
-            var tasks = JsonSerializer.Deserialize<List<Tugas>>(json) ?? new List<Tugas>();
-            var task = tasks.FirstOrDefault(t => t.Id == id);
-            if (task == null)
-                return false;
-
-            task.Status = newStatus;
-            var newJson = JsonSerializer.Serialize(tasks, new JsonSerializerOptions { WriteIndented = true });
-            File.WriteAllText(filePath, newJson);
-            return true;
         }
     }
-}
-
-
-//private async void button1_Click(object sender, EventArgs e)
-//{
-//    // Ambil ID dari textbox
-//    if (!int.TryParse(textBox1.Text.Trim(), out int taskId))
-//    {
-//        MessageBox.Show("ID tidak valid!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-//        return;
-//    }
-
-//    // Ambil status dari combobox
-//    if (comboBox1.SelectedItem == null)
-//    {
-//        MessageBox.Show("Pilih status!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-//        return;
-//    }
-//    var statusStr = comboBox1.SelectedItem.ToString();
-//    if (!Enum.TryParse<StatusTugas>(statusStr, out var newStatus))
-//    {
-//        MessageBox.Show("Status tidak valid!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-//        return;
-//    }
-
-//    // Langsung update lewat presenter
-//    if (Presenter != null)
-//    {
-//        await Presenter.UpdateTaskStatusDirect(taskId, newStatus);
-//    }
-
-//    // Tutup form setelah update
-//    this.Close();
-//}

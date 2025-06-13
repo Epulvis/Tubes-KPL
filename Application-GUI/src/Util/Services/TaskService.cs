@@ -159,14 +159,12 @@ namespace Application.Services
                 return Result.Failure($"Tidak dapat mengubah status dari {taskToUpdate.Status} ke {newStatus}.");
             }
 
-            // 3. Update status dan UpdatedAt
             taskToUpdate.Status = newStatus;
-            //taskToUpdate.UpdatedAt = DateTime.Now;
 
             // 4. Kirim seluruh objek tugas yang telah diperbarui ke API via PUT
             try
             {
-                var response = await _httpClient.PutAsJsonAsync($"{_apiBaseUrl}/tasks/{id}", taskToUpdate, _jsonOptions);
+                var response = await _httpClient.PutAsJsonAsync($"{_apiBaseUrl}/{id}", taskToUpdate, _jsonOptions);
                 if (response.IsSuccessStatusCode)
                 {
                     return Result.Success();

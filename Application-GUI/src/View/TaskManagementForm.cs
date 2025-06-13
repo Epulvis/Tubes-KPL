@@ -39,10 +39,12 @@ public partial class TaskManagementForm : Form, ITaskView
     public ITaskView view => this;
     public TaskPresenter taskPresenter;
 
+    private string _new_task_id;
     private string _new_task_title;
     private string _new_task_description;
     private DateTime _new_task_dueDate;
     private int _new_task_kategoriIndex;
+    private int _new_task_StatusIndex;
 
     public TaskManagementForm()
     {
@@ -58,6 +60,7 @@ public partial class TaskManagementForm : Form, ITaskView
 
         taskPresenter.OnViewTasksRequested();
         this.btnShowAddTaskForm.Click += new System.EventHandler(this.BtnShowAddTaskForm_Click);
+        this.btnShowUpdateForm.Click += new System.EventHandler(this.BtnShowUpdateForm_Click);
     }
 
     public string GetTaskTitleInput() => _new_task_title;
@@ -78,18 +81,20 @@ public partial class TaskManagementForm : Form, ITaskView
         }
     }
 
+    private void BtnShowUpdateForm_Click(object sender, EventArgs e)
+    {
+        using var updateTaskStatusForm = new UpdateTaskStatusForm();
+        if (updateTaskStatusForm.ShowDialog(this) == DialogResult.OK)
+        {
+            _new_task_id = updateTaskStatusForm.IdTask;
+            _new_task_StatusIndex = updateTaskStatusForm.StatusIndex;
+            UpdateTaskStatusRequested?.Invoke();
+        }
+    }
+
     public int GetSelectedTaskId()
     {
-        if (lstTasks.SelectedItem is Tugas selectedTask)
-        {
-            return selectedTask.Id;
-        }
-
-        if (lstTasks.SelectedIndex != -1 && int.TryParse(lstTasks.SelectedItem?.ToString().Split(':')[0].Trim(), out int id))
-        {
-            return id;
-        }
-        return -1;
+        return Int32.Parse(_new_task_id);
     }
 
 
@@ -200,14 +205,6 @@ public partial class TaskManagementForm : Form, ITaskView
             dataGridView1.DataSource = "Tidak ada tugas";
             //lstTasks.Items.Add("Tidak ada tugas.");
         }
-    }
-
-    private void buttonSettings_Click(object sender, EventArgs e)
-    {
-        var updateForm = new UpdateTaskStatusForm();
-        updateForm.Presenter = this.taskPresenter; // pastikan taskPresenter sudah diinisialisasi
-        updateForm.Show();
-        this.Hide();
     }
 
 

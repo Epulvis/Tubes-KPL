@@ -28,151 +28,174 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-            this.lblJudul = new System.Windows.Forms.Label();
-            this.lblDeadline = new System.Windows.Forms.Label();
-            this.lblKategori = new System.Windows.Forms.Label();
-            this.txtJudul = new System.Windows.Forms.TextBox();
-            this.dtpDeadline = new System.Windows.Forms.DateTimePicker();
-            this.cmbKategori = new System.Windows.Forms.ComboBox();
-            this.flowLayoutPanelButtons = new System.Windows.Forms.FlowLayoutPanel();
-            this.btnKembali = new System.Windows.Forms.Button();
-            this.btnBersihkan = new System.Windows.Forms.Button();
-            this.btnSimpan = new System.Windows.Forms.Button();
-            this.tableLayoutPanel1.SuspendLayout();
-            this.flowLayoutPanelButtons.SuspendLayout();
-            this.SuspendLayout();
-
-            this.tableLayoutPanel1.ColumnCount = 2;
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel1.Controls.Add(this.lblJudul, 0, 0);
-            this.tableLayoutPanel1.Controls.Add(this.lblDeadline, 0, 1);
-            this.tableLayoutPanel1.Controls.Add(this.lblKategori, 0, 2);
-            this.tableLayoutPanel1.Controls.Add(this.txtJudul, 1, 0);
-            this.tableLayoutPanel1.Controls.Add(this.dtpDeadline, 1, 1);
-            this.tableLayoutPanel1.Controls.Add(this.cmbKategori, 1, 2);
-            this.tableLayoutPanel1.Controls.Add(this.flowLayoutPanelButtons, 0, 3);
-            this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
-            this.tableLayoutPanel1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-            this.tableLayoutPanel1.Padding = new System.Windows.Forms.Padding(15);
-            this.tableLayoutPanel1.RowCount = 4;
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 45F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 45F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 45F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(578, 224);
-            this.tableLayoutPanel1.TabIndex = 0;
-
-            this.lblJudul.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.lblJudul.AutoSize = true;
-            this.lblJudul.Location = new System.Drawing.Point(19, 27);
-            this.lblJudul.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.lblJudul.Name = "lblJudul";
-            this.lblJudul.Size = new System.Drawing.Size(95, 20);
-            this.lblJudul.TabIndex = 0;
-            this.lblJudul.Text = "Judul Tugas:";
-
-            this.lblDeadline.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.lblDeadline.AutoSize = true;
-            this.lblDeadline.Location = new System.Drawing.Point(19, 72);
-            this.lblDeadline.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.lblDeadline.Name = "lblDeadline";
-            this.lblDeadline.Size = new System.Drawing.Size(75, 20);
-            this.lblDeadline.TabIndex = 1;
-            this.lblDeadline.Text = "Deadline:";
- 
-            this.lblKategori.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.lblKategori.AutoSize = true;
-            this.lblKategori.Location = new System.Drawing.Point(19, 117);
-            this.lblKategori.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.lblKategori.Name = "lblKategori";
-            this.lblKategori.Size = new System.Drawing.Size(71, 20);
-            this.lblKategori.TabIndex = 2;
-            this.lblKategori.Text = "Kategori:";
-
-            this.txtJudul.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtJudul.Location = new System.Drawing.Point(122, 24);
-            this.txtJudul.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.txtJudul.Name = "txtJudul";
-            this.txtJudul.Size = new System.Drawing.Size(437, 26);
-            this.txtJudul.TabIndex = 3;
-
-            this.dtpDeadline.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.dtpDeadline.Format = System.Windows.Forms.DateTimePickerFormat.Long;
-            this.dtpDeadline.Location = new System.Drawing.Point(122, 69);
-            this.dtpDeadline.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.dtpDeadline.Name = "dtpDeadline";
-            this.dtpDeadline.Size = new System.Drawing.Size(437, 26);
-            this.dtpDeadline.TabIndex = 4;
-
-            this.cmbKategori.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.cmbKategori.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cmbKategori.FormattingEnabled = true;
-            this.cmbKategori.Location = new System.Drawing.Point(122, 113);
-            this.cmbKategori.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.cmbKategori.Name = "cmbKategori";
-            this.cmbKategori.Size = new System.Drawing.Size(437, 28);
-            this.cmbKategori.TabIndex = 5;
-
-            this.tableLayoutPanel1.SetColumnSpan(this.flowLayoutPanelButtons, 2);
-            this.flowLayoutPanelButtons.Controls.Add(this.btnKembali);
-            this.flowLayoutPanelButtons.Controls.Add(this.btnBersihkan);
-            this.flowLayoutPanelButtons.Controls.Add(this.btnSimpan);
-            this.flowLayoutPanelButtons.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.flowLayoutPanelButtons.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
-            this.flowLayoutPanelButtons.Location = new System.Drawing.Point(18, 153);
-            this.flowLayoutPanelButtons.Name = "flowLayoutPanelButtons";
-            this.flowLayoutPanelButtons.Size = new System.Drawing.Size(542, 53);
-            this.flowLayoutPanelButtons.TabIndex = 6;
-
-            this.btnKembali.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnKembali.Location = new System.Drawing.Point(427, 8);
-            this.btnKembali.Margin = new System.Windows.Forms.Padding(10, 5, 4, 5);
-            this.btnKembali.Name = "btnKembali";
-            this.btnKembali.Size = new System.Drawing.Size(111, 40);
-            this.btnKembali.TabIndex = 2;
-            this.btnKembali.Text = "Kembali";
-            this.btnKembali.UseVisualStyleBackColor = true;
-            this.btnKembali.Click += new System.EventHandler(this.btnKembali_Click);
-
-            this.btnBersihkan.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnBersihkan.Location = new System.Drawing.Point(292, 8);
-            this.btnBersihkan.Margin = new System.Windows.Forms.Padding(10, 5, 4, 5);
-            this.btnBersihkan.Name = "btnBersihkan";
-            this.btnBersihkan.Size = new System.Drawing.Size(111, 40);
-            this.btnBersihkan.TabIndex = 1;
-            this.btnBersihkan.Text = "Bersihkan";
-            this.btnBersihkan.UseVisualStyleBackColor = true;
-            this.btnBersihkan.Click += new System.EventHandler(this.btnBersihkan_Click);
-
-            this.btnSimpan.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnSimpan.Location = new System.Drawing.Point(157, 8);
-            this.btnSimpan.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.btnSimpan.Name = "btnSimpan";
-            this.btnSimpan.Size = new System.Drawing.Size(111, 40);
-            this.btnSimpan.TabIndex = 0;
-            this.btnSimpan.Text = "Simpan";
-            this.btnSimpan.UseVisualStyleBackColor = true;
-            this.btnSimpan.Click += new System.EventHandler(this.btnSimpan_Click);
-
-            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(578, 224);
-            this.Controls.Add(this.tableLayoutPanel1);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
-            this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.MaximizeBox = false;
-            this.MinimizeBox = false;
-            this.Name = "AddTaskForm";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "Tambah Tugas Baru";
-            this.tableLayoutPanel1.ResumeLayout(false);
-            this.tableLayoutPanel1.PerformLayout();
-            this.flowLayoutPanelButtons.ResumeLayout(false);
-            this.ResumeLayout(false);
+            tableLayoutPanel1 = new TableLayoutPanel();
+            lblJudul = new Label();
+            lblDeadline = new Label();
+            lblKategori = new Label();
+            txtJudul = new TextBox();
+            dtpDeadline = new DateTimePicker();
+            cmbKategori = new ComboBox();
+            flowLayoutPanelButtons = new FlowLayoutPanel();
+            btnKembali = new Button();
+            btnBersihkan = new Button();
+            btnSimpan = new Button();
+            tableLayoutPanel1.SuspendLayout();
+            flowLayoutPanelButtons.SuspendLayout();
+            SuspendLayout();
+            // 
+            // tableLayoutPanel1
+            // 
+            tableLayoutPanel1.ColumnCount = 2;
+            tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle());
+            tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+            tableLayoutPanel1.Controls.Add(lblJudul, 0, 0);
+            tableLayoutPanel1.Controls.Add(lblDeadline, 0, 1);
+            tableLayoutPanel1.Controls.Add(lblKategori, 0, 2);
+            tableLayoutPanel1.Controls.Add(txtJudul, 1, 0);
+            tableLayoutPanel1.Controls.Add(dtpDeadline, 1, 1);
+            tableLayoutPanel1.Controls.Add(cmbKategori, 1, 2);
+            tableLayoutPanel1.Controls.Add(flowLayoutPanelButtons, 0, 3);
+            tableLayoutPanel1.Dock = DockStyle.Fill;
+            tableLayoutPanel1.Location = new Point(0, 0);
+            tableLayoutPanel1.Margin = new Padding(4, 5, 4, 5);
+            tableLayoutPanel1.Name = "tableLayoutPanel1";
+            tableLayoutPanel1.Padding = new Padding(13, 15, 13, 15);
+            tableLayoutPanel1.RowCount = 4;
+            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 45F));
+            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 45F));
+            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 45F));
+            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
+            tableLayoutPanel1.Size = new Size(514, 224);
+            tableLayoutPanel1.TabIndex = 0;
+            // 
+            // lblJudul
+            // 
+            lblJudul.Anchor = AnchorStyles.Left;
+            lblJudul.AutoSize = true;
+            lblJudul.Location = new Point(17, 27);
+            lblJudul.Margin = new Padding(4, 0, 4, 0);
+            lblJudul.Name = "lblJudul";
+            lblJudul.Size = new Size(89, 20);
+            lblJudul.TabIndex = 0;
+            lblJudul.Text = "Judul Tugas:";
+            // 
+            // lblDeadline
+            // 
+            lblDeadline.Anchor = AnchorStyles.Left;
+            lblDeadline.AutoSize = true;
+            lblDeadline.Location = new Point(17, 72);
+            lblDeadline.Margin = new Padding(4, 0, 4, 0);
+            lblDeadline.Name = "lblDeadline";
+            lblDeadline.Size = new Size(72, 20);
+            lblDeadline.TabIndex = 1;
+            lblDeadline.Text = "Deadline:";
+            // 
+            // lblKategori
+            // 
+            lblKategori.Anchor = AnchorStyles.Left;
+            lblKategori.AutoSize = true;
+            lblKategori.Location = new Point(17, 117);
+            lblKategori.Margin = new Padding(4, 0, 4, 0);
+            lblKategori.Name = "lblKategori";
+            lblKategori.Size = new Size(69, 20);
+            lblKategori.TabIndex = 2;
+            lblKategori.Text = "Kategori:";
+            // 
+            // txtJudul
+            // 
+            txtJudul.Anchor = AnchorStyles.Left | AnchorStyles.Right;
+            txtJudul.Location = new Point(114, 24);
+            txtJudul.Margin = new Padding(4, 5, 4, 5);
+            txtJudul.Name = "txtJudul";
+            txtJudul.Size = new Size(383, 27);
+            txtJudul.TabIndex = 3;
+            // 
+            // dtpDeadline
+            // 
+            dtpDeadline.Anchor = AnchorStyles.Left | AnchorStyles.Right;
+            dtpDeadline.Location = new Point(114, 69);
+            dtpDeadline.Margin = new Padding(4, 5, 4, 5);
+            dtpDeadline.Name = "dtpDeadline";
+            dtpDeadline.Size = new Size(383, 27);
+            dtpDeadline.TabIndex = 4;
+            // 
+            // cmbKategori
+            // 
+            cmbKategori.Anchor = AnchorStyles.Left | AnchorStyles.Right;
+            cmbKategori.DropDownStyle = ComboBoxStyle.DropDownList;
+            cmbKategori.FormattingEnabled = true;
+            cmbKategori.Location = new Point(114, 113);
+            cmbKategori.Margin = new Padding(4, 5, 4, 5);
+            cmbKategori.Name = "cmbKategori";
+            cmbKategori.Size = new Size(383, 28);
+            cmbKategori.TabIndex = 5;
+            // 
+            // flowLayoutPanelButtons
+            // 
+            tableLayoutPanel1.SetColumnSpan(flowLayoutPanelButtons, 2);
+            flowLayoutPanelButtons.Controls.Add(btnKembali);
+            flowLayoutPanelButtons.Controls.Add(btnBersihkan);
+            flowLayoutPanelButtons.Controls.Add(btnSimpan);
+            flowLayoutPanelButtons.Dock = DockStyle.Fill;
+            flowLayoutPanelButtons.FlowDirection = FlowDirection.RightToLeft;
+            flowLayoutPanelButtons.Location = new Point(16, 153);
+            flowLayoutPanelButtons.Name = "flowLayoutPanelButtons";
+            flowLayoutPanelButtons.Size = new Size(482, 53);
+            flowLayoutPanelButtons.TabIndex = 6;
+            // 
+            // btnKembali
+            // 
+            btnKembali.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            btnKembali.Location = new Point(379, 5);
+            btnKembali.Margin = new Padding(9, 5, 4, 5);
+            btnKembali.Name = "btnKembali";
+            btnKembali.Size = new Size(99, 40);
+            btnKembali.TabIndex = 2;
+            btnKembali.Text = "Kembali";
+            btnKembali.UseVisualStyleBackColor = true;
+            btnKembali.Click += btnKembali_Click;
+            // 
+            // btnBersihkan
+            // 
+            btnBersihkan.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            btnBersihkan.Location = new Point(267, 5);
+            btnBersihkan.Margin = new Padding(9, 5, 4, 5);
+            btnBersihkan.Name = "btnBersihkan";
+            btnBersihkan.Size = new Size(99, 40);
+            btnBersihkan.TabIndex = 1;
+            btnBersihkan.Text = "Bersihkan";
+            btnBersihkan.UseVisualStyleBackColor = true;
+            btnBersihkan.Click += btnBersihkan_Click;
+            // 
+            // btnSimpan
+            // 
+            btnSimpan.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            btnSimpan.Location = new Point(155, 5);
+            btnSimpan.Margin = new Padding(4, 5, 4, 5);
+            btnSimpan.Name = "btnSimpan";
+            btnSimpan.Size = new Size(99, 40);
+            btnSimpan.TabIndex = 0;
+            btnSimpan.Text = "Simpan";
+            btnSimpan.UseVisualStyleBackColor = true;
+            btnSimpan.Click += btnSimpan_Click;
+            // 
+            // CreateTaskForm
+            // 
+            AutoScaleDimensions = new SizeF(8F, 20F);
+            AutoScaleMode = AutoScaleMode.Font;
+            ClientSize = new Size(514, 224);
+            Controls.Add(tableLayoutPanel1);
+            FormBorderStyle = FormBorderStyle.FixedDialog;
+            Margin = new Padding(4, 5, 4, 5);
+            MaximizeBox = false;
+            MinimizeBox = false;
+            Name = "CreateTaskForm";
+            StartPosition = FormStartPosition.CenterParent;
+            Text = "Tambah Tugas Baru";
+            tableLayoutPanel1.ResumeLayout(false);
+            tableLayoutPanel1.PerformLayout();
+            flowLayoutPanelButtons.ResumeLayout(false);
+            ResumeLayout(false);
 
         }
 

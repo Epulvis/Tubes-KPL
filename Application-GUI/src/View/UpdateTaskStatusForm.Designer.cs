@@ -28,79 +28,89 @@
         /// </summary>
         private void InitializeComponent()
         {
-            textBox1 = new TextBox();
-            comboBox1 = new ComboBox();
-            button1 = new Button();
-            label1 = new Label();
-            label2 = new Label();
-            SuspendLayout();
-            // 
-            // textBox1
-            // 
-            textBox1.Location = new Point(244, 112);
-            textBox1.Name = "textBox1";
-            textBox1.Size = new Size(125, 27);
-            textBox1.TabIndex = 0;
-            // 
-            // comboBox1
-            // 
-            comboBox1.FormattingEnabled = true;
-            comboBox1.Location = new Point(244, 176);
-            comboBox1.Name = "comboBox1";
-            comboBox1.Size = new Size(151, 28);
-            comboBox1.TabIndex = 1;
-            // 
-            // button1
-            // 
-            button1.Location = new Point(244, 242);
-            button1.Name = "button1";
-            button1.Size = new Size(94, 29);
-            button1.TabIndex = 2;
-            button1.Text = "Update";
-            button1.UseVisualStyleBackColor = true;
-            button1.Click += buttonUpdateOnClick;
-            // 
-            // label1
-            // 
-            label1.AutoSize = true;
-            label1.Location = new Point(171, 115);
-            label1.Name = "label1";
-            label1.Size = new Size(67, 20);
-            label1.TabIndex = 3;
-            label1.Text = "ID Tugas";
-            // 
-            // label2
-            // 
-            label2.AutoSize = true;
-            label2.Location = new Point(146, 179);
-            label2.Name = "label2";
-            label2.Size = new Size(92, 20);
-            label2.TabIndex = 4;
-            label2.Text = "Status Tugas";
-            // 
-            // UpdateTaskStatusForm
-            // 
-            AutoScaleDimensions = new SizeF(8F, 20F);
-            AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(640, 383);
-            Controls.Add(label2);
-            Controls.Add(label1);
-            Controls.Add(button1);
-            Controls.Add(comboBox1);
-            Controls.Add(textBox1);
-            Name = "UpdateTaskStatusForm";
-            Text = "UpdateTaskStatusForm";
-            Load += UpdateTaskStatusForm_Load;
-            ResumeLayout(false);
-            PerformLayout();
+            this.lblIdTask = new System.Windows.Forms.Label();
+            this.txtIdTask = new System.Windows.Forms.TextBox();
+            this.lblStatus = new System.Windows.Forms.Label();
+            this.cmbStatus = new System.Windows.Forms.ComboBox();
+            this.btnSimpan = new System.Windows.Forms.Button();
+            this.btnKembali = new System.Windows.Forms.Button();
+            this.SuspendLayout();
+
+            this.lblIdTask.AutoSize = true;
+            this.lblIdTask.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblIdTask.Location = new System.Drawing.Point(28, 30);
+            this.lblIdTask.Name = "lblIdTask";
+            this.lblIdTask.Size = new System.Drawing.Size(73, 18);
+            this.lblIdTask.TabIndex = 0;
+            this.lblIdTask.Text = "ID Tugas:";
+
+            this.txtIdTask.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtIdTask.Location = new System.Drawing.Point(125, 27);
+            this.txtIdTask.Name = "txtIdTask";
+            this.txtIdTask.Size = new System.Drawing.Size(240, 24);
+            this.txtIdTask.TabIndex = 1;
+
+            this.lblStatus.AutoSize = true;
+            this.lblStatus.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblStatus.Location = new System.Drawing.Point(28, 70);
+            this.lblStatus.Name = "lblStatus";
+            this.lblStatus.Size = new System.Drawing.Size(54, 18);
+            this.lblStatus.TabIndex = 2;
+            this.lblStatus.Text = "Status:";
+
+            this.cmbStatus.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbStatus.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cmbStatus.FormattingEnabled = true;
+            this.cmbStatus.Location = new System.Drawing.Point(125, 67);
+            this.cmbStatus.Name = "cmbStatus";
+            this.cmbStatus.Size = new System.Drawing.Size(240, 26);
+            this.cmbStatus.TabIndex = 3;
+
+            this.btnSimpan.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnSimpan.Location = new System.Drawing.Point(265, 120);
+            this.btnSimpan.Name = "btnSimpan";
+            this.btnSimpan.Size = new System.Drawing.Size(100, 35);
+            this.btnSimpan.TabIndex = 4;
+            this.btnSimpan.Text = "Simpan";
+            this.btnSimpan.UseVisualStyleBackColor = true;
+            this.btnSimpan.Click += new System.EventHandler(this.btnSimpan_Click);
+
+            this.btnKembali.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnKembali.Location = new System.Drawing.Point(159, 120);
+            this.btnKembali.Name = "btnKembali";
+            this.btnKembali.Size = new System.Drawing.Size(100, 35);
+            this.btnKembali.TabIndex = 5;
+            this.btnKembali.Text = "Kembali";
+            this.btnKembali.UseVisualStyleBackColor = true;
+            this.btnKembali.Click += new System.EventHandler(this.btnKembali_Click);
+
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.ClientSize = new System.Drawing.Size(394, 181);
+            this.Controls.Add(this.btnKembali);
+            this.Controls.Add(this.btnSimpan);
+            this.Controls.Add(this.cmbStatus);
+            this.Controls.Add(this.lblStatus);
+            this.Controls.Add(this.txtIdTask);
+            this.Controls.Add(this.lblIdTask);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
+            this.Name = "UpdateTaskStatusForm";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
+            this.Text = "Perbarui Status Tugas";
+            this.ResumeLayout(false);
+            this.PerformLayout();
+
         }
 
         #endregion
 
-        private TextBox textBox1;
-        private ComboBox comboBox1;
-        private Button button1;
-        private Label label1;
-        private Label label2;
+        private System.Windows.Forms.Label lblIdTask;
+        private System.Windows.Forms.TextBox txtIdTask;
+        private System.Windows.Forms.Label lblStatus;
+        private System.Windows.Forms.ComboBox cmbStatus;
+        private System.Windows.Forms.Button btnSimpan;
+        private System.Windows.Forms.Button btnKembali;
     }
 }
