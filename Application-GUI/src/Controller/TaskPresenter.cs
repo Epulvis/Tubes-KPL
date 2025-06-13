@@ -54,6 +54,7 @@ namespace Application.Controller
                 if (result.IsSuccess)
                 {
                     _view.DisplayMessage("Tugas berhasil ditambahkan.", "Sukses", MessageBoxIcon.Information);
+                    OnViewTasksRequested();
                     _view.ClearInputs();
                 }
                 else
@@ -126,7 +127,7 @@ namespace Application.Controller
                         statusWarning = $"\nPeringatan: Deadline {DateHelper.DaysUntilDeadline(result.Value.Deadline)} hari lagi!";
                     }
 
-                    var task =  $"Detail Tugas #{result.Value.Id}:\n" +
+                    var task = $"Detail Tugas #{result.Value.Id}:\n" +
                                 $"Judul: {result.Value.Judul}\n" +
                                $"Kategori: {result.Value.Kategori}\n" +
                                $"Status: {result.Value.Status}\n" +

@@ -3,7 +3,7 @@
     "Id": 1,
     "Judul": "Judul tugas 1",
     "Deadline": "2026-08-09T00:00:00",
-    "Status": 2,
+    "Status": 3,
     "Kategori": 0
   },
   {
@@ -94,6 +94,27 @@
     "Id": 14,
     "Judul": "haha",
     "Deadline": "2025-06-21T02:02:32.148",
+    "Status": 0,
+    "Kategori": 0
+  },
+  {
+    "Id": 15,
+    "Judul": "Tugas Ai",
+    "Deadline": "2025-06-14T10:59:41.869",
+    "Status": 0,
+    "Kategori": 0
+  },
+  {
+    "Id": 16,
+    "Judul": "Tugas Cheva",
+    "Deadline": "2025-06-14T11:30:32.445",
+    "Status": 0,
+    "Kategori": 1
+  },
+  {
+    "Id": 17,
+    "Judul": "tes",
+    "Deadline": "2025-06-18T11:39:30.125",
     "Status": 0,
     "Kategori": 0
   }
