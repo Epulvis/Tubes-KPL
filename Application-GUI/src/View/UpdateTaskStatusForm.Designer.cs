@@ -86,7 +86,7 @@
             btnSimpan.TabIndex = 4;
             btnSimpan.Text = "Lanjut";
             btnSimpan.UseVisualStyleBackColor = true;
-            btnSimpan.Click += btnSimpan_Click;
+            btnSimpan.Click += BtnSimpan_Click;
             // 
             // btnKembali
             // 
@@ -98,7 +98,7 @@
             btnKembali.TabIndex = 5;
             btnKembali.Text = "Kembali";
             btnKembali.UseVisualStyleBackColor = true;
-            btnKembali.Click += btnKembali_Click;
+            btnKembali.Click += BtnKembali_Click;
             // 
             // UpdateTaskStatusForm
             // 

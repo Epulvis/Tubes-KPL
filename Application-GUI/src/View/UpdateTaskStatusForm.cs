@@ -28,7 +28,25 @@ namespace Application_GUI.src.View
             cmbStatus.SelectedIndex = 0;
         }
 
-        private void btnSimpan_Click(object sender, EventArgs e)
+        private bool IsTaskIdValid(string id)
+        {
+            // Validasi: tidak kosong, hanya angka, panjang maksimal 6 digit, dan > 0
+            if (string.IsNullOrWhiteSpace(id))
+                return false;
+            if (!Regex.IsMatch(id, @"^\d{1,6}$"))
+                return false;
+            if (!int.TryParse(id, out int idNum) || idNum <= 0)
+                return false;
+            return true;
+        }
+
+        private void BtnKembali_Click(object sender, EventArgs e)
+        {
+            this.DialogResult = DialogResult.Cancel;
+            this.Close();
+        }
+
+        private void BtnSimpan_Click(object sender, EventArgs e)
         {
             if (!IsTaskIdValid(txtIdTask.Text))
             {
@@ -48,24 +66,6 @@ namespace Application_GUI.src.View
                 // Jangan tampilkan detail exception ke user
                 MessageBox.Show("Terjadi kesalahan sistem. Silakan coba lagi.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-        }
-
-        private bool IsTaskIdValid(string id)
-        {
-            // Validasi: tidak kosong, hanya angka, panjang maksimal 6 digit, dan > 0
-            if (string.IsNullOrWhiteSpace(id))
-                return false;
-            if (!Regex.IsMatch(id, @"^\d{1,6}$"))
-                return false;
-            if (!int.TryParse(id, out int idNum) || idNum <= 0)
-                return false;
-            return true;
-        }
-
-        private void btnKembali_Click(object sender, EventArgs e)
-        {
-            this.DialogResult = DialogResult.Cancel;
-            this.Close();
         }
     }
 }
