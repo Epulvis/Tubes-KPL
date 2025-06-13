@@ -125,6 +125,10 @@ public partial class TaskManagementForm : Form, ITaskView
         return dialog.ShowDialog() == DialogResult.OK ? selectedStatus : StatusTugas.BelumMulai;
     }
 
+    public void ReloadTask()
+    {
+        taskPresenter.OnViewTasksRequested();
+    }
 
     public DateTime GetFilterStartDateInput()
     {
@@ -243,9 +247,16 @@ public partial class TaskManagementForm : Form, ITaskView
         // Cek jika kolom "Detail" yang diklik
         if (dataGridView1.Columns[e.ColumnIndex].Name == "detailButton" && e.RowIndex >= 0)
         {
-            taskPresenter.OnViewTaskDetailsRequested(e.RowIndex+1);
+            // Ambil nilai ID dari baris yang diklik
+            var idValue = dataGridView1.Rows[e.RowIndex].Cells["Id"].Value;
+
+            if (idValue != null && int.TryParse(idValue.ToString(), out int id))
+            {
+                taskPresenter.OnViewTaskDetailsRequested(id); // Kirim berdasarkan ID
+            }
         }
     }
+
 
     public void DisplayMessage(string message, string caption, MessageBoxIcon icon)
     {

@@ -85,6 +85,7 @@ namespace Application_GUI.src.View
 
         private void btnBack_Click(object sender, EventArgs e)
         {
+            _dashboard.ReloadTask();
             _dashboard.Show();
             this.Close();
         }
