@@ -1,28 +1,17 @@
 using Application.Models;
 using Application.Helpers;
 using Application_GUI.src.View;
-using System.Text.Json;
 using Application.Controller;
 using Application.Services;
+using System;
+using System.Collections.Generic;
+using System.Drawing;
 using System.Windows.Forms;
 
 namespace Application.View;
 
 public partial class TaskManagementForm : Form, ITaskView
 {
-    //private List<Tugas> _listTugas;
-    private ListBox lstTasks;
-    private TextBox txtTitle;
-    private TextBox txtDescription;
-    private DateTimePicker dtpDueDate;
-    //private Button btnViewDetails;
-    //private Button btnUpdateStatus;
-    //private Button btnDeleteTask;
-    //private Button btnFilterByDate;
-    //private Button btnExportTasks;
-    //private Button btnRefreshTasks;
-    //private Label lblStatusMessage;
-
     public event Action AddTaskRequested;
     public event Action ViewTasksRequested;
     public event Action ViewTaskDetailsRequested;
@@ -53,20 +42,44 @@ public partial class TaskManagementForm : Form, ITaskView
         statusStateMachine = new StatusStateMachine();
         InitializeComponent();
 
-
-        // init controller
         taskService = new TaskService(httpClient, inputValidator, statusStateMachine);
         taskPresenter = new TaskPresenter(view, taskService, inputValidator);
 
+        // Hubungkan event handler sidebar & hamburger
+        buttonHamburger.Click += ButtonHamburger_Click;
+        buttonCloseSidebar.Click += ButtonCloseSidebar_Click;
+        btnShowAddTaskForm.Click += BtnShowAddTaskForm_Click;
+        btnShowUpdateForm.Click += BtnShowUpdateForm_Click;
+        btnPageFilterTaskByDate.Click += BtnPageFilterTaskByDate_Click;
+        buttonHome.Click += ButtonHome_Click;
+
+        // Double click pada DataGridView untuk detail
+        dgvTasks.CellDoubleClick += DgvTasks_CellDoubleClick;
+
+        // Atur posisi hamburger saat resize
+        this.Resize += (s, e) => AdjustHamburgerPosition();
+
         taskPresenter.OnViewTasksRequested();
-        this.btnShowAddTaskForm.Click += new System.EventHandler(this.BtnShowAddTaskForm_Click);
-        this.btnShowUpdateForm.Click += new System.EventHandler(this.BtnShowUpdateForm_Click);
     }
 
-    public string GetTaskTitleInput() => _new_task_title;
-    public string GetTaskDescriptionInput() => _new_task_description;
-    public DateTime GetTaskDueDateInput() => _new_task_dueDate;
-    public int GetKategoriIndexInput() => _new_task_kategoriIndex;
+    private void AdjustHamburgerPosition()
+    {
+        buttonHamburger.Location = new Point(panelSidebar.Visible ? panelSidebar.Width + 8 : 8, 8);
+    }
+
+    // === SIDEBAR & HAMBURGER EVENT HANDLERS ===
+
+    private void ButtonHamburger_Click(object sender, EventArgs e)
+    {
+        panelSidebar.Visible = !panelSidebar.Visible;
+        AdjustHamburgerPosition();
+    }
+
+    private void ButtonCloseSidebar_Click(object sender, EventArgs e)
+    {
+        panelSidebar.Visible = false;
+        AdjustHamburgerPosition();
+    }
 
     private void BtnShowAddTaskForm_Click(object sender, EventArgs e)
     {
@@ -92,11 +105,48 @@ public partial class TaskManagementForm : Form, ITaskView
         }
     }
 
-    public int GetSelectedTaskId()
+    private void BtnPageFilterTaskByDate_Click(object sender, EventArgs e)
     {
-        return Int32.Parse(_new_task_id);
+        FilteredTaskByDateForm form = new FilteredTaskByDateForm(this);
+        form.Show();
+        this.Hide();
     }
 
+    private void ButtonHome_Click(object sender, EventArgs e)
+    {
+        var deleteTaskForm = new DeleteTask(this);
+        deleteTaskForm.Show();
+        this.Hide();
+    }
+
+    // === DATAGRIDVIEW EVENT HANDLER ===
+
+    private void DgvTasks_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
+    {
+        if (e.RowIndex >= 0 && dgvTasks.Rows[e.RowIndex].Cells["Id"].Value != null)
+        {
+            int id = Convert.ToInt32(dgvTasks.Rows[e.RowIndex].Cells["Id"].Value);
+            taskPresenter.OnViewTaskDetailsRequested(id);
+        }
+    }
+
+    // === ITaskView IMPLEMENTATION ===
+
+    public string GetTaskTitleInput() => _new_task_title;
+    public string GetTaskDescriptionInput() => _new_task_description;
+    public DateTime GetTaskDueDateInput() => _new_task_dueDate;
+    public int GetKategoriIndexInput() => _new_task_kategoriIndex;
+
+    public int GetSelectedTaskId()
+    {
+        if (dgvTasks.SelectedRows.Count > 0)
+        {
+            var row = dgvTasks.SelectedRows[0];
+            if (row.Cells["Id"].Value != null && int.TryParse(row.Cells["Id"].Value.ToString(), out int id))
+                return id;
+        }
+        return -1;
+    }
 
     public StatusTugas GetNewTaskStatusInput()
     {
@@ -132,7 +182,7 @@ public partial class TaskManagementForm : Form, ITaskView
 
     public DateTime GetFilterStartDateInput()
     {
-        using (var dateDialog = new Form { Text = "Pilih Tanggal Awal", StartPosition = FormStartPosition.CenterParent, Size = new System.Drawing.Size(250, 150) })
+        using (var dateDialog = new Form { Text = "Pilih Tanggal Awal", StartPosition = FormStartPosition.CenterParent, Size = new Size(250, 150) })
         using (var picker = new DateTimePicker { Dock = DockStyle.Top })
         using (var okButton = new Button { Text = "OK", Dock = DockStyle.Bottom })
         {
@@ -147,7 +197,7 @@ public partial class TaskManagementForm : Form, ITaskView
 
     public DateTime GetFilterEndDateInput()
     {
-        using (var dateDialog = new Form { Text = "Pilih Tanggal Akhir", StartPosition = FormStartPosition.CenterParent, Size = new System.Drawing.Size(250, 150) })
+        using (var dateDialog = new Form { Text = "Pilih Tanggal Akhir", StartPosition = FormStartPosition.CenterParent, Size = new Size(250, 150) })
         using (var picker = new DateTimePicker { Dock = DockStyle.Top })
         using (var okButton = new Button { Text = "OK", Dock = DockStyle.Bottom })
         {
@@ -162,7 +212,7 @@ public partial class TaskManagementForm : Form, ITaskView
 
     public string GetExportFormatInput()
     {
-        using (var formatDialog = new Form { Text = "Pilih Format Ekspor", StartPosition = FormStartPosition.CenterParent, Size = new System.Drawing.Size(250, 150) })
+        using (var formatDialog = new Form { Text = "Pilih Format Ekspor", StartPosition = FormStartPosition.CenterParent, Size = new Size(250, 150) })
         using (var cmbFormat = new ComboBox { Dock = DockStyle.Top, DropDownStyle = ComboBoxStyle.DropDownList })
         using (var okButton = new Button { Text = "OK", Dock = DockStyle.Bottom })
         {
@@ -187,51 +237,38 @@ public partial class TaskManagementForm : Form, ITaskView
 
             if (saveFileDialog.ShowDialog() == DialogResult.OK)
             {
-                // Secure Coding: Path yang dipilih pengguna aman untuk digunakan
                 return saveFileDialog.FileName;
             }
         }
-        // Secure Coding: Handle pembatalan oleh pengguna
         throw new OperationCanceledException("Ekspor dibatalkan oleh pengguna.");
     }
 
-    // display all task
     public void DisplayTasks(List<Tugas> tasks)
     {
-        // if task not null and count > 0, then display in datagridview
+        dgvTasks.Columns.Clear();
+        dgvTasks.Rows.Clear();
+
+        dgvTasks.Columns.Add("Id", "ID");
+        dgvTasks.Columns.Add("Judul", "Judul");
+        dgvTasks.Columns.Add("Deadline", "Deadline");
+        dgvTasks.Columns.Add("Status", "Status");
+
         if (tasks != null && tasks.Count > 0)
         {
-            dataGridView1.AutoGenerateColumns = true;
-            dataGridView1.DataSource = tasks;
-        }
-        else
-        {
-            dataGridView1.DataSource = "Tidak ada tugas";
-            //lstTasks.Items.Add("Tidak ada tugas.");
+            foreach (var tugas in tasks)
+            {
+                dgvTasks.Rows.Add(
+                    tugas.Id,
+                    tugas.Judul,
+                    tugas.Deadline.ToString("dd/MM/yyyy"),
+                    tugas.Status.ToString()
+                );
+            }
         }
     }
 
-
-    //private void btnUpdateTask_Click(object sender, EventArgs e)
-    //{
-    //    int selectedId = GetSelectedTaskId();
-    //    if (selectedId == -1)
-    //    {
-    //        DisplayMessage("Pilih task yang ingin diupdate!", "Peringatan", MessageBoxIcon.Warning);
-    //        return;
-    //    }
-    //    // Buka form UpdateTaskForm dan kirimkan id task yang dipilih
-    //    var updateForm = new UpdateTaskForm(selectedId);
-    //    updateForm.ShowDialog();
-    //    // Setelah update, refresh daftar task jika perlu
-    //    taskPresenter.OnViewTasksRequested();
-    //}
-
-
-    // display task detait
     public void DisplayTaskDetails(string task)
     {
-        // if task is not null, then display in display message
         if (task != null)
         {
             DisplayMessage(task, "Detail Tugas", MessageBoxIcon.Information);
@@ -242,22 +279,6 @@ public partial class TaskManagementForm : Form, ITaskView
         }
     }
 
-    private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
-    {
-        // Cek jika kolom "Detail" yang diklik
-        if (dataGridView1.Columns[e.ColumnIndex].Name == "detailButton" && e.RowIndex >= 0)
-        {
-            // Ambil nilai ID dari baris yang diklik
-            var idValue = dataGridView1.Rows[e.RowIndex].Cells["Id"].Value;
-
-            if (idValue != null && int.TryParse(idValue.ToString(), out int id))
-            {
-                taskPresenter.OnViewTaskDetailsRequested(id); // Kirim berdasarkan ID
-            }
-        }
-    }
-
-
     public void DisplayMessage(string message, string caption, MessageBoxIcon icon)
     {
         MessageBox.Show(message, caption, MessageBoxButtons.OK, icon);
@@ -266,47 +287,4 @@ public partial class TaskManagementForm : Form, ITaskView
     public void ClearInputs()
     {
     }
-
-    private void ButtonHamburger_Click(object sender, EventArgs e)
-    {
-        // Toggle panel visibility
-        panelSidebar.Visible = !panelSidebar.Visible;
-        flowLayoutPanel1.Location = new Point(141, 31);
-        flowLayoutPanel1.Size = new Size(417, 257);
-        dataGridView1.Location = new Point(3, 3);
-        dataGridView1.Size = new Size(491, 252);
-    }
-
-    private void ButtonCloseSidebar_Click(object sender, EventArgs e)
-    {
-        panelSidebar.Visible = false;
-        flowLayoutPanel1.Location = new Point(0, 31);
-        flowLayoutPanel1.Size = new Size(558, 257);
-        dataGridView1.Location = new Point(3, 3);
-        dataGridView1.Size = new Size(555, 254);
-    }
-
-    private void button1_Click(object sender, EventArgs e)
-    {
-        FilteredTaskByDateForm form = new FilteredTaskByDateForm(this);
-        form.Show();
-        this.Hide();
-    }
-
-
-    // button delete task
-    private void buttonHome_Click(object sender, EventArgs e)
-    {
-        var deleteTaskForm = new DeleteTask(this); // Kirim referensi dashboard
-        deleteTaskForm.Show();
-        this.Hide();
-    }
-    
-    // button delete task
-    // private void btnDeleteTask_Click(object sender, EventArgs e)
-    // {
-    //     var deleteTaskForm = new DeleteTask(this); // Kirim referensi dashboard
-    //     deleteTaskForm.Show();
-    //     this.Hide();
-    // }
 }
