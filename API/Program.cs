@@ -5,14 +5,11 @@ using Tubes_KPL.src.Domain.Models;
 using Tubes_KPL.src.Application.Helpers;
 
 var builder = WebApplication.CreateBuilder(args);
-
-// Add services to the container.
-
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
+// Menambahkan layanan untuk dokumentasi API (Swagger)
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-
+// Mengatur opsi serialisasi JSON agar enum dikonversi ke string
 builder.Services.Configure<Microsoft.AspNetCore.Http.Json.JsonOptions>(options =>
 {
     options.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
@@ -20,15 +17,14 @@ builder.Services.Configure<Microsoft.AspNetCore.Http.Json.JsonOptions>(options =
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// Konfigurasi pipeline HTTP untuk development (menampilkan Swagger UI)
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
-
-
+// Middleware untuk menangani error global dan mengembalikan pesan error JSON
 app.Use(async (context, next) =>
 {
     try
@@ -42,12 +38,14 @@ app.Use(async (context, next) =>
     }
 });
 
+// Endpoint untuk mengambil semua data tugas
 app.MapGet("/api/tugas", () =>
 {
     var tasks = TugasStorage<List<Tugas>>.GetTugas();
     return Results.Ok(tasks);
 });
 
+// Endpoint untuk mengambil data tugas berdasarkan ID
 app.MapGet("/api/tugas/{id:int}", (int id) =>
 {
     var tasks = TugasStorage<List<Tugas>>.GetTugas();
@@ -55,6 +53,7 @@ app.MapGet("/api/tugas/{id:int}", (int id) =>
     return task is null ? Results.NotFound() : Results.Ok(task);
 });
 
+// Endpoint untuk menambah data tugas baru
 app.MapPost("/api/tugas", (Tugas newTugas) =>
 {
     var tasks = TugasStorage<List<Tugas>>.GetTugas();
@@ -71,6 +70,7 @@ app.MapPost("/api/tugas", (Tugas newTugas) =>
 
 });
 
+// Endpoint untuk mengubah data tugas berdasarkan ID
 app.MapPut("/api/tugas/{id:int}", (int id, Tugas updatedTugas) =>
 {
     var tasks = TugasStorage<List<Tugas>>.GetTugas();
@@ -92,6 +92,7 @@ app.MapPut("/api/tugas/{id:int}", (int id, Tugas updatedTugas) =>
     return Results.Ok(task);
 });
 
+// Endpoint untuk menghapus data tugas berdasarkan ID
 app.MapDelete("/api/tugas/{id:int}", (int id) =>
 {
     var tasks = TugasStorage<List<Tugas>>.GetTugas();

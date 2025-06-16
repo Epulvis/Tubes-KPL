@@ -1,6 +1,7 @@
+# Mendefinisikan variabel alamat host API
 @API_HostAddress = http://localhost:5078
 
+# Mengirim permintaan GET ke endpoint weatherforecast untuk mengambil data cuaca
 GET {{API_HostAddress}}/weatherforecast/
 Accept: application/json
 
-###

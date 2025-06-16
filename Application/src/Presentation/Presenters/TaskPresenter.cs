@@ -22,6 +22,7 @@ namespace Tubes_KPL.src.Presentation.Presenters
         private readonly JsonSerializerOptions _jsonOptions;
         private readonly IConfigProvider _configProvider;
 
+        // Constructor: Initializes HttpClient and JsonSerializerOptions
         public TaskPresenter(IConfigProvider configProvider)
         {
             _httpClient = new HttpClient();
@@ -33,7 +34,7 @@ namespace Tubes_KPL.src.Presentation.Presenters
             };
         }
 
-
+        // Method to create a new task
         public async Task<string> CreateTask(string judul, string deadlineStr, int kategoriIndex)
         {
             try
@@ -76,6 +77,7 @@ namespace Tubes_KPL.src.Presentation.Presenters
             }
         }
 
+        // Method to update the status of a task
         public async Task<Result<string>> UpdateTaskStatus(string idStr)
         {
             int statusIndex = InputValidator.InputValidStatus();
@@ -120,7 +122,7 @@ namespace Tubes_KPL.src.Presentation.Presenters
             }
         }
 
-
+        // Method to update a task's details    
         public async Task<Result<string>> UpdateTask(string idStr, string judul, string deadlineStr, int kategoriIndex)
         {
             try
@@ -162,8 +164,8 @@ namespace Tubes_KPL.src.Presentation.Presenters
             }
         }
         
+        // Method to delete a task
         // Automata & Enum : by bintang 
-        
         // Define the enum at the class level
         private enum DeleteTaskState { Start, Validating, Deleting, Completed, Error }
 
@@ -213,6 +215,7 @@ namespace Tubes_KPL.src.Presentation.Presenters
             }
         }
 
+        // Method to get task details by ID
         public async Task<string> GetTaskDetails(string idStr)
         {
             try
@@ -251,6 +254,7 @@ namespace Tubes_KPL.src.Presentation.Presenters
             }
         }
 
+        // Method to get tasks by date range
         public async Task<string> GetTasksByDateRange(string startDateStr, string endDateStr)
         {
             try
@@ -299,6 +303,7 @@ namespace Tubes_KPL.src.Presentation.Presenters
             }
         }
 
+        // Method to get all tasks and display them in a table
         public async Task<string> GetAllTasks()
         {
             try

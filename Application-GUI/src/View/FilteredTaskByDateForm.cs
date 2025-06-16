@@ -17,12 +17,14 @@ using Application.Helpers;
 
 namespace Application_GUI.src.View
 {
+    // Form to filter tasks by date range
     public partial class FilteredTaskByDateForm : Form
     {
         private readonly TaskManagementForm _taskManagementForm;
         private List<Tugas> _tasks = new();
         private readonly TaskService _taskService;
 
+        // Constructor initializes the form and sets up the task service
         public FilteredTaskByDateForm(TaskManagementForm form)
         {
             InitializeComponent();
@@ -36,11 +38,13 @@ namespace Application_GUI.src.View
             Load += FilteredTaskByDateForm_Load;
         }
 
+        // Load tasks from API when the form is loaded
         private async void FilteredTaskByDateForm_Load(object? sender, EventArgs e)
         {
             await LoadTasksFromApiAsync();
         }
 
+        // Load tasks from the API and bind them to the DataGridView
         private async Task LoadTasksFromApiAsync()
         {
             try
@@ -65,12 +69,14 @@ namespace Application_GUI.src.View
             }
         }
 
+        // Event handler for the back button to return to the task management form
         private void BtnBack_Click(object sender, EventArgs e)
         {
             _taskManagementForm.Show();
             Close();
         }
 
+        // Event handler for the filter button to filter tasks by date range
         private void BtnFilter_Click(object sender, EventArgs e)
         {
             // Ambil tanggal dari DateTimePicker
@@ -107,11 +113,13 @@ namespace Application_GUI.src.View
             }
         }
 
+        // Event handler for the clear button to reset the date pickers and DataGridView
         private static bool IsValidDateRange(DateTime start, DateTime end)
         {
             return start <= end;
         }
 
+        // Clear the date pickers and reset the DataGridView
         private static void ShowError(string message)
         {
             MessageBox.Show(

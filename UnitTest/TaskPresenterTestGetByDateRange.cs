@@ -22,7 +22,6 @@ public class TaskPresenterTestsGetByDateRange
     public void Setup()
     {
         // Inisialisasi JsonSerializerOptions jika diperlukan
-
         // Inisialisasi IConfigProvider Anda
         _mockConfigProvider = new Mock<IConfigProvider>();
         _mockConfigProvider.Setup(m => m.GetConfig<Dictionary<string, object>>("ReminderSettings"))
@@ -34,6 +33,7 @@ public class TaskPresenterTestsGetByDateRange
         _presenter = new TaskPresenter(_mockConfigProvider.Object);
     }
 
+    //     
     [Test]
     public async Task GetTasksByDateRange_ShouldReturnError_WhenStartDateInvalid()
     {

@@ -11,7 +11,7 @@ namespace Application_GUI.src.View
     public partial class DeleteTask : Form
     {
         // Base URL for API
-        private readonly string apiBaseUrl = "http://localhost:4000/api/tugas"; // Ganti dengan URL API yang sesuai
+        private readonly string apiBaseUrl = "http://localhost:4000/api/tugas"; 
         private TaskManagementForm _dashboard;
 
         // Load tasks when form is shown

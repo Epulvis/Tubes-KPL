@@ -12,16 +12,23 @@ namespace Application_GUI.src.View
 {
     public partial class CreateTaskForm: Form
     {
+        // Properties to access the input values from the form
         public string JudulTugas => txtJudul.Text.Trim();
+        
+        // Deadline is a DateTime property that returns the value from the DateTimePicker
         public DateTime Deadline => dtpDeadline.Value;
+        
+        // KategoriIndex is an integer property that returns the selected index of the ComboBox
         public int KategoriIndex => cmbKategori.SelectedIndex;
 
+        // Constructor initializes the form and populates the category ComboBox
         public CreateTaskForm()
         {
             InitializeComponent();
             InisialisasiKategori();
         }
-
+        
+        // Method to initialize the category ComboBox with predefined categories
         private void InisialisasiKategori()
         {
             cmbKategori.Items.Add("Akademik");
@@ -29,6 +36,7 @@ namespace Application_GUI.src.View
             cmbKategori.SelectedIndex = 0;
         }
 
+        // Event handler for the form load event
         private void btnSimpan_Click(object sender, EventArgs e)
         {
             if (string.IsNullOrWhiteSpace(txtJudul.Text))
@@ -49,6 +57,7 @@ namespace Application_GUI.src.View
             this.Close();
         }
 
+        // Event handler for the "Bersihkan" button to clear the input fields
         private void btnBersihkan_Click(object sender, EventArgs e)
         {
             txtJudul.Clear();
@@ -57,6 +66,7 @@ namespace Application_GUI.src.View
             txtJudul.Focus();
         }
 
+        // Event handler for the "Kembali" button to close the form without saving
         private void btnKembali_Click(object sender, EventArgs e)
         {
             this.DialogResult = DialogResult.Cancel;

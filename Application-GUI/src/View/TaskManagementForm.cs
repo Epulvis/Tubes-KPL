@@ -35,6 +35,7 @@ public partial class TaskManagementForm : Form, ITaskView
     private int _new_task_kategoriIndex;
     private int _new_task_StatusIndex;
 
+    // Constructor initializes the form and sets up the task service and presenter
     public TaskManagementForm()
     {
         httpClient = new HttpClient();
@@ -81,6 +82,7 @@ public partial class TaskManagementForm : Form, ITaskView
         AdjustHamburgerPosition();
     }
 
+    // === BUTTON EVENT HANDLERS ===
     private void BtnShowAddTaskForm_Click(object sender, EventArgs e)
     {
         using var addTaskForm = new CreateTaskForm();
@@ -94,6 +96,7 @@ public partial class TaskManagementForm : Form, ITaskView
         }
     }
 
+    // === BUTTON EVENT HANDLERS FOR UPDATE AND FILTER ===
     private void BtnShowUpdateForm_Click(object sender, EventArgs e)
     {
         using var updateTaskStatusForm = new UpdateTaskStatusForm();
@@ -105,6 +108,7 @@ public partial class TaskManagementForm : Form, ITaskView
         }
     }
 
+    // === BUTTON EVENT HANDLER FOR FILTER TASKS BY DATE ===
     private void BtnPageFilterTaskByDate_Click(object sender, EventArgs e)
     {
         FilteredTaskByDateForm form = new FilteredTaskByDateForm(this);
@@ -131,7 +135,7 @@ public partial class TaskManagementForm : Form, ITaskView
     }
 
     // === ITaskView IMPLEMENTATION ===
-
+    
     public string GetTaskTitleInput() => _new_task_title;
     public string GetTaskDescriptionInput() => _new_task_description;
     public DateTime GetTaskDueDateInput() => _new_task_dueDate;
@@ -148,6 +152,7 @@ public partial class TaskManagementForm : Form, ITaskView
         return -1;
     }
 
+    // Method to get the new task status input from the user
     public StatusTugas GetNewTaskStatusInput()
     {
         var dialog = new Form();
@@ -174,12 +179,14 @@ public partial class TaskManagementForm : Form, ITaskView
 
         return dialog.ShowDialog() == DialogResult.OK ? selectedStatus : StatusTugas.BelumMulai;
     }
-
+    
+    // Method to reload tasks after an operation
     public void ReloadTask()
     {
         taskPresenter.OnViewTasksRequested();
     }
 
+    // Methods to get filter inputs from the user
     public DateTime GetFilterStartDateInput()
     {
         using (var dateDialog = new Form { Text = "Pilih Tanggal Awal", StartPosition = FormStartPosition.CenterParent, Size = new Size(250, 150) })
@@ -195,6 +202,7 @@ public partial class TaskManagementForm : Form, ITaskView
         }
     }
 
+    // Method to get filter end date input from the user
     public DateTime GetFilterEndDateInput()
     {
         using (var dateDialog = new Form { Text = "Pilih Tanggal Akhir", StartPosition = FormStartPosition.CenterParent, Size = new Size(250, 150) })
@@ -210,6 +218,7 @@ public partial class TaskManagementForm : Form, ITaskView
         }
     }
 
+    // Method to get export format input from the user
     public string GetExportFormatInput()
     {
         using (var formatDialog = new Form { Text = "Pilih Format Ekspor", StartPosition = FormStartPosition.CenterParent, Size = new Size(250, 150) })
@@ -227,6 +236,7 @@ public partial class TaskManagementForm : Form, ITaskView
         }
     }
 
+    // Method to get export file path input from the user
     public string GetExportFilePathInput(string defaultFileName, string filter)
     {
         using (SaveFileDialog saveFileDialog = new SaveFileDialog())
@@ -243,6 +253,7 @@ public partial class TaskManagementForm : Form, ITaskView
         throw new OperationCanceledException("Ekspor dibatalkan oleh pengguna.");
     }
 
+    // Method to display tasks in the DataGridView
     public void DisplayTasks(List<Tugas> tasks)
     {
         dgvTasks.Columns.Clear();
@@ -267,6 +278,7 @@ public partial class TaskManagementForm : Form, ITaskView
         }
     }
 
+    // Method to display task details in a message box
     public void DisplayTaskDetails(string task)
     {
         if (task != null)
@@ -279,11 +291,13 @@ public partial class TaskManagementForm : Form, ITaskView
         }
     }
 
+    // Method to display a message box with a specific message, caption, and icon
     public void DisplayMessage(string message, string caption, MessageBoxIcon icon)
     {
         MessageBox.Show(message, caption, MessageBoxButtons.OK, icon);
     }
 
+    // Method to clear input fields in the form
     public void ClearInputs()
     {
     }

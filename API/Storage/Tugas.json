@@ -1,128 +1,32 @@
 [
-  {
-    "Id": 1,
-    "Judul": "Judul tugas 1",
-    "Deadline": "2026-08-09T00:00:00",
-    "Status": 2,
-    "Kategori": 0
-  },
-  {
-    "Id": 2,
-    "Judul": "Judul tugas 2",
-    "Deadline": "2025-07-01T00:41:32.901Z",
-    "Status": 1,
-    "Kategori": 1
-  },
-  {
-    "Id": 3,
-    "Judul": "Judul tugas 3",
-    "Deadline": "2025-07-01T00:41:32.901Z",
-    "Status": 0,
-    "Kategori": 1
-  },
-  {
-    "Id": 4,
-    "Judul": "Judul tugas 4",
-    "Deadline": "2025-07-01T01:25:19.327Z",
-    "Status": 1,
-    "Kategori": 0
-  },
-  {
-    "Id": 5,
-    "Judul": "Judul tugas 6",
-    "Deadline": "2025-07-01T05:43:23.317Z",
-    "Status": 1,
-    "Kategori": 0
-  },
-  {
-    "Id": 6,
-    "Judul": "Judul tugas 7",
-    "Deadline": "2025-07-04T00:00:00",
-    "Status": 0,
-    "Kategori": 0
-  },
-  {
-    "Id": 7,
-    "Judul": "Judul tugas 8",
-    "Deadline": "2025-07-20T00:00:00",
-    "Status": 0,
-    "Kategori": 0
-  },
-  {
-    "Id": 8,
-    "Judul": "Judul tugas 9",
-    "Deadline": "2025-07-30T16:03:42.962Z",
-    "Status": 2,
-    "Kategori": 1
-  },
-  {
-    "Id": 9,
-    "Judul": "Judul tugas 10",
-    "Deadline": "2025-07-20T00:00:00",
-    "Status": 1,
-    "Kategori": 0
-  },
-  {
-    "Id": 10,
-    "Judul": "Judul tugas 11",
-    "Deadline": "2025-06-14T14:30:00",
-    "Status": 1,
-    "Kategori": 0
-  },
-  {
-    "Id": 11,
-    "Judul": "tes",
-    "Deadline": "2025-06-20T00:32:00.434",
-    "Status": 0,
-    "Kategori": 0
-  },
-  {
-    "Id": 12,
-    "Judul": "Tes",
-    "Deadline": "2025-06-30T00:55:37.613",
-    "Status": 0,
-    "Kategori": 0
-  },
-  {
-    "Id": 13,
-    "Judul": "wwwww",
-    "Deadline": "2025-07-05T00:56:26.25",
-    "Status": 0,
-    "Kategori": 0
-  },
-  {
-    "Id": 14,
-    "Judul": "haha",
-    "Deadline": "2025-06-21T02:02:32.148",
-    "Status": 0,
-    "Kategori": 0
-  },
-  {
-    "Id": 15,
-    "Judul": "Tugas Ai",
-    "Deadline": "2025-06-14T10:59:41.869",
-    "Status": 0,
-    "Kategori": 0
-  },
-  {
-    "Id": 17,
-    "Judul": "tes",
-    "Deadline": "2025-06-18T11:39:30.125",
-    "Status": 0,
-    "Kategori": 0
-  },
-  {
-    "Id": 18,
-    "Judul": "w",
-    "Deadline": "2025-06-14T12:36:25.68",
-    "Status": 0,
-    "Kategori": 1
-  },
-  {
-    "Id": 19,
-    "Judul": "tes",
-    "Deadline": "2025-06-15T14:12:10.015",
-    "Status": 0,
-    "Kategori": 0
-  }
+  { "Id": 1, "Judul": "Tugas 1", "Deadline": "2025-06-01T10:00:00", "Status": 0, "Kategori": 0 },
+  { "Id": 2, "Judul": "Tugas 2", "Deadline": "2025-06-03T12:00:00", "Status": 1, "Kategori": 1 },
+  { "Id": 3, "Judul": "Tugas 3", "Deadline": "2025-06-05T09:30:00", "Status": 2, "Kategori": 0 },
+  { "Id": 4, "Judul": "Tugas 4", "Deadline": "2025-06-07T14:00:00", "Status": 0, "Kategori": 1 },
+  { "Id": 5, "Judul": "Tugas 5", "Deadline": "2025-06-09T16:00:00", "Status": 1, "Kategori": 0 },
+  { "Id": 6, "Judul": "Tugas 6", "Deadline": "2025-06-11T08:00:00", "Status": 2, "Kategori": 1 },
+  { "Id": 7, "Judul": "Tugas 7", "Deadline": "2025-06-13T11:00:00", "Status": 0, "Kategori": 0 },
+  { "Id": 8, "Judul": "Tugas 8", "Deadline": "2025-06-15T13:00:00", "Status": 1, "Kategori": 1 },
+  { "Id": 9, "Judul": "Tugas 9", "Deadline": "2025-06-17T15:00:00", "Status": 2, "Kategori": 0 },
+  { "Id": 10, "Judul": "Tugas 10", "Deadline": "2025-06-19T10:30:00", "Status": 0, "Kategori": 1 },
+  { "Id": 11, "Judul": "Tugas 11", "Deadline": "2025-06-21T09:00:00", "Status": 1, "Kategori": 0 },
+  { "Id": 12, "Judul": "Tugas 12", "Deadline": "2025-06-23T14:30:00", "Status": 2, "Kategori": 1 },
+  { "Id": 13, "Judul": "Tugas 13", "Deadline": "2025-06-25T16:00:00", "Status": 0, "Kategori": 0 },
+  { "Id": 14, "Judul": "Tugas 14", "Deadline": "2025-06-27T08:30:00", "Status": 1, "Kategori": 1 },
+  { "Id": 15, "Judul": "Tugas 15", "Deadline": "2025-06-29T12:00:00", "Status": 2, "Kategori": 0 },
+  { "Id": 16, "Judul": "Tugas 16", "Deadline": "2025-07-01T10:00:00", "Status": 0, "Kategori": 1 },
+  { "Id": 17, "Judul": "Tugas 17", "Deadline": "2025-07-03T13:00:00", "Status": 1, "Kategori": 0 },
+  { "Id": 18, "Judul": "Tugas 18", "Deadline": "2025-07-05T15:30:00", "Status": 2, "Kategori": 1 },
+  { "Id": 19, "Judul": "Tugas 19", "Deadline": "2025-07-07T09:00:00", "Status": 0, "Kategori": 0 },
+  { "Id": 20, "Judul": "Tugas 20", "Deadline": "2025-07-09T11:00:00", "Status": 1, "Kategori": 1 },
+  { "Id": 21, "Judul": "Tugas 21", "Deadline": "2025-07-11T14:00:00", "Status": 2, "Kategori": 0 },
+  { "Id": 22, "Judul": "Tugas 22", "Deadline": "2025-07-13T16:00:00", "Status": 0, "Kategori": 1 },
+  { "Id": 23, "Judul": "Tugas 23", "Deadline": "2025-07-15T08:00:00", "Status": 1, "Kategori": 0 },
+  { "Id": 24, "Judul": "Tugas 24", "Deadline": "2025-07-17T10:30:00", "Status": 2, "Kategori": 1 },
+  { "Id": 25, "Judul": "Tugas 25", "Deadline": "2025-07-19T13:00:00", "Status": 0, "Kategori": 0 },
+  { "Id": 26, "Judul": "Tugas 26", "Deadline": "2025-07-21T15:00:00", "Status": 1, "Kategori": 1 },
+  { "Id": 27, "Judul": "Tugas 27", "Deadline": "2025-07-23T09:00:00", "Status": 2, "Kategori": 0 },
+  { "Id": 28, "Judul": "Tugas 28", "Deadline": "2025-07-25T11:00:00", "Status": 0, "Kategori": 1 },
+  { "Id": 29, "Judul": "Tugas 29", "Deadline": "2025-07-27T14:00:00", "Status": 1, "Kategori": 0 },
+  { "Id": 30, "Judul": "Tugas 30", "Deadline": "2025-07-29T16:00:00", "Status": 2, "Kategori": 1 }
 ]

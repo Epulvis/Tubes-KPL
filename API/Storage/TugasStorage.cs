@@ -7,8 +7,10 @@ namespace API.Storage;
 public class TugasStorage<T>
 {
 
+    // Mengambil daftar tugas dari file Tugas.json, jika file tidak ada maka mengembalikan list kosong
     private static readonly string FilePath = Path.Combine(Directory.GetCurrentDirectory(), "Storage", "Tugas.json");
 
+    // Menyimpan data tugas ke file Tugas.json dalam format JSON yang rapi
     public static List<Tugas> GetTugas()
     {
         if (!File.Exists(FilePath))

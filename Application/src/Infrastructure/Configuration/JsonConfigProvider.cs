@@ -7,6 +7,7 @@ namespace Tubes_KPL.src.Infrastructure.Configuration
         private readonly string _filePath;
         private Dictionary<string, object> _configurations;
 
+        // Konstruktor: Membaca file konfigurasi JSON dan mendeserialisasinya ke dictionary
         public JsonConfigProvider(string filePath)
         {
             _filePath = filePath;
@@ -16,6 +17,7 @@ namespace Tubes_KPL.src.Infrastructure.Configuration
             //Console.WriteLine(JsonSerializer.Serialize(_configurations, new JsonSerializerOptions { WriteIndented = true }));
         }
 
+        // Mengambil konfigurasi berdasarkan key dan mengembalikannya dalam tipe data T
         public T GetConfig<T>(string key)
         {
             if (!_configurations.TryGetValue(key, out var value))
@@ -57,11 +59,14 @@ namespace Tubes_KPL.src.Infrastructure.Configuration
             Console.WriteLine($"[ERROR] Tidak dapat mengonversi konfigurasi dengan key '{key}' ke tipe '{typeof(T)}'.");
             throw new InvalidCastException($"Tidak dapat mengonversi konfigurasi dengan key '{key}' ke tipe '{typeof(T)}'.");
         }
+        
+        // Menyimpan atau memperbarui nilai konfigurasi berdasarkan key
         public void SetConfig<T>(string key, T value)
         {
             _configurations[key] = value!;
         }
 
+        // Menyimpan seluruh konfigurasi ke file JSON
         public void Save()
         {
             var json = JsonSerializer.Serialize(_configurations, new JsonSerializerOptions { WriteIndented = true });

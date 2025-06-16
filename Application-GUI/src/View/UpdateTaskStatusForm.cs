@@ -9,6 +9,7 @@ namespace Application_GUI.src.View
         public string IdTask => txtIdTask.Text.Trim();
         public int StatusIndex => cmbStatus.SelectedIndex;
 
+        // Constructor initializes the form and hides status controls
         public UpdateTaskStatusForm()
         {
             InitializeComponent();
@@ -16,18 +17,21 @@ namespace Application_GUI.src.View
             InitializeStatusComboBox();
         }
 
+        // Method to show status controls based on the selected task
         private void HideStatusControls()
         {
             cmbStatus.Visible = false;
             lblStatus.Visible = false;
         }
 
+        // Method to initialize the status ComboBox with predefined statuses
         private void InitializeStatusComboBox()
         {
             cmbStatus.Items.AddRange(new[] { "BelumMulai", "SedangDikerjakan", "Selesai", "Terlewat" });
             cmbStatus.SelectedIndex = 0;
         }
 
+        // Method to validate the task ID input
         private bool IsTaskIdValid(string id)
         {
             // Validasi: tidak kosong, hanya angka, panjang maksimal 6 digit, dan > 0
@@ -40,12 +44,14 @@ namespace Application_GUI.src.View
             return true;
         }
 
+        // Event handler for form load to set focus on the task ID input
         private void BtnKembali_Click(object sender, EventArgs e)
         {
             this.DialogResult = DialogResult.Cancel;
             this.Close();
         }
 
+        // Event handler for the save button to validate input and save changes
         private void BtnSimpan_Click(object sender, EventArgs e)
         {
             if (!IsTaskIdValid(txtIdTask.Text))

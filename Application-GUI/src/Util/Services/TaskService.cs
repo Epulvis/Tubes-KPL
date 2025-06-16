@@ -14,6 +14,7 @@ namespace Application.Services
         private readonly StatusStateMachine _statusStateMachine;
         private readonly string _apiBaseUrl;
 
+        // JSON options untuk deserialisasi
         private readonly JsonSerializerOptions _jsonOptions = new JsonSerializerOptions
         {
             PropertyNameCaseInsensitive = true,
@@ -28,7 +29,8 @@ namespace Application.Services
             _statusStateMachine = statusStateMachine;
             _apiBaseUrl = apiBaseUrl.TrimEnd('/');
         }
-
+        
+        // Mengambil semua tugas dari API
         public async Task<Result<List<Tugas>>> GetAllTasksAsync()
         {
             try
@@ -60,7 +62,8 @@ namespace Application.Services
                 return Result<List<Tugas>>.Failure($"Terjadi kesalahan tak terduga: {ex.Message}");
             }
         }
-
+        
+        // Mengambil tugas berdasarkan ID dari API
         public async Task<Result<Tugas>> GetTaskByIdAsync(int id)
         {
             if (id <= 0) return Result<Tugas>.Failure("ID Tugas tidak valid.");
@@ -99,6 +102,7 @@ namespace Application.Services
             }
         }
 
+        // Membuat tugas baru melalui API
         public async Task<Result<Tugas>> CreateTaskAsync(string judul, DateTime deadline, int kategoriIndex)
         {
             // Validasi input sisi klien sebelum mengirim ke API
@@ -143,6 +147,7 @@ namespace Application.Services
             }
         }
 
+        // Mengupdate status tugas melalui API
         public async Task<Result> UpdateTaskStatusAsync(int id, StatusTugas newStatus)
         {
             if (id <= 0) return Result.Failure("ID Tugas tidak valid.");
@@ -189,6 +194,7 @@ namespace Application.Services
             }
         }
 
+        // Menghapus tugas berdasarkan ID melalui API
         public async Task<Result> DeleteTaskAsync(int id)
         {
             if (id <= 0) return Result.Failure("ID Tugas tidak valid.");
@@ -218,6 +224,7 @@ namespace Application.Services
             }
         }
 
+        // Mengambil tugas berdasarkan rentang tanggal melalui API
         public async Task<Result<List<Tugas>>> GetTasksByDateRangeAsync(DateTime startDate, DateTime endDate)
         {
             if (!_validator.IsValidDateRange(startDate, endDate))
@@ -256,6 +263,7 @@ namespace Application.Services
             }
         }
 
+        // Ekspor tugas ke file dalam format JSON atau TXT
         public async Task<Result> ExportTasksAsync(string format, string filePath)
         {
             if (string.IsNullOrWhiteSpace(format) || (format.ToLower() != "json" && format.ToLower() != "txt"))

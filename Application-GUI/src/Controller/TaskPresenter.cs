@@ -13,7 +13,8 @@ namespace Application.Controller
         private readonly TaskService _taskService;
         private readonly InputValidator _validator;
         private readonly IConfigProvider _configProvider;
-
+        
+        // Konstruktor: Inisialisasi presenter, service, validator, dan config provider. Mendaftarkan event handler dari View.
         public TaskPresenter(ITaskView view, TaskService taskService, InputValidator validator)
         {
 
@@ -41,11 +42,13 @@ namespace Application.Controller
             _view.ExportTasksRequested += OnExportTasksRequested;
         }
 
+        // Event handler saat form pertama kali dimuat, otomatis menampilkan daftar tugas.
         private void OnFormLoaded()
         {
             OnViewTasksRequested();
         }
 
+        // Menangani permintaan penambahan tugas baru dari View.
         public async void OnAddTaskRequested()
         {
             try
@@ -79,7 +82,7 @@ namespace Application.Controller
             }
         }
 
-        // get all task
+        // Mengambil dan menampilkan seluruh daftar tugas.
         public async void OnViewTasksRequested()
         {
             try
@@ -101,12 +104,12 @@ namespace Application.Controller
             }
         }
 
-        // view task details
+        // Menampilkan detail tugas berdasarkan ID yang dipilih.
         public async void OnViewTaskDetailsRequested(int taskId)
         {
             try
             {
-                // check valid task id
+                
                 if (taskId == -1)
                 {
                     _view.DisplayMessage("Pilih tugas terlebih dahulu atau masukkan ID yang valid.", "Info", MessageBoxIcon.Information);
@@ -118,6 +121,7 @@ namespace Application.Controller
                 //    _view.DisplayMessage("ID tugas tidak valid.", "Error Validasi", MessageBoxIcon.Warning);
                 //    return;
                 //}
+                
                 var result = await _taskService.GetTaskByIdAsync(taskId);
 
                 if (result.IsSuccess)
@@ -157,6 +161,7 @@ namespace Application.Controller
             }
         }
 
+        // Mengubah status tugas berdasarkan ID yang dipilih.
         public async void OnUpdateTaskStatusRequested()
         {
             try
@@ -196,6 +201,7 @@ namespace Application.Controller
             }
         }
 
+        // Menghapus tugas berdasarkan ID yang dipilih.
         public async void OnDeleteTaskRequested()
         {
             try
@@ -235,7 +241,8 @@ namespace Application.Controller
                 _view.DisplayMessage($"Terjadi kesalahan: {ex.Message}", "Error Sistem", MessageBoxIcon.Error);
             }
         }
-
+        
+        // Memfilter dan menampilkan tugas berdasarkan rentang tanggal yang dipilih.
         public async void OnFilterTasksByDateRequested()
         {
             try
@@ -277,6 +284,7 @@ namespace Application.Controller
             }
         }
 
+        // Mengekspor daftar tugas ke file dengan format yang dipilih (json/txt).
         public async void OnExportTasksRequested()
         {
             try
