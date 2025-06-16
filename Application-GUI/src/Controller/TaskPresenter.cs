@@ -16,9 +16,19 @@ namespace Application.Controller
 
         public TaskPresenter(ITaskView view, TaskService taskService, InputValidator validator)
         {
+
+            string configFilePath = "../../../src/Configuration/config.json";
+            if (!System.IO.File.Exists(configFilePath))
+            {
+                Console.WriteLine($"[ERROR] File konfigurasi tidak ditemukan: {configFilePath}");
+                return;
+            }
+
+            var configProvider = new JsonConfigProvider(configFilePath);
             _view = view;
             _taskService = taskService;
             _validator = validator;
+            _configProvider = configProvider ?? throw new ArgumentNullException(nameof(configProvider));
 
             // Subscribe ke event dari View
             _view.FormLoaded += OnFormLoaded;

@@ -11,7 +11,7 @@ partial class TaskManagementForm
     private Button buttonHamburger;
     private Button buttonHome;
     private Button buttonCloseSidebar;
-    private Button buttonSettings;
+    private Button btnShowUpdateForm;
     private DataGridViewButtonColumn detailButton;
     private Button btnShowAddTaskForm;
 
@@ -55,7 +55,7 @@ partial class TaskManagementForm
     {
         panelSidebar = new Panel();
         buttonHome = new Button();
-        buttonSettings = new Button();
+        btnShowUpdateForm = new Button();
         btnPageFilterTaskByDate = new Button();
         buttonCloseSidebar = new Button();
         btnShowAddTaskForm = new Button();
@@ -73,7 +73,7 @@ partial class TaskManagementForm
         // 
         panelSidebar.BackColor = Color.GhostWhite;
         panelSidebar.Controls.Add(buttonHome);
-        panelSidebar.Controls.Add(buttonSettings);
+        panelSidebar.Controls.Add(btnShowUpdateForm);
         panelSidebar.Controls.Add(btnPageFilterTaskByDate);
         panelSidebar.Controls.Add(buttonCloseSidebar);
         panelSidebar.Controls.Add(btnShowAddTaskForm);
@@ -81,7 +81,7 @@ partial class TaskManagementForm
         panelSidebar.Location = new Point(0, 0);
         panelSidebar.Margin = new Padding(2, 3, 2, 3);
         panelSidebar.Name = "panelSidebar";
-        panelSidebar.Size = new Size(160, 384);
+        panelSidebar.Size = new Size(640, 383);
         panelSidebar.TabIndex = 0;
         panelSidebar.Visible = false;
         // 
@@ -98,17 +98,16 @@ partial class TaskManagementForm
         buttonHome.UseVisualStyleBackColor = false;
         buttonHome.Click += buttonHome_Click;
         // 
-        // buttonSettingsUpdate!!!
+        // btnShowUpdateForm
         // 
-        buttonSettings.BackColor = Color.LightCyan;
-        buttonSettings.Location = new Point(8, 145);
-        buttonSettings.Margin = new Padding(2, 3, 2, 3);
-        buttonSettings.Name = "buttonSettings";
-        buttonSettings.Size = new Size(147, 32);
-        buttonSettings.TabIndex = 0;
-        buttonSettings.Text = "Update Task";
-        buttonSettings.UseVisualStyleBackColor = false;
-        buttonSettings.Click += buttonSettings_Click;
+        btnShowUpdateForm.BackColor = Color.LightCyan;
+        btnShowUpdateForm.Location = new Point(8, 145);
+        btnShowUpdateForm.Margin = new Padding(2, 3, 2, 3);
+        btnShowUpdateForm.Name = "btnShowUpdateForm";
+        btnShowUpdateForm.Size = new Size(147, 32);
+        btnShowUpdateForm.TabIndex = 0;
+        btnShowUpdateForm.Text = "Update Task";
+        btnShowUpdateForm.UseVisualStyleBackColor = false;
         // 
         // btnPageFilterTaskByDate
         // 
