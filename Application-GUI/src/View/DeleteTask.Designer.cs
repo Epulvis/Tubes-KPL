@@ -55,6 +55,11 @@
             this.dataGridViewTasks.Size = new System.Drawing.Size(776, 250);
             this.dataGridViewTasks.ReadOnly = true;
             this.dataGridViewTasks.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            this.dataGridViewTasks.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            this.dataGridViewTasks.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            this.dataGridViewTasks.BorderStyle = BorderStyle.FixedSingle;
+            this.dataGridViewTasks.ColumnHeadersDefaultCellStyle.BackColor = System.Drawing.Color.LightSkyBlue;
+            this.dataGridViewTasks.EnableHeadersVisualStyles = false;
             // 
             // lblInput
             // 
