@@ -5,6 +5,9 @@ namespace Application.Libraries
 {
     class JsonToTextConverter
     {
+        private const int ApproachingDays = 3; // Batas hari deadline mendekat
+
+        // Konversi daftar tugas ke format teks tabel
         public static string ConvertTasksToText(List<Tugas> tasks)
         {
             var textContent = "Daftar Tugas:\n";

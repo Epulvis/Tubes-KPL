@@ -10,26 +10,28 @@ namespace Tubes_KPL.src.Application.Services
     {
         private readonly ITugasRepository _repository;
 
+        // Constructor with null check
         public TaskService(ITugasRepository repository)
         {
             _repository = repository ?? throw new ArgumentNullException(nameof(repository));
         }
 
+        // Create a new task with validation
         public Tugas BuatTugas(string judul, DateTime deadline, KategoriTugas kategori)
         {
             if (string.IsNullOrWhiteSpace(judul))
             {
-                Console.WriteLine($"[ERROR] Judul tugas tidak boleh kosong. Input: {judul}");
-                throw new ArgumentException("Judul tugas tidak boleh kosong", nameof(judul));
+                Console.WriteLine("[ERROR] Task title cannot be empty.");
+                throw new ArgumentException("Task title cannot be empty.", nameof(judul));
             }
 
             if (deadline < DateTime.Now)
             {
-                Console.WriteLine($"[ERROR] Deadline tidak boleh di masa lalu. Input: {deadline}");
-                throw new ArgumentException("Deadline tidak boleh di masa lalu", nameof(deadline));
+                Console.WriteLine("[ERROR] Deadline cannot be in the past.");
+                throw new ArgumentException("Deadline cannot be in the past.", nameof(deadline));
             }
 
-            Console.WriteLine($"[INFO] Membuat tugas baru dengan judul '{judul}' dan deadline '{deadline}'.");
+            Console.WriteLine($"[INFO] Creating new task: '{judul}' with deadline '{deadline}'.");
 
             var tugas = new Tugas
             {
@@ -43,14 +45,15 @@ namespace Tubes_KPL.src.Application.Services
             return tugas;
         }
 
+        // Change task status with transition validation
         public Tugas UbahStatusTugas(int id, StatusTugas status)
         {
             var tugas = _repository.AmbilById(id);
             if (tugas == null)
-                throw new KeyNotFoundException($"Tugas dengan ID {id} tidak ditemukan");
+                throw new KeyNotFoundException($"Task with ID {id} not found.");
 
             if (!IsValidStatusTransition(tugas.Status, status))
-                throw new InvalidOperationException($"Transisi status dari {tugas.Status} ke {status} tidak valid");
+                throw new InvalidOperationException($"Invalid status transition from {tugas.Status} to {status}.");
 
             if (tugas.Deadline < DateTime.Now && status != StatusTugas.Terlewat)
             {
@@ -65,7 +68,8 @@ namespace Tubes_KPL.src.Application.Services
             return tugas;
         }
 
-        // bintang : poin 3 automata
+        // Validate status transition logic
+        // bintang : Design by Contract
         private bool IsValidStatusTransition(StatusTugas currentStatus, StatusTugas newStatus)
         {
             bool isValid = false;
@@ -76,34 +80,30 @@ namespace Tubes_KPL.src.Application.Services
                               newStatus == StatusTugas.Selesai ||
                               newStatus == StatusTugas.Terlewat;
                     break;
-
                 case StatusTugas.SedangDikerjakan:
                     isValid = newStatus == StatusTugas.Selesai ||
                               newStatus == StatusTugas.Terlewat;
                     break;
-
                 case StatusTugas.Selesai:
                     isValid = newStatus == StatusTugas.Terlewat;
                     break;
-
                 case StatusTugas.Terlewat:
                     isValid = false;
                     break;
             }
-            Console.WriteLine($"[LOG] Transisi dari {currentStatus} ke {newStatus} " +
-                              (isValid ? "valid." : "tidak valid."));
-
+            Console.WriteLine($"[LOG] Status transition from {currentStatus} to {newStatus} is {(isValid ? "valid" : "invalid")}.");
             return isValid;
         }
 
+        // Update task details with validation
         public Tugas PerbaruiTugas(int id, string judul, DateTime deadline, KategoriTugas kategori)
         {
             var tugas = _repository.AmbilById(id);
             if (tugas == null)
-                throw new KeyNotFoundException($"Tugas dengan ID {id} tidak ditemukan");
+                throw new KeyNotFoundException($"Task with ID {id} not found.");
 
             if (string.IsNullOrWhiteSpace(judul))
-                throw new ArgumentException("Judul tugas tidak boleh kosong", nameof(judul));
+                throw new ArgumentException("Task title cannot be empty.", nameof(judul));
 
             tugas.Judul = judul;
             tugas.Deadline = deadline;
@@ -118,29 +118,33 @@ namespace Tubes_KPL.src.Application.Services
             return tugas;
         }
 
+        // Delete a task by ID
         public void HapusTugas(int id)
         {
             var tugas = _repository.AmbilById(id);
             if (tugas == null)
-                throw new KeyNotFoundException($"Tugas dengan ID {id} tidak ditemukan");
+                throw new KeyNotFoundException($"Task with ID {id} not found.");
 
             _repository.Hapus(id);
         }
 
+        // Get all tasks
         public IEnumerable<Tugas> AmbilSemuaTugas()
         {
             return _repository.AmbilSemua();
         }
 
+        // Get a task by ID
         public Tugas AmbilTugasById(int id)
         {
             var tugas = _repository.AmbilById(id);
             if (tugas == null)
-                throw new KeyNotFoundException($"Tugas dengan ID {id} tidak ditemukan");
+                throw new KeyNotFoundException($"Task with ID {id} not found.");
 
             return tugas;
         }
 
+        // Update status to 'Terlewat' for overdue tasks
         public void PerbaruiStatusTerlewat()
         {
             var tugasList = _repository.AmbilSemua().ToList();

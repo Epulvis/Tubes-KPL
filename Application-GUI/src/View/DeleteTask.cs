@@ -4,21 +4,24 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Newtonsoft.Json;
-using Application.View; // Pastikan namespace ini benar
+using Application.View; 
 
 namespace Application_GUI.src.View
 {
     public partial class DeleteTask : Form
     {
+        // Base URL for API
         private readonly string apiBaseUrl = "http://localhost:4000/api/tugas"; // Ganti dengan URL API yang sesuai
         private TaskManagementForm _dashboard;
 
+        // Load tasks when form is shown
         public DeleteTask(TaskManagementForm taskManagementForm)
         {
             InitializeComponent();
             _dashboard = taskManagementForm; // Perbaiki penamaan parameter
         }
 
+        // Fetch tasks from API and display in DataGridView
         private async void DeleteTask_Load(object sender, EventArgs e)
         {
             await LoadTasksAsync();
@@ -33,7 +36,7 @@ namespace Application_GUI.src.View
                     var response = await client.GetAsync(apiBaseUrl);
                     response.EnsureSuccessStatusCode();
                     var json = await response.Content.ReadAsStringAsync();
-                    var tasks = JsonConvert.DeserializeObject<List<TaskModel>>(json); // Pastikan TaskModel ada
+                    var tasks = JsonConvert.DeserializeObject<List<TaskModel>>(json); 
                     dataGridViewTasks.DataSource = tasks;
                 }
             }
@@ -43,6 +46,7 @@ namespace Application_GUI.src.View
             }
         }
 
+        // Handle delete button click
         private async void btnContinue_Click(object sender, EventArgs e)
         {
             if (int.TryParse(txtTaskId.Text, out int taskId))
@@ -60,6 +64,7 @@ namespace Application_GUI.src.View
             }
         }
 
+        // Delete task by ID via API
         private async Task DeleteTaskByIdAsync(int taskId)
         {
             try
@@ -83,6 +88,7 @@ namespace Application_GUI.src.View
             }
         }
 
+        // Go back to dashboard
         private void btnBack_Click(object sender, EventArgs e)
         {
             _dashboard.Show();
@@ -90,6 +96,7 @@ namespace Application_GUI.src.View
         }
     }
 
+    // Model for task data
     public class TaskModel
     {
         public int Id { get; set; }

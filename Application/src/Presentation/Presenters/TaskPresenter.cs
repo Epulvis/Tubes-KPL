@@ -407,35 +407,6 @@ namespace Tubes_KPL.src.Presentation.Presenters
                 return $"[ERROR] Gagal mencetak daftar tugas: {ex.Message}";
             }
         }
-
-        // public async Task<string> PrintTasksToFilesFromApi(string jsonFilePath, string textFilePath)
-        // {
-        //     try
-        //     {
-        //         Console.WriteLine($"[DEBUG] Mengakses API di: {BaseUrl}");
-        //
-        //         var response = await _httpClient.GetAsync(BaseUrl);
-        //         if (!response.IsSuccessStatusCode)
-        //             return $"[ERROR] Gagal mengambil data dari API. Status code: {response.StatusCode}";
-        //
-        //         List<Tugas>? tasks = await response.Content.ReadFromJsonAsync<List<Tugas>>(_jsonOptions);
-        //         if (tasks == null || !tasks.Any())
-        //             return "[INFO] Tidak ada tugas yang tersedia untuk dicetak.";
-        //
-        //         var jsonContent = JsonSerializer.Serialize(tasks, new JsonSerializerOptions { WriteIndented = true });
-        //         File.WriteAllText(jsonFilePath, jsonContent);
-        //
-        //         var textContent = JsonToTextConverter.ConvertTasksToText(tasks);
-        //         File.WriteAllText(textFilePath, textContent);
-        //
-        //         return $"[INFO] Daftar tugas berhasil dicetak ke file JSON: {jsonFilePath} dan file TXT: {textFilePath}.";
-        //     }
-        //     catch (Exception ex)
-        //     {
-        //         return $"[ERROR] Gagal mencetak daftar tugas: {ex.Message}";
-        //     }
-        // }
-        
         
     }
 }

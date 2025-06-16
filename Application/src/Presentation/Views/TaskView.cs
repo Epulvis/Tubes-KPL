@@ -18,6 +18,7 @@ namespace Tubes_KPL.src.Presentation.Views
             _configProvider = configProvider ?? throw new ArgumentNullException(nameof(configProvider));
 
             // Table-driven: mapping menu ke aksi
+            // Map menu options to actions
             _menuActions = new Dictionary<string, Func<Task>>
             {
                 { "Lihat Daftar Tugas", ShowAllTasks },
@@ -32,6 +33,7 @@ namespace Tubes_KPL.src.Presentation.Views
             };
         }
 
+        // Show main menu and handle user selection
         public async Task ShowMainMenu()
         {
             var isRunning = true;
@@ -62,6 +64,8 @@ namespace Tubes_KPL.src.Presentation.Views
                 }
             }
         }
+        
+        // Show all tasks
         private async Task ShowAllTasks()
         {
             Console.Clear();
@@ -73,6 +77,7 @@ namespace Tubes_KPL.src.Presentation.Views
             Console.ReadLine();
         }
 
+        // Show tasks by date range with input validation
         private async Task ShowTasksByDateRange()
         {
             Console.Clear();
@@ -92,6 +97,7 @@ namespace Tubes_KPL.src.Presentation.Views
             Console.ReadLine();
         }
 
+        // Show task details by ID
         private async Task ShowTaskDetails()
         {
             Console.Clear();
@@ -101,20 +107,13 @@ namespace Tubes_KPL.src.Presentation.Views
             string idStr = Console.ReadLine();
 
             string result = await _presenter.GetTaskDetails(idStr);
-
-            // Add reminder logic
-            //var reminderSettings = _configProvider.GetConfig<Dictionary<string, object>>("ReminderSettings");
-            //if (reminderSettings != null && ((JsonElement)reminderSettings["EnableReminders"]).GetBoolean())
-            //{
-            //    Console.WriteLine("[Pengingat Aktif]");
-            //}
-
             Console.WriteLine("\n" + result);
 
             Console.WriteLine("\nTekan Enter untuk kembali ke menu utama...");
             Console.ReadLine();
         }
 
+        // Add a new task with input validation and default values
         private async Task AddNewTask()
         {
             Console.Clear();
@@ -136,20 +135,12 @@ namespace Tubes_KPL.src.Presentation.Views
                 Console.WriteLine("Deadline tidak dimasukkan atau format tidak valid. Menggunakan tanggal hari ini sebagai default.");
                 deadline = DateTime.Now;
             }
-
-            
             Console.WriteLine("Kategori Tugas:");
             Console.WriteLine("0. Akademik");
             Console.WriteLine("1. Non-Akademik");
             Console.Write("Pilih Kategori (0/1): ");
             int kategori = InputHelper.GetValidatedInput("Pilih Kategori (0/1): ", s =>
                 (int.TryParse(s, out int val) && (val == 0 || val == 1), val));
-
-            //if (!int.TryParse(Console.ReadLine(), out int kategoriIndex) || kategoriIndex < 0 || kategoriIndex > 1)
-            //{
-            //    Console.WriteLine("Kategori tidak valid! Menggunakan default: Akademik");
-            //    kategoriIndex = 0;
-            //}
 
             string result = await _presenter.CreateTask(judul, deadline.ToString("dd/MM/yyyy"), kategori);
             Console.WriteLine("\n" + result);
@@ -158,6 +149,7 @@ namespace Tubes_KPL.src.Presentation.Views
             Console.ReadLine();
         }
 
+        // Update an existing task with input validation
         private async Task UpdateTask()
         {
             Console.Clear();
@@ -188,6 +180,7 @@ namespace Tubes_KPL.src.Presentation.Views
             Console.ReadLine();
         }
 
+        // Update task status by ID
         private async Task UpdateTaskStatus()
         {
             Console.Clear();
@@ -202,6 +195,7 @@ namespace Tubes_KPL.src.Presentation.Views
             Console.ReadLine();
         }
 
+        // Delete a task with confirmation
         private async Task DeleteTask()
         {
             Console.Clear();
@@ -256,11 +250,10 @@ namespace Tubes_KPL.src.Presentation.Views
     }
     public static class InputHelper
     {
-        /// <summary>
-        /// Mengambil input dari user dan memvalidasi menggunakan parser.
-        /// Precondition: prompt dan parser tidak boleh null/kosong.
-        /// Postcondition: Mengembalikan nilai T yang valid sesuai parser.
-        /// </summary>
+
+        // Mengambil input dari user dan memvalidasi menggunakan parser.
+        // Precondition: prompt dan parser tidak boleh null/kosong.
+        // Postcondition: Mengembalikan nilai T yang valid sesuai parser.
         public static T GetValidatedInput<T>(string prompt, Func<string, (bool, T)> parser)
         {
             // Precondition

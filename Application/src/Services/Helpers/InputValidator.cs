@@ -5,6 +5,7 @@ namespace Tubes_KPL.src.Application.Helpers
 {
     public static class InputValidator
     {
+        // Ensure input is not empty
         // Defensive programming/design by contract code by zuhri
         public static string NonEmptyInput(string prompt)
         {
@@ -24,6 +25,7 @@ namespace Tubes_KPL.src.Application.Helpers
             return input.Trim();
         }
 
+        // Prompt user to select a valid status
         // input ui by zuhri
         public static int InputValidStatus()
         {
@@ -37,12 +39,14 @@ namespace Tubes_KPL.src.Application.Helpers
             return (int)selectedStatus;
         }
 
+        // Validate title is not empty and not too long
         // Defensive programming/design by contract code by zuhri
         public static bool IsValidJudul(string judul)
         {
             return !string.IsNullOrWhiteSpace(judul) && judul.Length <= 100;
         }
 
+        // Validate deadline is not in the past
         public static bool IsValidDeadline(DateTime deadline)
         {
             if (deadline < DateTime.Now)
@@ -54,6 +58,7 @@ namespace Tubes_KPL.src.Application.Helpers
             return true;
         }
 
+        // Try to parse a valid positive integer ID
         public static bool TryParseId(string idInput, out int id)
         {
             return int.TryParse(idInput, out id) && id > 0;
