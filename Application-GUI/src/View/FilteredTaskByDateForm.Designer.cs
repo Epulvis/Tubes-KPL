@@ -109,7 +109,7 @@
             btnFilter.TabIndex = 12;
             btnFilter.Text = "Filter";
             btnFilter.UseVisualStyleBackColor = true;
-            //btnFilter.Click += btnFilter_Click;
+            btnFilter.Click += BtnFilter_Click;
             // 
             // btnBack
             // 
@@ -119,7 +119,7 @@
             btnBack.TabIndex = 15;
             btnBack.Text = "Kembali";
             btnBack.UseVisualStyleBackColor = true;
-            //btnBack.Click += btnBack_Click1;
+            btnBack.Click += BtnBack_Click;
             // 
             // dataGridViewTasks
             // 
